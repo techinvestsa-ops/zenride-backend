@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<!-- saved from url=(0133)https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/?__frame_v=manifest.549c0ed89764d31f.json -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!-- frame-runtime --><!--<base href="/_f/1786692246-b92a/">--><base href="."><script>window.__FRAME_PREAMBLE={"capabilities":{"artifact":"artifact.oqIe8shs.js","assets":"assets.BkxVItX2.js","comments":"comments.GLuHR3zP.js","db":"db.CRhVHzSt.js","downloads":"downloads.C3GSvEDP.js","embed":"embed.CZsbekoQ.js","mcp":"mcp.D3B2EyQu.js","permissions":"permissions.BNySkLV5.js","room":"room.DE7EMui-.js","sample":"sample.C7z_6W62.js","self":"artifact.oqIe8shs.js","user":"user.BpKav-Rf.js"},"transforms":"_transforms.h3_8GSUa.js","comments":"_comments.BOgkE6qU.js","translate":"_translate.5HCW4BJh.js"}</script><script>(function(){"use strict";var Y=["light","dark","system"],X=/^[A-Za-z0-9_-]{1,64}$/,D=/^[a-zA-Z_:][a-zA-Z0-9_:.-]{0,127}$/,G=new Set(["class","hidden","value","checked"]);function V(e){const t=e.toLowerCase();return t.startsWith("data-")||t.startsWith("aria-")||G.has(t)}var be="http://www.w3.org/1999/xhtml",Z="http://www.w3.org/2000/svg",J=new Set(["script","style","iframe","noscript","noframes","noembed","xmp","plaintext","template","title","textarea","object","embed"]),Q=new Set(["script","style"]);function ee(e){const t=e.localName.toLowerCase();return e.namespaceURI==="http://www.w3.org/1999/xhtml"?!J.has(t):e.namespaceURI===Z?!Q.has(t):!1}var te=new Set(["html","head","body","frameset"]);function re(e){return e.namespaceURI==="http://www.w3.org/1999/xhtml"&&te.has(e.localName)}function ne(e){if(e===null||typeof e!="object")return!1;const t=e;if(typeof t.target!="string"||!X.test(t.target)||t.text!==void 0&&typeof t.text!="string")return!1;if(t.attrsSet!==void 0){if(t.attrsSet===null||typeof t.attrsSet!="object")return!1;for(const[n,s]of Object.entries(t.attrsSet))if(!D.test(n)||typeof s!="string")return!1}if(t.attrsRemoved!==void 0){if(!Array.isArray(t.attrsRemoved))return!1;for(const n of t.attrsRemoved)if(typeof n!="string"||!D.test(n))return!1}return!0}function se(e,t){if(e===null||typeof e!="object")return!1;const{seq:n,elements:s}=e;if(typeof n!="number"||!Number.isSafeInteger(n)||!Array.isArray(s)||s.length===0||s.length>64)return!1;for(let o=0;o<s.length;o++)if(!t(s[o]))return!1;return!0}function ae(e){return e===null||typeof e!="object"?!1:se(e.__frame_patch,ne)}function oe(e){if(e===null||typeof e!="object")return!1;const t=e.__frame_init;return t!==null&&typeof t=="object"}function ie(e){return e!==null&&typeof e=="object"&&e.__frame_size_poke===!0}function le(e){if(e===null||typeof e!="object")return!1;const t=e.__frame_theme;if(t===null||typeof t!="object")return!1;const n=t.theme;return typeof n=="string"&&Y.includes(n)}var O="__frame_scroll",ce=150,ue=310,fe=160,pe=3e4;function de(){let e=0,t=!1,n=!1,s=!1,o=0,l=null;const c=i=>{try{sessionStorage.setItem(O,JSON.stringify({y:i}))}catch{}},f=()=>{if(clearTimeout(e),l===null)return;const i=l;l=null,c(i)},S=()=>{if(t){t=!1;return}n=!0,l=scrollY,clearTimeout(e),e=setTimeout(f,ce)};try{addEventListener("scroll",S,{passive:!0}),addEventListener("pagehide",f)}catch{}const v=()=>{let i;try{i=sessionStorage.getItem(O)}catch{return null}if(i===null)return null;let d;try{d=JSON.parse(i)}catch{d=null}const u=d?.y;if(!(typeof u=="number"&&Number.isFinite(u)&&u>=0)){try{sessionStorage.removeItem(O)}catch{}return null}return u};let b=!1;const m=i=>{try{const d=scrollY;scrollTo({top:i,left:0,behavior:"instant"}),o=i,s=!0,clearTimeout(e),l=null,c(i);const u=scrollY;u!==d&&(t=!0),u!==i&&!b&&(b=!0,addEventListener("load",()=>{try{if(scrollY===u){const h=v();m(h!==null?h:o)}}catch{}},{once:!0}))}catch{}},y=()=>{try{return!!location.hash}catch{return!0}};let g=!1;const E=()=>{try{if(g||innerWidth>ue||innerHeight>fe)return;g=!0;const i=Date.now(),d=()=>{try{removeEventListener("resize",d)}catch{}if(Date.now()-i>pe||n||y())return;const u=v();m(u!==null?u:o)};addEventListener("resize",d)}catch{}};let r=!1,p=!1;return{restore(){if(r||(r=!0,y()))return;const i=v();i!==null&&(m(i),E())},promoted(){if(p||(p=!0,y()))return;const i=v();i!==null?(m(i),E()):s&&m(o)}}}var Ee="modulepreload",Ae=function(e){return"/"+e},Re={},me=function(t,n,s){let o=Promise.resolve();function l(c){const f=new Event("vite:preloadError",{cancelable:!0});if(f.payload=c,window.dispatchEvent(f),!f.defaultPrevented)throw c}return o.then(c=>{for(const f of c||[])f.status==="rejected"&&l(f.reason);return t().catch(l)})};(function(){const e=Object.defineProperty,t=globalThis,n=["RTCPeerConnection","webkitRTCPeerConnection","RTCDataChannel","RTCIceCandidate","RTCSessionDescription","RTCRtpSender","RTCRtpReceiver"];let s=0;for(let o=0;o<n.length;o++){const l=n[o];try{e(t,l,{value:void 0,writable:!1,configurable:!1})}catch{try{delete t[l]}catch{}try{e(t,l,{value:void 0,writable:!1,configurable:!0})}catch{}}typeof t[l]=="function"&&s++}if(s&&window!==top)try{parent.postMessage({__frame_rtc_lockdown_failed:s},"*")}catch{}})();var he=1e4,_e=Object.freeze([...window.__FRAME_PREAMBLE?.origins??["https://claude.ai","https://preview.claude.ai"]]);function F(e){for(const t of _e)if(t.endsWith(":*"))try{const n=new URL(e);if(`${n.protocol}//${n.hostname}:*`===t)return!0}catch{}else if(e===t)return!0;return!1}var M=Object.freeze({...window.__FRAME_PREAMBLE?.capabilities}),j=window.__FRAME_PREAMBLE?.transforms,N=window.__FRAME_PREAMBLE?.comments,I=window.__FRAME_PREAMBLE?.translate,L=/^[\w.-]+\.js$/;function T(e){return me(()=>import("/_runtime/"+e),void 0)}function z(e,t){return{contract:e.contract,changes:new Set(e.changes??[]),flags:new Set(e.flags??[]),capabilities:e.capabilities??{},capBudgets:e.capBudgets??{},transforms:new Map,shellOrigin:t,mount:W,pipe:()=>({wrap:(n,s)=>(...o)=>{try{return s(...o)}catch(l){return Promise.reject(l)}}})}}var P=null,w=null;function q(e,t,n){try{Object.defineProperty(e,t,{value:n,writable:!1,configurable:!1,enumerable:!0})}catch{try{Object.defineProperty(e,t,{value:n,writable:!1,configurable:!0,enumerable:!0})}catch{}}}var B=!1;function ve(e,t){const n=[];for(const s of e.elements){const o=document.querySelector(`[data-id="${s.target}"]`);if(!o){parent.postMessage({__frame_patch_miss:{seq:e.seq}},t);return}if([...Object.keys(s.attrsSet??{}),...s.attrsRemoved??[]].some(l=>!V(l))){parent.postMessage({__frame_patch_miss:{seq:e.seq}},t);return}if(s.text!==void 0&&(!ee(o)||re(o))){parent.postMessage({__frame_patch_miss:{seq:e.seq}},t);return}for(const[l,c]of Object.entries(s.attrsSet??{}))if(!$(o,l)){try{o.setAttribute(l,c)}catch{}H(o,l,c)}for(const l of s.attrsRemoved??[])$(o,l)||(o.removeAttribute(l),H(o,l,null));typeof s.text=="string"&&(o.textContent=s.text),n.push(s.target)}try{document.dispatchEvent(new CustomEvent("claude:edit",{detail:{seq:e.seq,targets:n}}))}catch{}}function H(e,t,n){if(!(e instanceof HTMLInputElement))return;const s=t.toLowerCase();s==="checked"?e.checked=n!==null:s==="value"&&e.type!=="file"&&(e.value=n??"")}function $(e,t){const n=t.toLowerCase(),s=e;return n==="data-id"||(n==="value"||n==="checked")&&(s.__artifactSecret===!0||/^(password|hidden|file)$/.test(s.type??"")||/(^|\s)(cc-|one-time-code|current-password|new-password)/i.test(`${e.getAttribute("autocomplete")??""} ${s.autocomplete??""}`))}function K(e){const t=document.documentElement;e==="light"||e==="dark"?(t.dataset.theme=e,t.style.colorScheme=e,B=!0):B&&(delete t.dataset.theme,t.style.colorScheme="",B=!1)}var R=new Map;function ye(){let e;const t={u:new Promise(n=>{e=n}),r:n=>{t.done=!0,e(n)},done:!1,nulled:!1};return t}var ge=Object.freeze(Object.assign(Object.create(null),{call:Function.prototype.call,apply:Function.prototype.apply,bind:Function.prototype.bind})),W=(e,t)=>{const n=R.get(e);if(!n||n.done){n?.nulled&&w&&parent.postMessage({__frame_cap_telemetry:{kind:"cap-load-error",cap:e}},w);return}const s=typeof t=="function"?Object.setPrototypeOf(t,ge):Object.assign(Object.create(null),t);typeof s.then=="function"&&delete s.then,n.r(Object.freeze(s))},U=Object.getOwnPropertyDescriptor(window,"claude");if(window!==top&&!(U&&U.writable===!1)){const e=j&&L.test(j)?T(j).catch(()=>{}):Promise.resolve(void 0),t=r=>{if(r.type==="auxclick"&&r.button!==1)return;const p=r.target,i=p&&p.closest?p.closest("a[href],area[href]"):null;if(!i)return;const d=i.getAttribute("href");if(!d)return;let u,h;try{u=new URL(d,document.baseURI),h=new URL(document.baseURI).origin}catch{return}if((u.protocol==="http:"||u.protocol==="https:")&&u.origin!==h){r.preventDefault();const _=(i.getAttribute("target")??"").toLowerCase(),C=r.type==="auxclick"||r.metaKey||r.ctrlKey||r.shiftKey||r.altKey||!["","_self","_top","_parent"].includes(_);parent.postMessage({__frame_nav:!0,url:u.href,newTab:C},"*")}};addEventListener("click",t,!0),addEventListener("auxclick",t,!0);const n={},s=r=>{r.isTrusted&&(n.pointer=!0)},o=r=>{r.isTrusted&&(n.click=!0)};addEventListener("pointermove",s,{capture:!0,passive:!0}),addEventListener("click",o,{capture:!0,passive:!0}),e.then(r=>{r?.wireNav&&(r.wireNav(),removeEventListener("click",t,!0),removeEventListener("auxclick",t,!0),removeEventListener("pointermove",s,!0),removeEventListener("click",o,!0),r.wireEngagement?.(n))});let l=null;try{l=de()}catch{}const c=U?.value??{};q(window,"claude",c);for(const r of Object.keys(M)){if(c[r]!==void 0){q(c,r,c[r]);continue}R.set(r,ye())}if(c.use===void 0){const r=p=>{if(typeof p!="string"||!Object.hasOwn(M,p))return Promise.resolve(null);const i=R.get(p);return i?i.u:Promise.resolve(c[p]??null)};try{Object.defineProperty(c,"use",{value:r,writable:!0,configurable:!0,enumerable:!1})}catch{}}let f=null,S=null,v=0;const b=r=>{r.source!==parent||!F(r.origin)||oe(r.data)&&(f=r.data.__frame_init,w=r.origin,removeEventListener("message",b),clearTimeout(v),S?.())};addEventListener("message",b),parent.postMessage({__frame_connect:!0},"*");const m=new Promise(r=>{S=r,v=setTimeout(()=>{removeEventListener("message",b),r()},he)}),y=document.readyState==="loading"?new Promise(r=>document.addEventListener("DOMContentLoaded",()=>r(),{once:!0})):Promise.resolve();y.then(()=>{try{l?.restore()}catch{}});const g={cb:null},E=r=>{if(!(r.source!==parent||!F(r.origin))&&ie(r.data)){try{l?.promoted()}catch{}g.cb?.()}};addEventListener("message",E),m.then(async()=>{if(!f||!w){for(const a of R.values())a.nulled=!0,a.r(null);return}K(f.theme);const r=w;let p=!1,i=!1;addEventListener("message",a=>{if(a.source!==parent||a.origin!==r)return;le(a.data)&&K(a.data.__frame_theme.theme),ae(a.data)&&ve(a.data.__frame_patch,r);const k=a.data?.__fc_mode;k&&typeof k=="object"&&!p&&N&&L.test(N)&&(p=!0,T(N).then(x=>x.install?.(r,k.on===!0)).catch(()=>{}));const A=a.data?.__ft_cmd;A&&typeof A=="object"&&!i&&I&&L.test(I)&&(i=!0,T(I).then(x=>x.install?.(r,A)).catch(()=>{}))});const d=Object.keys(f.capabilities??{}).filter(a=>Object.hasOwn(M,a)).map(a=>[a,M[a]]).filter(a=>typeof a[1]=="string"&&L.test(a[1])),u=await Promise.allSettled(d.map(([,a])=>T(a))),h=await e,_=w;if(h?.buildBoot||parent.postMessage({__frame_cap_telemetry:{kind:"cap-load-error",cap:"_transforms"}},_),h?.buildBoot)try{P=h.buildBoot(f,h.TRANSFORMS??{},{shellOrigin:_,mount:W},a=>parent.postMessage({__frame_cap_telemetry:a},_))}catch{parent.postMessage({__frame_cap_telemetry:{kind:"cap-load-error",cap:"_transforms"}},_),P=z(f,_)}else P=z(f,_);const C=a=>parent.postMessage({__frame_cap_telemetry:{kind:"cap-load-error",cap:a}},_),we=P;u.forEach((a,k)=>{const A=d[k][0];if(a.status!=="fulfilled"){C(A);return}try{a.value?.install?.(we)}catch{C(A)}});for(const a of R.values())a.done||(a.nulled=!0,a.r(null));await y,parent.postMessage({__frame_ready:!0},w),e.then(a=>a?.installSizeReporter?.(_,g))})}})();</script><!-- /frame-runtime --><meta name="viewport" content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style></head><body>
+<title>Zenride Admin API Contract</title>
+
+<style>
+  :root {
+    --bg: #F5F5F8;
+    --surface: #FFFFFF;
+    --surface-2: #EDEDF3;
+    --line: #DEDEE8;
+    --line-2: #C6C6D6;
+    --text: #14131C;
+    --text-2: #4D4B5C;
+    --text-3: #7A7889;
+    --accent: #4A3AA7;
+    --accent-2: #0C6B60;
+    --accent-tint: rgba(74, 58, 167, 0.09);
+    --alt-tint: rgba(12, 107, 96, 0.10);
+    --get: #1A6396;
+    --post: #1B7548;
+    --patch: #9A5C10;
+    --del: #A63232;
+    --ws: #5F45A6;
+    --warn-bg: rgba(74, 58, 167, 0.06);
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --serif: ui-serif, "New York", Georgia, "Times New Roman", serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Cascadia Mono", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0B0A11;
+      --surface: #14131C;
+      --surface-2: #1D1B27;
+      --line: #292739;
+      --line-2: #3B384E;
+      --text: #EBEAF2;
+      --text-2: #A9A7B8;
+      --text-3: #7E7C90;
+      --accent: #9085E9;
+      --accent-2: #43BFAE;
+      --accent-tint: rgba(144, 133, 233, 0.13);
+      --alt-tint: rgba(67, 191, 174, 0.12);
+      --get: #6BB2E4;
+      --post: #63C48D;
+      --patch: #E0AC5E;
+      --del: #E68080;
+      --ws: #AC93EE;
+      --warn-bg: rgba(144, 133, 233, 0.08);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0B0A11;
+    --surface: #14131C;
+    --surface-2: #1D1B27;
+    --line: #292739;
+    --line-2: #3B384E;
+    --text: #EBEAF2;
+    --text-2: #A9A7B8;
+    --text-3: #7E7C90;
+    --accent: #9085E9;
+    --accent-2: #43BFAE;
+    --accent-tint: rgba(144, 133, 233, 0.13);
+    --alt-tint: rgba(67, 191, 174, 0.12);
+    --get: #6BB2E4;
+    --post: #63C48D;
+    --patch: #E0AC5E;
+    --del: #E68080;
+    --ws: #AC93EE;
+    --warn-bg: rgba(144, 133, 233, 0.08);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 40px 28px 96px;
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    gap: 44px;
+    align-items: start;
+  }
+
+  .masthead { grid-column: 1 / -1; border-bottom: 2px solid var(--text); padding-bottom: 22px; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  .eyebrow span::after { content: " ·"; color: var(--text-3); }
+  .eyebrow span:last-child::after { content: ""; }
+  h1 {
+    font-size: clamp(30px, 5vw, 46px);
+    line-height: 1.02;
+    letter-spacing: -.028em;
+    font-weight: 800;
+    margin: 12px 0 0;
+    text-wrap: balance;
+  }
+  .deck {
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--text-2);
+    max-width: 62ch;
+    margin-top: 14px;
+  }
+  .stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 9px 14px;
+    min-width: 104px;
+  }
+  .stat b {
+    display: block; font-size: 21px; font-weight: 750;
+    letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+  }
+  .stat small {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--text-3);
+  }
+
+  .rail { position: sticky; top: 24px; }
+  .rail-group { margin-bottom: 20px; }
+  .rail-group > p {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--text-3);
+    padding-bottom: 6px; border-bottom: 1px solid var(--line); margin-bottom: 4px;
+  }
+  .rail a {
+    display: flex; justify-content: space-between; gap: 8px;
+    padding: 4px 0; color: var(--text-2); text-decoration: none; font-size: 13.5px;
+  }
+  .rail a:hover { color: var(--accent); }
+  .rail a em {
+    font-style: normal; font-family: var(--mono); font-size: 11px;
+    color: var(--text-3); font-variant-numeric: tabular-nums;
+  }
+  .rail a:focus-visible, .toolbar button:focus-visible, #q:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+
+  .toolbar {
+    position: sticky; top: 0; z-index: 5;
+    background: var(--bg);
+    padding: 14px 0 12px;
+    border-bottom: 1px solid var(--line);
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  }
+  #q {
+    flex: 1 1 210px; min-width: 0; font: inherit; font-size: 14px;
+    color: var(--text); background: var(--surface);
+    border: 1px solid var(--line-2); border-radius: 3px; padding: 8px 11px;
+  }
+  #q::placeholder { color: var(--text-3); }
+  .toolbar button {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--text-2);
+    background: var(--surface); border: 1px solid var(--line-2);
+    border-radius: 3px; padding: 8px 11px; cursor: pointer;
+  }
+  .toolbar button[aria-pressed="true"] {
+    background: var(--text); border-color: var(--text); color: var(--bg);
+  }
+  #count { font-family: var(--mono); font-size: 11px; color: var(--text-3); margin-left: auto; }
+
+  section { margin-top: 40px; scroll-margin-top: 74px; }
+  section.hidden { display: none; }
+  h2 {
+    font-size: 21px; font-weight: 750; letter-spacing: -.02em;
+    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  }
+  h2 .num { font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--accent); letter-spacing: .04em; }
+  h2 .src { font-family: var(--mono); font-size: 11px; font-weight: 400; color: var(--text-3); }
+  h3 { font-size: 15px; font-weight: 700; margin: 26px 0 8px; letter-spacing: -.01em; }
+  section > p, .note p { color: var(--text-2); max-width: 74ch; margin-top: 8px; }
+  .lede { font-family: var(--serif); font-size: 16.5px; }
+
+  .tbl { overflow-x: auto; margin-top: 14px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  thead th {
+    text-align: left; font-family: var(--mono); font-size: 10px;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--text-3);
+    font-weight: 400; padding: 9px 12px; background: var(--surface-2);
+    border-bottom: 1px solid var(--line); white-space: nowrap;
+  }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr.hidden { display: none; }
+  td.p { font-family: var(--mono); font-size: 12.5px; white-space: nowrap; color: var(--text); }
+  td.n { color: var(--text-2); font-size: 13px; }
+  td.m, td.a { width: 1%; white-space: nowrap; }
+  code {
+    font-family: var(--mono); font-size: .92em;
+    background: var(--surface-2); border-radius: 3px; padding: 1px 4px;
+  }
+  td.p code { background: none; padding: 0; }
+
+  .m-tag {
+    display: inline-block; font-family: var(--mono); font-size: 10px;
+    font-weight: 600; letter-spacing: .07em; padding: 2px 6px;
+    border-radius: 3px; border: 1px solid currentColor;
+  }
+  .GET { color: var(--get); }
+  .POST { color: var(--post); }
+  .PATCH, .PUT { color: var(--patch); }
+  .DELETE { color: var(--del); }
+  .EVT { color: var(--ws); }
+
+  .aud {
+    display: inline-block; font-family: var(--mono); font-size: 10px;
+    letter-spacing: .06em; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 10px;
+  }
+  .aud.read { background: var(--surface-2); color: var(--text-2); }
+  .aud.write { background: var(--accent-tint); color: var(--accent); }
+
+  pre {
+    overflow-x: auto; background: var(--surface);
+    border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: 4px; padding: 14px 16px; margin-top: 14px;
+    font-family: var(--mono); font-size: 12.5px; line-height: 1.6; color: var(--text-2);
+  }
+  pre b { color: var(--text); font-weight: 600; }
+
+  .note {
+    background: var(--warn-bg); border: 1px solid var(--line);
+    border-left: 3px solid var(--accent); border-radius: 4px;
+    padding: 14px 16px; margin-top: 18px;
+  }
+  .note > strong { display: block; font-size: 13px; letter-spacing: -.01em; }
+  .note p { margin-top: 6px; font-size: 13.5px; }
+
+  ol.dec, ul.list { margin-top: 12px; padding-left: 0; list-style: none; display: grid; gap: 12px; }
+  ol.dec { counter-reset: d; }
+  ol.dec > li {
+    counter-increment: d; display: grid; grid-template-columns: 30px minmax(0, 1fr);
+    gap: 12px; font-size: 14px; color: var(--text-2); max-width: 82ch;
+  }
+  ol.dec > li::before {
+    content: counter(d, decimal-leading-zero);
+    font-family: var(--mono); font-size: 11px; color: var(--accent); padding-top: 3px;
+  }
+  ol.dec b, ul.list b { color: var(--text); }
+  ul.list > li {
+    border-left: 2px solid var(--line-2); padding-left: 12px;
+    font-size: 14px; color: var(--text-2); max-width: 82ch;
+  }
+
+  footer {
+    grid-column: 1 / -1; margin-top: 56px; padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono); font-size: 11px; letter-spacing: .05em;
+    text-transform: uppercase; color: var(--text-3);
+  }
+
+  @media (max-width: 940px) {
+    .wrap { grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 28px 18px 72px; }
+    .rail { position: static; }
+    .rail-group { margin-bottom: 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow"><span>Backend Work Order</span><span>Zenride Dashboard</span><span>Admin surface</span><span>v1.1</span></div>
+    <h1>Zenride Admin API Contract</h1>
+    <p class="deck">The endpoints behind the operator console — the third surface on the platform, alongside the rider and driver apps. Every row here is already consumed by a built screen in the Next.js dashboard, so the shapes are settled and the console doubles as the acceptance test.</p>
+    <div class="stats">
+      <div class="stat"><b id="s-total">198</b><small>Endpoints</small></div>
+      <div class="stat"><b id="s-read">96</b><small>Read</small></div>
+      <div class="stat"><b id="s-write">102</b><small>Write</small></div>
+      <div class="stat"><b id="s-mod">24</b><small>Modules</small></div>
+      <div class="stat"><b>23</b><small>Screens</small></div>
+    </div>
+  </header>
+
+  <nav class="rail" aria-label="Modules"><div class="rail-group"><p>Foundation</p><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#conventions"><span>Conventions</span></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#auth"><span>Staff auth &amp; session</span><em>12</em></a></div><div class="rail-group"><p>Operations</p><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#metrics"><span>Metrics &amp; overview</span><em>7</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#liveops"><span>Live ops</span><em>7</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#trips"><span>Trips</span><em>7</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#coride"><span>Co-Ride &amp; packages</span><em>9</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#safety"><span>Safety &amp; SOS</span><em>6</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#map"><span>Map &amp; geo</span><em>5</em></a></div><div class="rail-group"><p>People</p><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#riders"><span>Riders</span><em>8</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#drivers"><span>Drivers</span><em>10</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#kyc"><span>KYC review</span><em>11</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#moderation"><span>User &amp; driver moderation</span><em>11</em></a></div><div class="rail-group"><p>Money</p><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#payments"><span>Transactions</span><em>8</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#wallets"><span>Wallets</span><em>6</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#payouts"><span>Payouts</span><em>10</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#pricing"><span>Pricing</span><em>8</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#recon"><span>Reconciliation</span><em>4</em></a></div><div class="rail-group"><p>Growth</p><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#promos"><span>Promotions</span><em>8</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#support"><span>Support</span><em>8</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#broadcasts"><span>Broadcasts</span><em>9</em></a></div><div class="rail-group"><p>Platform</p><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#zones"><span>Zones &amp; content</span><em>7</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#staff"><span>Staff management</span><em>17</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#audit"><span>Audit log</span><em>3</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#config"><span>Config &amp; flags</span><em>7</em></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#realtime"><span>Realtime</span><em>10</em></a></div><div class="rail-group"><p>Reference</p><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#security"><span>Security</span></a><a href="https://4d2fbaaa-8d85-4f96-8e1f-d5768c4680e7.frame.claudeusercontent.com/_f/1786692246-b92a/#status"><span>Build status</span></a></div></nav>
+
+  <main>
+    <div class="toolbar">
+      <input id="q" type="search" placeholder="Filter by path or purpose…" aria-label="Filter endpoints">
+      <button data-f="all" aria-pressed="true">All</button>
+      <button data-f="read" aria-pressed="false">Read</button>
+      <button data-f="write" aria-pressed="false">Write</button>
+      <span id="count">198 endpoints</span>
+    </div>
+
+    <section id="conventions" data-group="Foundation" data-title="Conventions">
+      <h2><span class="num">A00</span>Admin Conventions</h2>
+      <p class="lede">Everything from the rider contract's module 00 still applies — envelope, error codes, pagination, money and time formats. What follows is what is different about an <em>internal</em> surface.</p>
+
+      <ul class="list">
+        <li><b>Prefix.</b> <code>/api/v1/admin/…</code>, separated from the app surfaces so it can sit behind its own gateway, its own rate limits and its own IP allowlist.</li>
+        <li><b>Separate identity.</b> Admins are not users. Staff accounts live in their own table with their own tokens; a rider or driver token must never authenticate against <code>/admin/*</code>. Return <code>403 NOT_STAFF</code>, not 401, so the console can tell the two apart.</li>
+        <li><b>2FA is mandatory</b> for any role that can move money. The login response carries <code>requires_2fa</code> and the console holds the flow.</li>
+        <li><b>Scoped permissions.</b> Every endpoint declares a permission string (<code>trips.refund</code>, <code>wallets.adjust</code>, <code>kyc.approve</code>, <code>pricing.write</code>, <code>staff.manage</code>). Return the caller's full permission set from <code>/admin/me</code> so the console can hide what they cannot do — and still enforce it server-side, because hiding a button is not security.</li>
+        <li><b>One trip, one id.</b> A trip is <code>trip_id</code> (<code>trp_</code> prefixed) on all three surfaces — rider app, driver app and this console. <code>/admin/trips/{id}</code> takes that value, and the rider-facing code (<code>ZR-4801</code>) is a display label only, never a key. The SHARED appendix in the rider and driver contracts defines how the one trip state machine projects into each app's view.</li>
+        <li><b>Market scoping.</b> Every request carries <code>X-Market: ci|ng</code> (or <code>?market=</code>). A staff account is scoped to one or more markets; cross-market reads need an explicit global permission.</li>
+        <li><b>Every write is audited.</b> Actor, action, target, before/after, IP, request id — written synchronously, in the same transaction as the change. If it is not in the audit log it did not happen.</li>
+        <li><b>Reason strings are required</b> on destructive or financial writes (suspend, refund, adjust, reject). They are shown to the affected user and stored on the audit entry, so validate them as non-empty and length-bounded.</li>
+        <li><b>Idempotency</b> on everything that moves money, same as the app surfaces.</li>
+        <li><b>Every list endpoint</b> supports <code>?page</code>, <code>?per_page</code>, <code>?q</code> (free-text), <code>?from</code>/<code>?to</code>, the filters named in its module, and <code>?format=csv</code> for export. The console's tables already assume all of these.</li>
+        <li><b>Long jobs return a job, not a payload.</b> Exports and bulk actions respond <code>202</code> with <code>{ job_id, status_url }</code>; the console polls or receives <code>job.completed</code>.</li>
+      </ul>
+
+      <h3>List envelope with facet counts</h3>
+      <p>The console renders filter chips with counts (“Failed (12)”) beside every table. Those counts must come from the server or they will disagree with the filtered result on page 2.</p>
+      <pre>{
+  "<b>success</b>": true,
+  "<b>data</b>": [ ... ],
+  "<b>meta</b>": {
+    "page": 1, "per_page": 25, "total": 143, "last_page": 6,
+    "<b>facets</b>": { "status": { "succeeded": 118, "failed": 12, "pending": 9, "refunded": 4 } },
+    "<b>totals</b>": { "amount": 4820000, "currency": "XOF" }
+  }
+}</pre>
+    </section>
+
+    <section id="auth" data-group="Foundation" data-title="Staff auth &amp; session">
+      <h2><span class="num">A01</span>Staff Authentication &amp; Session <span class="src">screen: /login</span></h2>
+      <p class="lede">The console's entry point. Everything else redirects here without a session, so this module gates the whole surface.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/auth/login</code></td><td>Email + password.</td><td class="n"><code>email</code>, <code>password</code>. Returns either the session bundle, or <code>{ requires_2fa: true, challenge_token, expires_in }</code>. Must distinguish <code>ACCOUNT_BLOCKED</code> and <code>ACCOUNT_SUSPENDED</code> from bad credentials — the login screen shows a different message for each, and a blocked admin needs to know to call someone rather than retry.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/auth/2fa/verify</code></td><td>Second factor.</td><td class="n"><code>challenge_token</code>, <code>code</code> (6 digits). Returns the session bundle. Lock the challenge after 5 attempts and expire it in 5 minutes.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/auth/2fa/enroll</code></td><td>Set up TOTP.</td><td class="n">Returns the provisioning URI and recovery codes <b>once</b>. Force this on first sign-in for any role holding a money permission.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/auth/refresh</code></td><td>Rotate the session.</td><td class="n">15-minute access token, rotating refresh, absolute cap of ~12 hours so an unattended console dies overnight.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/auth/logout</code></td><td>End this session.</td><td class="n">Revokes the refresh token server-side; clearing the cookie alone is not enough.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/me</code></td><td>Who am I, what may I do.</td><td class="n">The console builds its sidebar and hides every action from this response. Shape below.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/me/password</code></td><td>Change my own password.</td><td class="n">Requires the current password. Revokes my other sessions. This is the <em>only</em> route by which an admin sets their own password — the staff routes in A20 never let one admin learn another's.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/me/sessions</code></td><td>My devices.</td><td class="n">Device, IP, coarse location, last seen, <code>is_current</code>.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/me/sessions/revoke-others</code></td><td>Sign out my other devices.</td><td class="n">—</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/auth/password/forgot</code></td><td>Self-service reset.</td><td class="n">Always 200, never reveal whether the email exists. Emailed link, single use, 30-minute expiry.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/auth/password/reset</code></td><td>Complete the reset.</td><td class="n"><code>token</code>, <code>password</code>. Revokes all sessions, clears <code>must_change_password</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/auth/accept-invite</code></td><td>First sign-in from an invite.</td><td class="n"><code>token</code>, <code>password</code>, then forced 2FA enrolment where the role requires it.</td><td class="a"><span class="aud write">Write</span></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3>Session bundle and <code>/admin/me</code></h3>
+      <p>The console needs the resolved permission set — not the role name — because permissions can be granted or revoked per person on top of a role (A20).</p>
+      <pre>{
+  "<b>access_token</b>": "eyJ…", "<b>expires_in</b>": 900,
+  "<b>refresh_token</b>": "rt_…", "<b>refresh_expires_in</b>": 43200,
+  "<b>staff</b>": {
+    "id": "stf_001", "name": "A. Otitoju", "email": "admin@zenride.app", "phone": "+234 803 …",
+    "<b>role</b>": { "key": "super_admin", "label": "Super admin", "<b>rank</b>": 100 },
+    "<b>permissions</b>": ["dashboard.view", "trips.refund", "wallets.adjust", "staff.manage", …],
+    "<b>permission_overrides</b>": { "granted": ["pricing.write"], "revoked": [] },
+    "<b>markets</b>": ["ci", "ng"],
+    "twofa_enabled": true,
+    "must_change_password": false,
+    "status": "active"
+  }
+}</pre>
+      <div class="note"><strong>Rank is part of the contract, not a UI detail.</strong><p>"Admins can manage admins" is only safe if it is directional. Every account carries a numeric rank; an actor may act on accounts strictly below their own rank and never on their own. Ship the rank in this payload so the console can explain a refusal, and enforce it again on every staff route — otherwise any admin can promote themselves to super admin in one request.</p></div>
+
+      <div class="note"><strong>Move the session to an httpOnly cookie.</strong><p>The console currently keeps its token in <code>localStorage</code>, which means the route gate is client-side only. Set the refresh token as <code>httpOnly; Secure; SameSite=Lax</code> and the console can reject unauthenticated requests at the edge, before any HTML is served.</p></div>
+    </section>
+
+    <section id="metrics" data-group="Operations" data-title="Metrics &amp; overview">
+      <h2><span class="num">A02</span>Metrics &amp; Overview <span class="src">screen: Overview</span></h2>
+      <p>One screen, four calls. Everything is market-scoped and range-scoped.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/metrics/kpis</code></td><td>The six KPI tiles.</td><td class="n"><code>?range=1|7|30|90</code>. Each metric returns <code>value</code>, <code>delta_pct</code> vs the previous period, <code>note</code>, and a <code>sparkline[]</code>: <code>gmv</code>, <code>net_revenue</code>, <code>completed_trips</code>, <code>drivers_online</code>, <code>new_riders</code>, <code>avg_fare</code>. Send the delta from the server — the console must not compute it from two calls.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/metrics/gmv-series</code></td><td>Bookings by day.</td><td class="n"><code>?days=14</code> → <code>[{label, value}]</code>.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/metrics/vertical-mix</code></td><td>Trips by vertical, by day.</td><td class="n"><code>[{label, ride, co_ride, package}]</code>. Feeds the stacked chart and its table view.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/metrics/supply-demand</code></td><td>Supply vs requests, hourly.</td><td class="n"><code>[{label, online, requests}]</code>, 24 buckets. Both are counts, so they share one axis.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/metrics/alerts</code></td><td>The "needs attention" queue.</td><td class="n">Server-computed: KYC backlog, failed payouts, open SOS, documents expiring, tickets past SLA. Each with <code>count</code>, <code>severity</code>, <code>deep_link</code>. Owning this server-side means the console never disagrees with ops.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/metrics/funnels</code></td><td>Conversion funnels.</td><td class="n">Signup → first trip, request → completed, KYC step drop-off.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/metrics/cohorts</code></td><td>Retention.</td><td class="n">Signup cohort × weeks-since, trips per user.</td><td class="a"><span class="aud read">Read</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="liveops" data-group="Operations" data-title="Live ops">
+      <h2><span class="num">A03</span>Live Ops &amp; Dispatch Control <span class="src">screen: Live ops</span></h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/ops/live</code></td><td>Everything in flight.</td><td class="n">Active jobs with state, driver, rider, ETA, fare, payment method; plus <code>offers_pending</code>, <code>unmatched_requests</code>, <code>avg_pickup_eta_min</code>. Polling fallback for the realtime channel in A26.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/ops/drivers-online</code></td><td>Live supply.</td><td class="n">Per vertical and per zone; positions for the map. A driver serving several verticals counts in each.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/ops/demand</code></td><td>Demand heat.</td><td class="n">Zone, <code>demand_level</code>, <code>multiplier</code>, <code>unmatched_count</code>, polygon.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/ops/jobs/{id}/reassign</code></td><td>Move a job to another driver.</td><td class="n"><code>driver_id?</code> (omit to re-broadcast), <code>reason</code>. Must notify both drivers and the rider.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/ops/jobs/{id}/cancel</code></td><td>Admin cancel.</td><td class="n"><code>reason</code>, <code>waive_fee</code>, <code>compensate_driver</code>. Sets <code>cancelled_by_admin</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/ops/drivers/{id}/force-offline</code></td><td>Pull a driver off dispatch.</td><td class="n"><code>reason</code>. Pushes <code>driver.forced_offline</code> so the app's toggle updates immediately.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/ops/broadcast-zone</code></td><td>Nudge drivers to a zone.</td><td class="n"><code>zone_id</code>, <code>message</code>, optional incentive.</td><td class="a"><span class="aud write">Write</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="trips" data-group="Operations" data-title="Trips">
+      <h2><span class="num">A04</span>Trips <span class="src">screen: Trips</span></h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/trips</code></td><td>All jobs, all verticals.</td><td class="n">Filters: <code>vertical</code>, <code>status</code>, <code>payment_method</code>, <code>pay_status</code>, <code>zone</code>, <code>driver_id</code>, <code>rider_id</code>, <code>from</code>/<code>to</code>, <code>min_fare</code>. Row fields exactly as the console's columns: code, vertical, rider, driver, route, km, fare, method, status, timestamp.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/trips/{id}</code></td><td>Trip detail.</td><td class="n">Full fare breakdown (gross, commission, driver earnings, cash to remit), both ratings, payment record, and <code>state_history[]</code> of <code>{state, at, actor}</code> — the timeline in the detail panel.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/trips/{id}/route</code></td><td>Travelled route.</td><td class="n">Encoded polyline of actual GPS, for disputes about "the driver went the long way".</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/trips/{id}/refund</code></td><td>Refund fully or partly.</td><td class="n"><code>amount?</code>, <code>reason</code>, <code>destination=original|wallet</code>, <code>Idempotency-Key</code>. Permission <code>trips.refund</code>. Must also decide the driver's side — a rider refund does not automatically claw back driver earnings, so make that explicit with <code>recover_from_driver</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/trips/{id}/adjust-fare</code></td><td>Correct a fare.</td><td class="n"><code>new_total</code>, <code>reason</code>. Recomputes commission and driver earnings; writes both ledger legs.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/trips/{id}/reopen</code></td><td>Reopen for dispute.</td><td class="n">Moves to <code>disputed</code> and links a ticket.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/trips/export</code></td><td>CSV export.</td><td class="n">Same filters; 202 + job id for large ranges.</td><td class="a"><span class="aud read">Read</span></td></tr>
+        </tbody>
+      </table></div>
+      <pre>// GET /admin/trips/{id} — the shape the detail panel binds to
+{
+  "<b>trip_id</b>": "trp_01J8Z…", "<b>code</b>": "ZR-4801", "<b>vertical</b>": "ride", "<b>status</b>": "completed",
+  "<b>market</b>": "ci", "<b>currency</b>": "XOF",
+  "<b>rider</b>":  { "id": "usr_2011", "name": "Awa Traoré", "phone_masked": "+225 05 •• •• 42" },
+  "<b>driver</b>": { "id": "drv_1004", "name": "Marcus Kouassi", "plate": "CI-01-8392-A", "rating": 4.9 },
+  "<b>pickup</b>": { "label": "Cocody", "lat": 5.3599, "lng": -3.9970 },
+  "<b>dropoff</b>": { "label": "Plateau", "lat": 5.3197, "lng": -4.0244 },
+  "<b>distance_km</b>": 6.4, "<b>duration_min</b>": 18,
+  "<b>fare</b>": { "gross": 2500, "base": 500, "distance": 1600, "time": 200, "waiting": 0,
+            "service_fee": 200, "discount": 0, "tip": 0 },
+  "<b>settlement</b>": { "commission_rate": 0.20, "commission": 500, "driver_earnings": 2000,
+                  "cash_collected": 0, "cash_to_remit": 0, "wallet_credit": 2000 },
+  "<b>payment</b>": { "id": "pay_50021", "method": "orange_money", "status": "succeeded", "gateway": "CinetPay" },
+  "<b>ratings</b>": { "by_rider": 5, "by_driver": 5 },
+  "<b>state_history</b>": [ { "state": "searching", "at": "…", "actor": "system" },
+                      { "state": "driver_assigned", "at": "…", "actor": "system" },
+                      { "state": "completed", "at": "…", "actor": "driver" } ],
+  "<b>actions_allowed</b>": ["refund", "adjust_fare", "reopen"]
+}</pre>
+    </section>
+
+    <section id="coride" data-group="Operations" data-title="Co-Ride &amp; packages">
+      <h2><span class="num">A05</span>Co-Ride &amp; Packages <span class="src">screens: Co-Ride, Packages</span></h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/co-ride/listings</code></td><td>All listings.</td><td class="n">Filters <code>status=open|full|departed</code>, zone, driver. Fields: driver, route, departure, seats taken/total, price per seat, eco flag, gross.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/co-ride/listings/{id}</code></td><td>Listing + manifest.</td><td class="n">Passenger list with seat labels, payment status, boarded flag.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/co-ride/listings/{id}/cancel</code></td><td>Kill a listing.</td><td class="n"><code>reason</code>, <code>refund_passengers=true</code>. Notifies everyone booked.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/co-ride/bookings/{id}/refund</code></td><td>Refund one seat.</td><td class="n">Releases the seat back to inventory in the same transaction.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/co-ride/requests</code></td><td>Unmatched requests.</td><td class="n">Riders waiting with no listing that fits — the demand signal for opening a route.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/packages</code></td><td>All deliveries.</td><td class="n">Filters <code>status</code>, <code>proof</code>, <code>size</code>, <code>fragile</code>, courier. Fields: tracking id, sender, recipient, courier, spec, proof, fare, status.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/packages/{id}</code></td><td>Delivery detail.</td><td class="n">Chain of custody, proof photo URL, proof code state, declared value.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/packages/{id}/review-proof</code></td><td>Accept or reject proof.</td><td class="n"><code>decision=accept|reject</code>, <code>reason</code>. The photo-proof fallback in the driver app routes here.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/packages/{id}/mark-lost</code></td><td>Declare a package lost.</td><td class="n"><code>reason</code>, <code>compensation_amount</code>. Opens a claim.</td><td class="a"><span class="aud write">Write</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="safety" data-group="Operations" data-title="Safety &amp; SOS">
+      <h2><span class="num">A06</span>Safety &amp; SOS <span class="src">screen: Safety &amp; SOS</span></h2>
+      <p>The only module where latency is the requirement. An incident must appear on the console within a second of the button press, pushed rather than polled.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/safety/incidents</code></td><td>Incident log.</td><td class="n">Filters <code>status</code>, <code>type</code>, <code>source</code>, zone, date. Fields: type, raised by, zone, response seconds, status.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/safety/incidents/{id}</code></td><td>Incident detail.</td><td class="n">Live location trail, linked trip, emergency contacts notified, call recordings if any, full response log.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/safety/incidents/{id}/acknowledge</code></td><td>Claim the incident.</td><td class="n">Stops the pager escalation and records who owns it. This is the call that stops the clock.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/safety/incidents/{id}/resolve</code></td><td>Close it out.</td><td class="n"><code>outcome=resolved|false_alarm|escalated</code>, <code>notes</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/safety/incidents/{id}/escalate</code></td><td>Hand to authorities.</td><td class="n"><code>authority</code>, <code>reference</code>, <code>notes</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/safety/metrics</code></td><td>Response performance.</td><td class="n">Median and p95 response, incidents per 1000 trips, by zone and by type.</td><td class="a"><span class="aud read">Read</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="riders" data-group="People" data-title="Riders">
+      <h2><span class="num">A07</span>Riders <span class="src">screen: Riders</span></h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/riders</code></td><td>Rider list.</td><td class="n">Filters <code>status=active|flagged|suspended</code>, zone, <code>min_trips</code>, <code>has_wallet_balance</code>. Fields: name, phone, zone, trips, lifetime spend, wallet, rating, referrals, status.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/riders/{id}</code></td><td>Rider profile.</td><td class="n">Everything the detail panel shows: profile, counters, recent trips, wallet ledger, devices, flags, referral tree.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/riders/{id}/trips</code></td><td>Their trips.</td><td class="n">Paginated, same shape as <code>/admin/trips</code>.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/riders/{id}/devices</code></td><td>Devices &amp; sessions.</td><td class="n">Model, OS, last seen, push token state. Duplicate-device detection is the main fraud signal for promo abuse.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/riders/{id}/suspend</code></td><td>Suspend / reinstate.</td><td class="n"><code>action=suspend|reinstate</code>, <code>reason</code>, <code>until?</code>. Reason is shown in the app on next launch.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/riders/{id}/flag</code></td><td>Flag for review.</td><td class="n"><code>reason</code>, <code>severity</code>. Does not block the account, but shows on every screen they touch.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/riders/{id}/logout-all</code></td><td>Revoke sessions.</td><td class="n">For a reported account takeover.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag DELETE">DELETE</span></td><td class="p"><code>/admin/riders/{id}</code></td><td>Process a deletion request.</td><td class="n">Anonymise rather than hard-delete: trips and ledger entries must survive for accounting. 409 while a wallet balance or open trip exists.</td><td class="a"><span class="aud write">Write</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="drivers" data-group="People" data-title="Drivers">
+      <h2><span class="num">A08</span>Drivers <span class="src">screen: Drivers</span></h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/drivers</code></td><td>Driver roster.</td><td class="n">Filters <code>kyc_status</code>, <code>online</code>, <code>vertical</code>, <code>vehicle_type</code>, zone, <code>suspended</code>, <code>has_cash_owed</code>, <code>docs_expiring_within_days</code>. Fields as the console's columns, including <code>cash_owed</code> and <code>docs_expiring_days</code>.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/drivers/{id}</code></td><td>Driver profile.</td><td class="n">Identity, vehicle, verticals allowed, performance block (rating / acceptance / completion / cancellation), money block (wallet, cash owed, lifetime earnings, payout account masked), documents with expiry.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/drivers/{id}/jobs</code></td><td>Their job history.</td><td class="n">With per-job earnings and commission.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/drivers/{id}/location-history</code></td><td>GPS trail.</td><td class="n"><code>?from&amp;to</code>. Needed for dispute investigation; access should itself be permissioned and audited.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/drivers/{id}/ratings</code></td><td>Reviews received.</td><td class="n">Stars, tags, comments, trip codes.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/drivers/{id}/suspend</code></td><td>Suspend / reinstate.</td><td class="n"><code>reason</code>, <code>until?</code>. Forces offline and cancels any active job with driver-fault handling.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PATCH">PATCH</span></td><td class="p"><code>/admin/drivers/{id}/verticals</code></td><td>Change what they may serve.</td><td class="n">Constrained by vehicle type.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PATCH">PATCH</span></td><td class="p"><code>/admin/drivers/{id}/vehicle</code></td><td>Correct vehicle details.</td><td class="n">Plate or type change re-triggers review.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/drivers/{id}/reset-performance</code></td><td>Clear a metric.</td><td class="n">For a dispatch bug that tanked someone's acceptance rate. <code>metric</code>, <code>reason</code>. Rare, high-privilege, heavily audited.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/drivers/export</code></td><td>CSV export.</td><td class="n">Same filters.</td><td class="a"><span class="aud read">Read</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="kyc" data-group="People" data-title="KYC review">
+      <h2><span class="num">A09</span>KYC Review Workflow <span class="src">screen: KYC queue</span></h2>
+      <p>Per-step approve and reject, because sending a whole application back for one blurry photo is how you lose a driver. The reason string typed here is what their app displays.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/kyc/queue</code></td><td>Review queue.</td><td class="n">Ordered oldest-first with <code>submitted_at</code>, <code>hours_waiting</code>, <code>past_sla</code>. Each application carries all eight steps with per-step <code>status</code>, submitted <code>values</code> and <code>documents[]</code>.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/kyc/{driver_id}</code></td><td>Application detail.</td><td class="n">Includes the automated checks the console displays: ID bureau result, face-match score, bank name enquiry, duplicate-device hit, plate-already-registered.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/kyc/{driver_id}/documents/{doc_id}</code></td><td>Signed document URL.</td><td class="n">Short-lived signed URL, never a public one. Each access is audited — these are identity documents.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/kyc/{driver_id}/steps/{step}/approve</code></td><td>Approve one step.</td><td class="n">Permission <code>kyc.approve</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/kyc/{driver_id}/steps/{step}/reject</code></td><td>Reject one step.</td><td class="n"><code>reason</code> (required, display-ready). Pushes <code>kyc.status_changed</code> and re-opens just that step in the app.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/kyc/{driver_id}/approve</code></td><td>Approve the application.</td><td class="n">422 if any step is not approved. Sets <code>kyc_status=approved</code> and lets the driver go online.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/kyc/{driver_id}/reject</code></td><td>Reject outright.</td><td class="n"><code>reason</code>, <code>blocklist=true|false</code> for fraud.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/kyc/{driver_id}/assign</code></td><td>Claim for review.</td><td class="n">Stops two reviewers working the same file.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/kyc/metrics</code></td><td>Queue health.</td><td class="n">Queue depth, oldest wait, approvals per reviewer per day, rejection reasons ranked. The last one tells you which onboarding screen to fix.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/documents/expiring</code></td><td>Expiry watchlist.</td><td class="n"><code>?within_days=30</code>. Drives the reminder push and the auto-offline job.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/documents/{id}/review</code></td><td>Approve a renewal.</td><td class="n"><code>decision</code>, <code>reason?</code>, <code>expires_at</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="payments" data-group="Money" data-title="Transactions">
+      <h2><span class="num">A10</span>Transactions <span class="src">screen: Transactions</span></h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/payments</code></td><td>Every payment attempt.</td><td class="n">Filters <code>status</code>, <code>gateway</code>, <code>method</code>, <code>purpose</code>, <code>fail_reason</code>, amount range, date. <code>meta.facets.status</code> powers the filter counts.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/payments/{id}</code></td><td>Payment detail.</td><td class="n">Gateway reference, idempotency key, full <code>webhook_events[]</code> with raw payloads, ledger entries created.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/payments/stats</code></td><td>Gateway health.</td><td class="n">Volume and failure rate by gateway and by reason code — the two charts above the table.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/payments/{id}/retry</code></td><td>Retry a failed charge.</td><td class="n">New idempotency key, links back to the original attempt.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/payments/{id}/refund</code></td><td>Refund at the payment level.</td><td class="n"><code>amount?</code>, <code>reason</code>. Distinct from a trip refund — this one is for topups and duplicates.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/payments/{id}/replay-webhook</code></td><td>Re-process a webhook.</td><td class="n">The fix for "gateway says paid, we say pending". Idempotent by gateway event id.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/payments/{id}/mark-reconciled</code></td><td>Manual match.</td><td class="n"><code>note</code>. For a payment settled out of band.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/payments/export</code></td><td>CSV export.</td><td class="n">Finance takes this monthly.</td><td class="a"><span class="aud read">Read</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="wallets" data-group="Money" data-title="Wallets">
+      <h2><span class="num">A11</span>Wallets &amp; Ledger <span class="src">screen: Wallets</span></h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/wallets</code></td><td>All wallets.</td><td class="n">Filters <code>kind=rider|driver</code>, <code>min_balance</code>, <code>frozen</code>. Fields: account, type, balance, cash owed, net position.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/wallets/totals</code></td><td>Float summary.</td><td class="n"><code>rider_float</code>, <code>driver_float</code>, <code>cash_held_by_drivers</code>, <code>net_platform_position</code>. These are balance-sheet numbers — compute them from the ledger, not by summing a cached column.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/wallets/{id}/ledger</code></td><td>Ledger entries.</td><td class="n">Append-only: <code>type</code>, signed <code>amount</code>, <code>balance_after</code>, <code>reference_id</code>, <code>created_by</code>, <code>reason</code>.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/wallets/{id}/adjust</code></td><td>Manual credit or debit.</td><td class="n"><code>direction=credit|debit</code>, <code>amount</code>, <code>reason</code> (required), <code>Idempotency-Key</code>. Permission <code>wallets.adjust</code>. Consider a second-approver requirement above a threshold — this is the single most abusable endpoint on the platform.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/wallets/{id}/freeze</code></td><td>Freeze / unfreeze.</td><td class="n"><code>reason</code>. Blocks spend and withdrawal, not earning.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/wallets/adjustments</code></td><td>Adjustment review.</td><td class="n">Every manual adjustment with actor and reason, filterable by actor. What you read in a fraud review of your own staff.</td><td class="a"><span class="aud read">Read</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="payouts" data-group="Money" data-title="Payouts">
+      <h2><span class="num">A12</span>Payouts &amp; Cash Settlement <span class="src">screen: Payouts</span></h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/payouts</code></td><td>Withdrawal queue.</td><td class="n">Filters <code>status</code>, bank, amount range, date. Fields: driver, destination masked, gross, fee, net, status, failure reason, requested at, plus <code>driver_cash_owed</code> so the reviewer sees the offset without opening the row.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/payouts/{id}</code></td><td>Payout detail.</td><td class="n">Attempt history, provider reference, name-enquiry result, limit checks.</td><td class="a"><span class="aud write">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/payouts/{id}/approve</code></td><td>Approve and send.</td><td class="n">Permission <code>payouts.approve</code>. Must be idempotent — a double-approve is a double payment.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/payouts/{id}/reject</code></td><td>Reject.</td><td class="n"><code>reason</code>. Returns the funds to the driver's available balance.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/payouts/{id}/retry</code></td><td>Retry a failed transfer.</td><td class="n">After correcting bank details.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/payouts/{id}/net-off-cash</code></td><td>Deduct cash owed.</td><td class="n">Settles the driver's cash liability against this payout in one transaction. The console offers this inline when <code>driver_cash_owed &gt; 0</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/payouts/bulk-approve</code></td><td>Approve a batch.</td><td class="n"><code>ids[]</code> → 202 + job id. Partial failure must report per-id outcomes.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/cash-settlement</code></td><td>Cash owed by driver.</td><td class="n">Ranked by amount, with days outstanding and whether they are over the cap.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/cash-settlement/{driver_id}/record</code></td><td>Record a cash payment.</td><td class="n">When a driver pays at an office: <code>amount</code>, <code>method</code>, <code>receipt_ref</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/cash-settlement/{driver_id}/write-off</code></td><td>Write off a balance.</td><td class="n"><code>amount</code>, <code>reason</code>. High privilege — this is giving money away.</td><td class="a"><span class="aud write">Write</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="pricing" data-group="Money" data-title="Pricing">
+      <h2><span class="num">A13</span>Pricing, Commission &amp; Surge <span class="src">screen: Pricing &amp; fares</span></h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/pricing/fare-rules</code></td><td>Fare rules per class.</td><td class="n">Per class: <code>base</code>, <code>per_km</code>, <code>per_min</code>, <code>minimum</code>, <code>waiting_per_min</code>, <code>cancellation_fee</code>, <code>status</code>, <code>version</code>, <code>effective_from</code>.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PUT">PUT</span></td><td class="p"><code>/admin/pricing/fare-rules/{class}</code></td><td>Change a fare.</td><td class="n">Creates a new version rather than mutating; <code>effective_from</code> supports scheduling. Permission <code>pricing.write</code>. In-flight trips keep the version they were quoted on.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/pricing/fare-rules/history</code></td><td>Version history.</td><td class="n">Who changed what, when, and what the previous values were.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/pricing/commission</code></td><td>Commission &amp; bonus.</td><td class="n"><code>commission_rate</code>, <code>bonus_rate</code>, <code>bonus_label</code>, per-vertical overrides, <code>cash_settlement_cap</code>. <b>This resolves the 20%/25% disagreement in the driver app.</b></td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PUT">PUT</span></td><td class="p"><code>/admin/pricing/commission</code></td><td>Set commission.</td><td class="n">Versioned and scheduled the same way.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/pricing/surge</code></td><td>Live multipliers.</td><td class="n">Per zone, with whether it is automatic or manual.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PUT">PUT</span></td><td class="p"><code>/admin/pricing/surge/{zone_id}</code></td><td>Override surge.</td><td class="n"><code>multiplier</code>, <code>expires_at</code>, <code>reason</code>. Above 1.6× should require a second approver.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/pricing/simulate</code></td><td>Test a fare change.</td><td class="n">Replays last week's trips against proposed rules and returns the revenue delta. Optional, but it is the difference between a pricing decision and a guess.</td><td class="a"><span class="aud read">Read</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="recon" data-group="Money" data-title="Reconciliation">
+      <h2><span class="num">A14</span>Reconciliation <span class="src">screen: Reconciliation</span></h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/reconciliation</code></td><td>Settled vs ledger.</td><td class="n">Per gateway per day: <code>transactions</code>, <code>gateway_settled</code>, <code>internal_ledger</code>, <code>variance</code>, <code>missed_webhooks</code>, status.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/reconciliation/{gateway}/variances</code></td><td>Drill into a variance.</td><td class="n">The specific transactions that do not match, with which side is missing.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/reconciliation/import-statement</code></td><td>Upload a gateway statement.</td><td class="n">multipart CSV → matches against the ledger and returns unmatched rows both ways.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/reconciliation/replay-missed</code></td><td>Replay missed webhooks.</td><td class="n">Batch version of the per-payment replay.</td><td class="a"><span class="aud write">Write</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="promos" data-group="Growth" data-title="Promotions">
+      <h2><span class="num">A15</span>Promotions, Referrals &amp; Incentives <span class="src">screen: Promotions</span></h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/coupons</code></td><td>Coupon list.</td><td class="n">With <code>redemptions</code>, <code>cost_to_date</code>, <code>cap</code>, status, expiry.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/coupons</code></td><td>Create a coupon.</td><td class="n"><code>code</code>, <code>discount_type</code>, <code>value</code>, <code>max_discount</code>, <code>min_order</code>, <code>verticals[]</code>, <code>zones[]</code>, <code>first_trip_only</code>, <code>per_user_limit</code>, <code>total_cap</code>, <code>starts_at</code>, <code>expires_at</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PATCH">PATCH</span></td><td class="p"><code>/admin/coupons/{code}</code></td><td>Pause / edit / end.</td><td class="n">Cannot retroactively change the discount on already-redeemed uses.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/coupons/{code}/performance</code></td><td>Did it work?</td><td class="n">Trips driven, new riders acquired, cost per acquisition, repeat rate after use.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/referrals</code></td><td>Referral programme.</td><td class="n">Signups, qualified referrals, payouts, and suspicious clusters (same device, same IP).</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PUT">PUT</span></td><td class="p"><code>/admin/referrals/config</code></td><td>Set referral rewards.</td><td class="n">Reward per side, qualification rule, cap.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/incentives</code></td><td>Driver incentives.</td><td class="n">Quests and bonus programmes with enrolment, progress and cost.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/incentives</code></td><td>Create an incentive.</td><td class="n">Target audience, condition (trips / hours / zone / time window), reward, budget cap.</td><td class="a"><span class="aud write">Write</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="support" data-group="Growth" data-title="Support">
+      <h2><span class="num">A16</span>Support Desk <span class="src">screen: Support</span></h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/support/tickets</code></td><td>Ticket queue.</td><td class="n">Filters <code>status</code>, <code>category</code>, <code>priority</code>, <code>assignee</code>, <code>audience=rider|driver</code>, <code>past_sla</code>. Fields include <code>sla_minutes_left</code> — negative means breached.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/support/tickets/{id}</code></td><td>Ticket thread.</td><td class="n">Messages, attachments, linked trip, the customer's recent history — enough context to answer without asking them to repeat themselves.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/support/tickets/{id}/reply</code></td><td>Reply.</td><td class="n"><code>body</code>, <code>attachments[]</code>, <code>internal_note=false</code>. Internal notes never reach the customer.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/support/tickets/{id}/assign</code></td><td>Assign.</td><td class="n"><code>staff_id</code> or <code>self</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PATCH">PATCH</span></td><td class="p"><code>/admin/support/tickets/{id}</code></td><td>Change status / priority.</td><td class="n">Includes resolution code for reporting.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/support/tickets/{id}/resolve-with</code></td><td>Resolve with an action.</td><td class="n">One call that refunds, credits a wallet or waives a fee <em>and</em> closes the ticket, so the two can never diverge: <code>action</code>, <code>amount?</code>, <code>reason</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/support/metrics</code></td><td>Desk performance.</td><td class="n">Open count, SLA breaches, median resolution, CSAT, per-agent throughput.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/support/canned-replies</code></td><td>Reply templates.</td><td class="n">Keeps answers consistent across agents.</td><td class="a"><span class="aud read">Read</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="broadcasts" data-group="Growth" data-title="Broadcasts">
+      <h2><span class="num">A17</span>Broadcasts &amp; Reports <span class="src">screens: Notifications, Reports</span></h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/broadcasts</code></td><td>Campaign history.</td><td class="n">With <code>delivered</code>, <code>opened_pct</code>, <code>failed</code>, cost for SMS.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/broadcasts</code></td><td>Send or schedule.</td><td class="n"><code>audience</code> (<code>all_drivers</code>, <code>online_drivers</code>, <code>all_riders</code>, <code>inactive_riders</code>, <code>zone</code>, <code>segment_id</code>), <code>channel</code>, <code>title</code>, <code>body</code>, <code>deep_link</code>, <code>scheduled_at?</code>. Requires <code>broadcasts.send</code> — this reaches every phone you have.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/broadcasts/estimate</code></td><td>Audience size &amp; cost.</td><td class="n">Before sending. The console shows "4,820 devices" from this.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/broadcasts/{id}/cancel</code></td><td>Cancel a scheduled send.</td><td class="n">—</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/broadcasts/test</code></td><td>Send to myself.</td><td class="n">Catches a broken deep link before 20,000 people tap it.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/reports</code></td><td>Report library.</td><td class="n">Key, contents, schedule, formats, last run.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/reports/{key}/run</code></td><td>Run on demand.</td><td class="n">202 + <code>job_id</code>; result lands as a signed download URL.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/reports/schedules</code></td><td>Schedule a report.</td><td class="n">Cron, recipients, format.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/jobs/{id}</code></td><td>Job status.</td><td class="n">Shared by every 202 in this contract: <code>status</code>, <code>progress</code>, <code>result_url</code>, <code>error</code>.</td><td class="a"><span class="aud read">Read</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="zones" data-group="Platform" data-title="Zones &amp; content">
+      <h2><span class="num">A18</span>Zones &amp; Content <span class="src">screens: Zones, Content</span></h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/zones</code></td><td>Operating zones.</td><td class="n">Status, verticals enabled, drivers online, demand, multiplier, trips over the period.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/zones</code></td><td>Create a zone.</td><td class="n"><code>name</code>, GeoJSON <code>polygon</code>, <code>verticals[]</code>, <code>status=planned|pilot|live</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PUT">PUT</span></td><td class="p"><code>/admin/zones/{id}</code></td><td>Edit or launch a zone.</td><td class="n">Flipping to <code>live</code> is what makes the app stop saying "we don't operate here".</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/content</code></td><td>Managed content.</td><td class="n">Legal pages, FAQs, onboarding slides, banners, reason lists — each with the app endpoint it serves and <code>updated_at</code>.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PUT">PUT</span></td><td class="p"><code>/admin/content/{key}</code></td><td>Edit content.</td><td class="n">Per-locale bodies (<code>fr</code>, <code>en</code>), draft/publish, and version history. Ends the situation where the driver Terms hardcode the commission rate.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/content/banners</code></td><td>Manage home banners.</td><td class="n">Image upload, deep link, placement, schedule, ordering.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PUT">PUT</span></td><td class="p"><code>/admin/config/versions</code></td><td>App version gates.</td><td class="n">Per app per platform: <code>latest</code>, <code>minimum</code>, <code>gate=none|soft|force</code>, store URL.</td><td class="a"><span class="aud write">Write</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="staff" data-group="Platform" data-title="Staff management">
+      <h2><span class="num">A19</span>Staff Management <span class="src">screen: Staff &amp; roles</span></h2>
+      <p class="lede">Super admins and admins can act on any lower-ranked admin: edit their details, change their role, grant or revoke individual permissions, reset their password, and suspend or block them. Every route below re-checks both the permission and the rank.</p>
+
+      <h3>Shared preconditions</h3>
+      <ul class="list">
+        <li><b>Permission.</b> <code>staff.manage</code> for details, role and permissions; <code>staff.password</code> for the password routes; <code>staff.revoke</code> for suspend, block and reinstate.</li>
+        <li><b>Rank.</b> <code>actor.rank &gt; target.rank</code>, except a super admin who may act on any account. Reject with <code>403 INSUFFICIENT_RANK</code> and a message naming the target's role, so the console can say why.</li>
+        <li><b>Never yourself.</b> Any of these routes aimed at <code>actor.id</code> returns <code>403 CANNOT_TARGET_SELF</code>. Own password and own sessions go through <code>/admin/me/*</code>.</li>
+        <li><b>Never the last one.</b> Refuse the change if it would leave zero active super admins — <code>409 LAST_SUPER_ADMIN</code>.</li>
+        <li><b>Reason required</b> on every route that removes access or sets a credential; stored on the audit entry and, where the person is notified, shown to them.</li>
+      </ul>
+
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/staff</code></td><td>Admin directory.</td><td class="n">Filters <code>status=active|suspended|blocked</code>, <code>role</code>, <code>market</code>, <code>twofa</code>, <code>q</code>. Each row carries <code>role</code> with its rank, <code>permission_count</code>, <code>override_count</code>, <code>twofa_enabled</code>, <code>markets</code>, <code>last_active_at</code>, and <code>can_manage</code> — a server-computed boolean saying whether <em>this</em> caller may act on that row, so the console does not re-derive the rank rule.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/staff/{id}</code></td><td>One admin.</td><td class="n">Adds resolved <code>permissions[]</code>, <code>permission_overrides</code> (granted / revoked), session list, and their last 50 audit entries — you should be able to see what someone has been doing before you change what they can do.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/staff/invite</code></td><td>Create by invitation.</td><td class="n"><code>name</code>, <code>email</code>, <code>phone</code>, <code>role</code>, <code>markets[]</code>. The invitee sets their own password from a single-use link (48h). Never accept a password here. The assigned role must be below the inviter's rank.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PATCH">PATCH</span></td><td class="p"><code>/admin/staff/{id}</code></td><td>Edit details.</td><td class="n"><code>name</code>, <code>email</code>, <code>phone</code>, <code>markets[]</code>. An email change is a sign-in change: notify both the old and new address, and require re-verification before the new one works.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PUT">PUT</span></td><td class="p"><code>/admin/staff/{id}/role</code></td><td>Change role.</td><td class="n"><code>role</code>, <code>reason</code>. Only roles strictly below the actor's rank are assignable — return that list from <code>/admin/roles</code> filtered per caller. Changing a role <b>clears per-person overrides</b> by default; accept <code>keep_overrides=true</code> to opt out, and say which happened in the response.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PUT">PUT</span></td><td class="p"><code>/admin/staff/{id}/permissions</code></td><td>Grant or revoke individually.</td><td class="n"><code>granted[]</code>, <code>revoked[]</code>, <code>reason</code>. These layer on top of the role: effective set = role permissions + granted − revoked. An actor can never grant a permission they do not themselves hold — <code>403 CANNOT_GRANT_WHAT_YOU_LACK</code>, which is what stops privilege laundering through a subordinate account.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/staff/{id}/password/reset-link</code></td><td>Send a reset link.</td><td class="n">The preferred path: the admin sets their own password, nobody else ever knows it. Sets <code>must_change_password</code>, revokes their sessions, emails a single-use link.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/staff/{id}/password/set</code></td><td>Set a temporary password.</td><td class="n"><code>password</code> (min 12), <code>reason</code>. For a locked-out colleague. Must force <code>must_change_password=true</code>, revoke every session, and notify the account holder that you did it and why. Consider restricting this route to <code>super_admin</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/staff/{id}/2fa/reset</code></td><td>Clear 2FA enrolment.</td><td class="n">For a lost device. Re-enrolment is forced at next sign-in. High-value target for social engineering — require a reason and notify the holder.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/staff/{id}/sessions/revoke</code></td><td>Sign them out everywhere.</td><td class="n">Immediate, all devices.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/staff/{id}/suspend</code></td><td>Suspend temporarily.</td><td class="n"><code>reason</code>, optional <code>until</code>. Sign-in refused while suspended; the account and its history stay intact.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/staff/{id}/block</code></td><td>Block access.</td><td class="n"><code>reason</code>. Revokes every session, refuses sign-in, and invalidates any pending invite or reset token. Prefer this to deletion so past actions stay attributed.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/staff/{id}/reinstate</code></td><td>Restore access.</td><td class="n"><code>reason</code>. Password reset and 2FA re-enrolment are forced on return.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag DELETE">DELETE</span></td><td class="p"><code>/admin/staff/{id}</code></td><td>Hard delete.</td><td class="n">Only for an account created in error. Refuse once the account has any audit entries — <code>409 HAS_AUDIT_HISTORY</code>, block them instead. Deleting an actor would orphan the trail that makes the log worth keeping.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/roles</code></td><td>Roles and their permissions.</td><td class="n">Per role: <code>key</code>, <code>label</code>, <code>rank</code>, <code>description</code>, <code>permissions[]</code>, <code>member_count</code>, and <code>assignable_by_me</code>. Seeded roles: Super admin 100, Admin 90, Operations 60, Finance 60, Compliance 50, Support 40, Read only 10.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PUT">PUT</span></td><td class="p"><code>/admin/roles/{key}</code></td><td>Edit a role.</td><td class="n"><code>permissions[]</code>, <code>reason</code>. Affects everyone holding it — return <code>member_count</code> so the console can warn first. A role's rank is immutable, and no actor may edit a role at or above their own rank.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/permissions</code></td><td>The permission catalogue.</td><td class="n">Key, human label, group. The console renders its editor from this rather than hardcoding 43 strings, so a new permission needs no release.</td><td class="a"><span class="aud read">Read</span></td></tr>
+        </tbody>
+      </table></div>
+
+      <pre>// PUT /admin/staff/stf_007/permissions
+{ "<b>granted</b>": ["payouts.approve"], "<b>revoked</b>": ["trips.refund"],
+  "<b>reason</b>": "Covering payouts while Finance is on leave; refunds moved to the queue" }
+
+// → 200
+{ "<b>staff_id</b>": "stf_007",
+  "<b>role</b>": { "key": "support", "rank": 40 },
+  "<b>permissions</b>": ["dashboard.view", …, "payouts.approve"],   // resolved set
+  "<b>permission_overrides</b>": { "granted": ["payouts.approve"], "revoked": ["trips.refund"] },
+  "<b>audit_id</b>": "aud_88213" }
+
+// → 403 when the actor lacks the permission they are trying to hand out
+{ "success": false,
+  "error": { "code": "<b>CANNOT_GRANT_WHAT_YOU_LACK</b>",
+             "message": "You cannot grant payouts.approve because your own role does not include it." } }</pre>
+    </section>
+
+    <section id="moderation" data-group="People" data-title="User &amp; driver moderation">
+      <h2><span class="num">A20</span>Rider &amp; Driver Moderation <span class="src">screens: Riders, Drivers</span></h2>
+      <p>The same set of powers over app accounts as over admin accounts — edit details, force a password reset, revoke sessions, block and unblock. Permissions: <code>riders.edit</code> / <code>riders.moderate</code> / <code>riders.credit</code> and the <code>drivers.*</code> equivalents.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="write"><td class="m"><span class="m-tag PATCH">PATCH</span></td><td class="p"><code>/admin/riders/{id}</code></td><td>Edit rider details.</td><td class="n"><code>first_name</code>, <code>last_name</code>, <code>email</code>, <code>phone</code>, <code>language</code>. A phone change is a sign-in change — require OTP verification of the new number before it becomes the credential.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/riders/{id}/password/reset-link</code></td><td>Force a password reset.</td><td class="n">Sends the app's own reset flow. Admins never set an app user's password directly — there is no legitimate reason to hold a customer's credential.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/riders/{id}/sessions/revoke</code></td><td>Sign the rider out everywhere.</td><td class="n">First move on a reported account takeover.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/riders/{id}/block</code></td><td>Block a rider.</td><td class="n"><code>reason</code> (shown in their app), <code>cancel_active_trip</code>. Refuses sign-in and new requests. Return whether a wallet balance is stranded so the operator can refund it first.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/riders/{id}/unblock</code></td><td>Unblock.</td><td class="n"><code>reason</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PATCH">PATCH</span></td><td class="p"><code>/admin/drivers/{id}</code></td><td>Edit driver details.</td><td class="n">Identity fields that do not invalidate KYC. Changing a name or ID number must re-open the identity step, not silently pass.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/drivers/{id}/password/reset-link</code></td><td>Force a password reset.</td><td class="n">Same rule as riders.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/drivers/{id}/sessions/revoke</code></td><td>Sign the driver out.</td><td class="n">Also forces them offline — a revoked session must not keep receiving offers.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/drivers/{id}/block</code></td><td>Block a driver.</td><td class="n"><code>reason</code>, <code>settle_cash=true|false</code>. Forces offline, cancels any active job with driver-fault handling, and reports outstanding cash owed and wallet balance so nothing is stranded.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/drivers/{id}/unblock</code></td><td>Unblock.</td><td class="n"><code>reason</code>. Re-checks document expiry before letting them online again.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/moderation/log</code></td><td>Who was blocked, by whom, why.</td><td class="n">Filter by actor, target type, action, date. A subset view of the audit log, for the people who spend all day in it.</td><td class="a"><span class="aud read">Read</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><strong>One asymmetry worth keeping.</strong><p>Admins may set another <em>admin's</em> password (for a locked-out colleague on a support call), but only ever force a reset for a <em>rider or driver</em>. An admin who can set a customer's password can sign in as that customer, which destroys the audit trail's meaning and turns every dispute into your word against theirs.</p></div>
+    </section>
+
+    <section id="audit" data-group="Platform" data-title="Audit log">
+      <h2><span class="num">A21</span>Audit Log <span class="src">screen: Audit log</span></h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/audit-log</code></td><td>Every privileged action.</td><td class="n">Filters actor, action, target type and id, date, IP. Fields: <code>at</code>, <code>actor</code>, <code>action</code>, <code>target</code>, <code>ip</code>, <code>request_id</code>, <code>reason</code>, and <code>before</code>/<code>after</code> on detail. Append-only: no update or delete route exists, deliberately.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/audit-log/{id}</code></td><td>One entry with its diff.</td><td class="n">Full before/after documents.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/audit-log/export</code></td><td>Export for auditors.</td><td class="n">Signed, timestamped, whole-period.</td><td class="a"><span class="aud read">Read</span></td></tr>
+        </tbody>
+      </table></div>
+      <p>Actions that must appear here at minimum: every route marked <b>Write</b> in this contract, plus each access to a KYC document, each view of a driver's location history, and each sign-in — successful or not.</p>
+    </section>
+
+    <section id="config" data-group="Platform" data-title="Config &amp; flags">
+      <h2><span class="num">A22</span>Config &amp; Feature Flags <span class="src">screen: Settings</span></h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/config</code></td><td>Everything <code>/config</code> serves.</td><td class="n">The editable mirror of what both apps read on launch.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PUT">PUT</span></td><td class="p"><code>/admin/config/dispatch</code></td><td>Dispatch tuning.</td><td class="n"><code>offer_timeout_seconds</code>, <code>search_radius_m</code>, <code>strategy</code>, <code>max_concurrent_offers</code>, <code>location_ping_on_trip_s</code>, <code>location_ping_idle_s</code>. These are the numbers the driver app currently hardcodes.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/config/flags</code></td><td>Feature flags.</td><td class="n">Per flag: key, description, state per app, optional rollout percentage and zone scope.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PUT">PUT</span></td><td class="p"><code>/admin/config/flags/{key}</code></td><td>Toggle a flag.</td><td class="n">Both apps pick it up on next <code>/config</code>. Flags the console already lists: <code>co_ride_enabled</code>, <code>package_enabled</code>, <code>food_enabled</code>, <code>scheduled_rides</code>, <code>tipping</code>, <code>wallet_transfer</code>, <code>instant_payout</code>, <code>referrals</code>, <code>masked_calls</code>, <code>biometric_login</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PUT">PUT</span></td><td class="p"><code>/admin/config/maintenance</code></td><td>Maintenance mode.</td><td class="n">Per app: <code>live|read_only|maintenance</code> + message. The apps must honour this on launch.</td><td class="a"><span class="aud write">Write</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/integrations</code></td><td>Integration health.</td><td class="n">Payments, SMS, maps, push, realtime, ID verification: connected state, last error, key age. Surfacing key age is how you avoid the expiry outage.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag PUT">PUT</span></td><td class="p"><code>/admin/integrations/{key}</code></td><td>Rotate credentials.</td><td class="n">Write-only secrets — never return them. Highest privilege on the platform.</td><td class="a"><span class="aud write">Write</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="realtime" data-group="Platform" data-title="Realtime">
+      <h2><span class="num">A23</span>Realtime — Admin Channel</h2>
+      <p>The console subscribes to one private channel per market. Live ops and the sidebar badges should update without a refresh; SOS must.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Kind</th><th>Event</th><th>Purpose</th><th>Payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>sos.raised</code></td><td>Panic button pressed.</td><td class="n">Incident object + location. Should also page on-call out of band — a browser tab is not an alerting system.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>job.state_changed</code></td><td>Any job transition.</td><td class="n">Keeps the live-ops table honest.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>driver.presence_changed</code></td><td>Online / offline.</td><td class="n">Throttled and aggregated per zone rather than per driver.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>payout.failed</code></td><td>Transfer failed.</td><td class="n">Drives the sidebar badge.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>kyc.submitted</code></td><td>New application.</td><td class="n">Queue depth badge.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>ticket.created</code></td><td>New ticket, or SLA breach.</td><td class="n">With <code>priority</code> so urgent ones can interrupt.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>job.completed</code></td><td>Background job finished.</td><td class="n">Export ready, bulk action done — carries <code>result_url</code>.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>fraud.alert</code></td><td>Automated risk signal.</td><td class="n">Duplicate devices on a referral cluster, impossible trip velocity, mock-location detected.</td><td class="a"><span class="aud read">Read</span></td></tr>
+        </tbody>
+      </table></div>
+      <h3>Subscribing</h3>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/realtime/config</code></td><td>Transport details.</td><td class="n"><code>transport</code>, <code>host</code>, <code>key</code>, <code>cluster</code>, channel name template. Served rather than hardcoded, so the transport can change without an admin release.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="write"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/admin/realtime/auth</code></td><td>Authorise a channel.</td><td class="n">Bearer token in, channel signature out. Must verify the caller's market scope — an admin scoped to CI may not subscribe to <code>private-admin.ng</code>.</td><td class="a"><span class="aud write">Write</span></td></tr>
+        </tbody>
+      </table></div>
+      <p>Channel: <code>private-admin.{market}</code>. Events are <b>read-only</b> — no admin action is ever taken over the socket, so every change stays permission-checked and audited on an HTTP route. Throttle <code>driver.presence_changed</code> to an aggregate per zone rather than one frame per heartbeat, or a busy evening will flood the tab.</p>
+      <div class="note"><strong>A browser tab is not an alerting system.</strong><p><code>sos.raised</code> should page on-call out of band — SMS or a paging service — in addition to appearing here. The console cannot be relied on to be open.</p></div>
+    </section>
+
+    <section id="map" data-group="Operations" data-title="Map &amp; geo">
+      <h2><span class="num">A24</span>Map &amp; Geo <span class="src">screen: Live ops</span></h2>
+      <p>What the live map needs. Positions are the last heartbeat, deliberately separate from a driver's historical trail — that is a higher-privilege, individually audited read.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Kind</th></tr></thead>
+        <tbody>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/ops/drivers-online</code></td><td>Live positions.</td><td class="n">Per driver: <code>id</code>, <code>name</code>, <code>plate</code>, <code>lat</code>, <code>lng</code>, <code>heading</code>, <code>zone</code>, <code>state=idle|on_trip</code>, <code>vertical</code>, <code>last_ping_at</code>. Filterable by zone, vertical and state. Cap the response and cluster server-side above a few hundred drivers.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/zones/geojson</code></td><td>Zone geometry.</td><td class="n">Polygons plus a <code>centre</code> per zone. The console projects from the centres today; the polygons are what a tile map would draw.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/ops/jobs/{id}/track</code></td><td>One job on the map.</td><td class="n">Driver position, remaining route polyline, pickup and dropoff pins, ETA. For following a specific trip during an incident.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/ops/heatmap</code></td><td>Demand density.</td><td class="n"><code>?metric=requests|unmatched|surge&amp;bucket=hex</code> → cells with a weight. Drives the "where should we push supply" overlay.</td><td class="a"><span class="aud read">Read</span></td></tr>
+          <tr data-aud="read"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/admin/drivers/{id}/location-history</code></td><td>Historical trail.</td><td class="n"><code>?from&amp;to</code>. Separate permission, and <b>each access is audited</b> — this is where an operator was, minute by minute.</td><td class="a"><span class="aud read">Read</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><strong>Do not put a map key in the console bundle.</strong><p>The rider and driver apps already leak one (see their contracts). If a tile provider is added here, proxy the tile and geocode requests server-side like <code>/geo/*</code> does for the apps, and restrict the key by referrer.</p></div>
+    </section>
+
+    <section id="security" data-group="Reference" data-title="Security">
+      <h2><span class="num">A25</span>Security Requirements</h2>
+      <p class="lede">This surface can move money, read identity documents and message every user. It needs more than the app surfaces do.</p>
+      <ol class="dec">
+        <li><b>Separate staff identity and 2FA.</b> Own table, own tokens, TOTP required for any money-touching role. Short access tokens (15 min).</li>
+        <li><b>Enforce permissions server-side on every route.</b> The console hides what a role cannot do; that is UX, not security. Every handler checks its own permission string.</li>
+        <li><b>Audit every write synchronously,</b> in the same transaction, with before/after. An action that succeeds but fails to audit must roll back.</li>
+        <li><b>Second approver above a threshold</b> for wallet adjustments, write-offs and surge overrides. One compromised support account should not be able to drain a float.</li>
+        <li><b>Signed, expiring URLs for documents,</b> and audit each access. KYC files are NIN/BVN-grade identity data.</li>
+        <li><b>Rate-limit and IP-allowlist the admin surface.</b> It has no reason to be reachable from the whole internet.</li>
+        <li><b>Never return secrets.</b> Integration credentials are write-only; masked everywhere else. Bank accounts show last four only.</li>
+        <li><b>Redact by default in list views.</b> Full phone numbers and full account numbers require a permission and produce an audit entry — support does not need them to answer most tickets.</li>
+        <li><b>Idempotency on every money write,</b> and make double-approve of a payout provably safe.</li>
+        <li><b>No delete routes on the audit log.</b> Append-only, exportable, retained.</li>
+      </ol>
+    </section>
+
+    <section id="status" data-group="Reference" data-title="Build status">
+      <h2><span class="num">A26</span>What Exists Already</h2>
+      <p>The console is built and running against fixtures, so these shapes are not theoretical — a working UI already consumes them.</p>
+      <ul class="list">
+        <li><b>Stack.</b> Next.js 15 App Router, React 19, TypeScript. No CSS framework, no chart library, no component kit. Typecheck and production build clean; every route smoke-tested.</li>
+        <li><b>Login is the entry point.</b> <code>/login</code> handles credentials then the 2FA step; every console route sits behind a session gate and returns you to the screen you asked for. Demo mode ships a directory of accounts, one per role, so the RBAC rules can be seen working.</li>
+        <li><b>RBAC is enforced in the UI.</b> 43 permissions in ten groups, seven ranked roles, per-person grants and revocations on top of a role. The sidebar hides what you cannot view, the dynamic route refuses a typed URL, row actions are filtered before render, and a refusal explains itself ("Only a super admin can act on an admin"). <b>All of it still needs server-side enforcement.</b></li>
+        <li><b>Staff management is complete against this contract.</b> Edit details, change role, grant and revoke individual permissions, send a reset link or set a temporary password, reset 2FA, revoke sessions, suspend, block, reinstate — each bounded by rank and refusing self-targeting.</li>
+        <li><b>Realtime is wired.</b> A read-only channel per market drives the sidebar badges, the Live ops event stream and a critical-event banner. Mock mode emits events on a timer; live mode opens a socket after <code>/admin/realtime/auth</code>.</li>
+        <li><b>The map is built</b> as a tile-free SVG projection of zone centres with live driver dots, so it needs no map key. It consumes <code>/admin/ops/drivers-online</code> exactly as specified above.</li>
+        <li><b>One seam.</b> <code>src/lib/api.ts</code> is the only file that talks to the network. <code>loadSnapshot()</code> fans out to the list endpoints here; <code>actions.*</code> name the write endpoints. Flip <code>NEXT_PUBLIC_USE_MOCKS</code>, point the base URL, delete the fixtures.</li>
+        <li><b>Still client-side only:</b> the session lives in <code>localStorage</code>, so the route gate is not enforceable at the edge. Moving the refresh token to an httpOnly cookie is the one change needed before this is exposed outside the team.</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer>Zenride Admin API Contract · v1 draft · consumed by the Zenride Dashboard (Next.js) · companion to the rider and driver contracts</footer>
+</div>
+
+<script>
+  (function () {
+    var sections = Array.prototype.slice.call(document.querySelectorAll('main section'));
+    var rail = document.querySelector('.rail');
+    var groups = {};
+    var order = [];
+
+    sections.forEach(function (s) {
+      var g = s.dataset.group || 'Other';
+      if (!groups[g]) { groups[g] = []; order.push(g); }
+      groups[g].push(s);
+    });
+
+    order.forEach(function (g) {
+      var box = document.createElement('div');
+      box.className = 'rail-group';
+      var label = document.createElement('p');
+      label.textContent = g;
+      box.appendChild(label);
+      groups[g].forEach(function (s) {
+        var a = document.createElement('a');
+        a.href = '#' + s.id;
+        var n = s.querySelectorAll('tbody tr[data-aud]').length;
+        a.innerHTML = '<span>' + s.dataset.title + '</span>' + (n ? '<em>' + n + '</em>' : '');
+        box.appendChild(a);
+      });
+      rail.appendChild(box);
+    });
+
+    var rows = Array.prototype.slice.call(document.querySelectorAll('tbody tr[data-aud]'));
+    var total = rows.length;
+    document.getElementById('s-total').textContent = total;
+    document.getElementById('s-mod').textContent = sections.filter(function (s) {
+      return s.querySelector('tbody tr[data-aud]');
+    }).length;
+    ['read', 'write'].forEach(function (k) {
+      document.getElementById('s-' + k).textContent = rows.filter(function (r) {
+        return r.dataset.aud === k;
+      }).length;
+    });
+
+    var q = document.getElementById('q');
+    var counter = document.getElementById('count');
+    var buttons = Array.prototype.slice.call(document.querySelectorAll('.toolbar button'));
+    var filter = 'all';
+
+    function apply() {
+      var term = q.value.trim().toLowerCase();
+      var shown = 0;
+      rows.forEach(function (r) {
+        var audOk = filter === 'all' || r.dataset.aud === filter;
+        var textOk = !term || r.textContent.toLowerCase().indexOf(term) !== -1;
+        var ok = audOk && textOk;
+        r.classList.toggle('hidden', !ok);
+        if (ok) shown++;
+      });
+      sections.forEach(function (s) {
+        var has = s.querySelectorAll('tbody tr[data-aud]');
+        if (!has.length) {
+          s.classList.toggle('hidden', !!term || filter !== 'all');
+          return;
+        }
+        var visible = s.querySelectorAll('tbody tr[data-aud]:not(.hidden)').length;
+        s.classList.toggle('hidden', visible === 0);
+      });
+      counter.textContent = shown === total ? total + ' endpoints' : shown + ' of ' + total;
+    }
+
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () {
+        filter = b.dataset.f;
+        buttons.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+        apply();
+      });
+    });
+    q.addEventListener('input', apply);
+    apply();
+  })();
+</script>
+
+</body></html>
