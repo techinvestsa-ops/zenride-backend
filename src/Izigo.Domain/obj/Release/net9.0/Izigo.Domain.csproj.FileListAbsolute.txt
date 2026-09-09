@@ -1,0 +1,11 @@
+C:\Projects\izigo-api\src\Izigo.Domain\bin\Release\net9.0\Izigo.Domain.deps.json
+C:\Projects\izigo-api\src\Izigo.Domain\bin\Release\net9.0\Izigo.Domain.dll
+C:\Projects\izigo-api\src\Izigo.Domain\bin\Release\net9.0\Izigo.Domain.pdb
+C:\Projects\izigo-api\src\Izigo.Domain\obj\Release\net9.0\Izigo.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projects\izigo-api\src\Izigo.Domain\obj\Release\net9.0\Izigo.Domain.AssemblyInfoInputs.cache
+C:\Projects\izigo-api\src\Izigo.Domain\obj\Release\net9.0\Izigo.Domain.AssemblyInfo.cs
+C:\Projects\izigo-api\src\Izigo.Domain\obj\Release\net9.0\Izigo.Domain.csproj.CoreCompileInputs.cache
+C:\Projects\izigo-api\src\Izigo.Domain\obj\Release\net9.0\Izigo.Domain.dll
+C:\Projects\izigo-api\src\Izigo.Domain\obj\Release\net9.0\refint\Izigo.Domain.dll
+C:\Projects\izigo-api\src\Izigo.Domain\obj\Release\net9.0\Izigo.Domain.pdb
+C:\Projects\izigo-api\src\Izigo.Domain\obj\Release\net9.0\ref\Izigo.Domain.dll

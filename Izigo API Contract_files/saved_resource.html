@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<!-- saved from url=(0133)https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/?__frame_v=manifest.549c0ed89764d31f.json -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!-- frame-runtime --><!--<base href="/_f/1786692237-7ec4/">--><base href="."><script>window.__FRAME_PREAMBLE={"capabilities":{"artifact":"artifact.oqIe8shs.js","assets":"assets.BkxVItX2.js","comments":"comments.GLuHR3zP.js","db":"db.CRhVHzSt.js","downloads":"downloads.C3GSvEDP.js","embed":"embed.CZsbekoQ.js","mcp":"mcp.D3B2EyQu.js","permissions":"permissions.BNySkLV5.js","room":"room.DE7EMui-.js","sample":"sample.C7z_6W62.js","self":"artifact.oqIe8shs.js","user":"user.BpKav-Rf.js"},"transforms":"_transforms.h3_8GSUa.js","comments":"_comments.BOgkE6qU.js","translate":"_translate.5HCW4BJh.js"}</script><script>(function(){"use strict";var Y=["light","dark","system"],X=/^[A-Za-z0-9_-]{1,64}$/,D=/^[a-zA-Z_:][a-zA-Z0-9_:.-]{0,127}$/,G=new Set(["class","hidden","value","checked"]);function V(e){const t=e.toLowerCase();return t.startsWith("data-")||t.startsWith("aria-")||G.has(t)}var be="http://www.w3.org/1999/xhtml",Z="http://www.w3.org/2000/svg",J=new Set(["script","style","iframe","noscript","noframes","noembed","xmp","plaintext","template","title","textarea","object","embed"]),Q=new Set(["script","style"]);function ee(e){const t=e.localName.toLowerCase();return e.namespaceURI==="http://www.w3.org/1999/xhtml"?!J.has(t):e.namespaceURI===Z?!Q.has(t):!1}var te=new Set(["html","head","body","frameset"]);function re(e){return e.namespaceURI==="http://www.w3.org/1999/xhtml"&&te.has(e.localName)}function ne(e){if(e===null||typeof e!="object")return!1;const t=e;if(typeof t.target!="string"||!X.test(t.target)||t.text!==void 0&&typeof t.text!="string")return!1;if(t.attrsSet!==void 0){if(t.attrsSet===null||typeof t.attrsSet!="object")return!1;for(const[n,s]of Object.entries(t.attrsSet))if(!D.test(n)||typeof s!="string")return!1}if(t.attrsRemoved!==void 0){if(!Array.isArray(t.attrsRemoved))return!1;for(const n of t.attrsRemoved)if(typeof n!="string"||!D.test(n))return!1}return!0}function se(e,t){if(e===null||typeof e!="object")return!1;const{seq:n,elements:s}=e;if(typeof n!="number"||!Number.isSafeInteger(n)||!Array.isArray(s)||s.length===0||s.length>64)return!1;for(let o=0;o<s.length;o++)if(!t(s[o]))return!1;return!0}function ae(e){return e===null||typeof e!="object"?!1:se(e.__frame_patch,ne)}function oe(e){if(e===null||typeof e!="object")return!1;const t=e.__frame_init;return t!==null&&typeof t=="object"}function ie(e){return e!==null&&typeof e=="object"&&e.__frame_size_poke===!0}function le(e){if(e===null||typeof e!="object")return!1;const t=e.__frame_theme;if(t===null||typeof t!="object")return!1;const n=t.theme;return typeof n=="string"&&Y.includes(n)}var O="__frame_scroll",ce=150,ue=310,fe=160,pe=3e4;function de(){let e=0,t=!1,n=!1,s=!1,o=0,l=null;const c=i=>{try{sessionStorage.setItem(O,JSON.stringify({y:i}))}catch{}},f=()=>{if(clearTimeout(e),l===null)return;const i=l;l=null,c(i)},S=()=>{if(t){t=!1;return}n=!0,l=scrollY,clearTimeout(e),e=setTimeout(f,ce)};try{addEventListener("scroll",S,{passive:!0}),addEventListener("pagehide",f)}catch{}const v=()=>{let i;try{i=sessionStorage.getItem(O)}catch{return null}if(i===null)return null;let d;try{d=JSON.parse(i)}catch{d=null}const u=d?.y;if(!(typeof u=="number"&&Number.isFinite(u)&&u>=0)){try{sessionStorage.removeItem(O)}catch{}return null}return u};let b=!1;const m=i=>{try{const d=scrollY;scrollTo({top:i,left:0,behavior:"instant"}),o=i,s=!0,clearTimeout(e),l=null,c(i);const u=scrollY;u!==d&&(t=!0),u!==i&&!b&&(b=!0,addEventListener("load",()=>{try{if(scrollY===u){const h=v();m(h!==null?h:o)}}catch{}},{once:!0}))}catch{}},y=()=>{try{return!!location.hash}catch{return!0}};let g=!1;const E=()=>{try{if(g||innerWidth>ue||innerHeight>fe)return;g=!0;const i=Date.now(),d=()=>{try{removeEventListener("resize",d)}catch{}if(Date.now()-i>pe||n||y())return;const u=v();m(u!==null?u:o)};addEventListener("resize",d)}catch{}};let r=!1,p=!1;return{restore(){if(r||(r=!0,y()))return;const i=v();i!==null&&(m(i),E())},promoted(){if(p||(p=!0,y()))return;const i=v();i!==null?(m(i),E()):s&&m(o)}}}var Ee="modulepreload",Ae=function(e){return"/"+e},Re={},me=function(t,n,s){let o=Promise.resolve();function l(c){const f=new Event("vite:preloadError",{cancelable:!0});if(f.payload=c,window.dispatchEvent(f),!f.defaultPrevented)throw c}return o.then(c=>{for(const f of c||[])f.status==="rejected"&&l(f.reason);return t().catch(l)})};(function(){const e=Object.defineProperty,t=globalThis,n=["RTCPeerConnection","webkitRTCPeerConnection","RTCDataChannel","RTCIceCandidate","RTCSessionDescription","RTCRtpSender","RTCRtpReceiver"];let s=0;for(let o=0;o<n.length;o++){const l=n[o];try{e(t,l,{value:void 0,writable:!1,configurable:!1})}catch{try{delete t[l]}catch{}try{e(t,l,{value:void 0,writable:!1,configurable:!0})}catch{}}typeof t[l]=="function"&&s++}if(s&&window!==top)try{parent.postMessage({__frame_rtc_lockdown_failed:s},"*")}catch{}})();var he=1e4,_e=Object.freeze([...window.__FRAME_PREAMBLE?.origins??["https://claude.ai","https://preview.claude.ai"]]);function F(e){for(const t of _e)if(t.endsWith(":*"))try{const n=new URL(e);if(`${n.protocol}//${n.hostname}:*`===t)return!0}catch{}else if(e===t)return!0;return!1}var M=Object.freeze({...window.__FRAME_PREAMBLE?.capabilities}),j=window.__FRAME_PREAMBLE?.transforms,N=window.__FRAME_PREAMBLE?.comments,I=window.__FRAME_PREAMBLE?.translate,L=/^[\w.-]+\.js$/;function T(e){return me(()=>import("/_runtime/"+e),void 0)}function z(e,t){return{contract:e.contract,changes:new Set(e.changes??[]),flags:new Set(e.flags??[]),capabilities:e.capabilities??{},capBudgets:e.capBudgets??{},transforms:new Map,shellOrigin:t,mount:W,pipe:()=>({wrap:(n,s)=>(...o)=>{try{return s(...o)}catch(l){return Promise.reject(l)}}})}}var P=null,w=null;function q(e,t,n){try{Object.defineProperty(e,t,{value:n,writable:!1,configurable:!1,enumerable:!0})}catch{try{Object.defineProperty(e,t,{value:n,writable:!1,configurable:!0,enumerable:!0})}catch{}}}var B=!1;function ve(e,t){const n=[];for(const s of e.elements){const o=document.querySelector(`[data-id="${s.target}"]`);if(!o){parent.postMessage({__frame_patch_miss:{seq:e.seq}},t);return}if([...Object.keys(s.attrsSet??{}),...s.attrsRemoved??[]].some(l=>!V(l))){parent.postMessage({__frame_patch_miss:{seq:e.seq}},t);return}if(s.text!==void 0&&(!ee(o)||re(o))){parent.postMessage({__frame_patch_miss:{seq:e.seq}},t);return}for(const[l,c]of Object.entries(s.attrsSet??{}))if(!$(o,l)){try{o.setAttribute(l,c)}catch{}H(o,l,c)}for(const l of s.attrsRemoved??[])$(o,l)||(o.removeAttribute(l),H(o,l,null));typeof s.text=="string"&&(o.textContent=s.text),n.push(s.target)}try{document.dispatchEvent(new CustomEvent("claude:edit",{detail:{seq:e.seq,targets:n}}))}catch{}}function H(e,t,n){if(!(e instanceof HTMLInputElement))return;const s=t.toLowerCase();s==="checked"?e.checked=n!==null:s==="value"&&e.type!=="file"&&(e.value=n??"")}function $(e,t){const n=t.toLowerCase(),s=e;return n==="data-id"||(n==="value"||n==="checked")&&(s.__artifactSecret===!0||/^(password|hidden|file)$/.test(s.type??"")||/(^|\s)(cc-|one-time-code|current-password|new-password)/i.test(`${e.getAttribute("autocomplete")??""} ${s.autocomplete??""}`))}function K(e){const t=document.documentElement;e==="light"||e==="dark"?(t.dataset.theme=e,t.style.colorScheme=e,B=!0):B&&(delete t.dataset.theme,t.style.colorScheme="",B=!1)}var R=new Map;function ye(){let e;const t={u:new Promise(n=>{e=n}),r:n=>{t.done=!0,e(n)},done:!1,nulled:!1};return t}var ge=Object.freeze(Object.assign(Object.create(null),{call:Function.prototype.call,apply:Function.prototype.apply,bind:Function.prototype.bind})),W=(e,t)=>{const n=R.get(e);if(!n||n.done){n?.nulled&&w&&parent.postMessage({__frame_cap_telemetry:{kind:"cap-load-error",cap:e}},w);return}const s=typeof t=="function"?Object.setPrototypeOf(t,ge):Object.assign(Object.create(null),t);typeof s.then=="function"&&delete s.then,n.r(Object.freeze(s))},U=Object.getOwnPropertyDescriptor(window,"claude");if(window!==top&&!(U&&U.writable===!1)){const e=j&&L.test(j)?T(j).catch(()=>{}):Promise.resolve(void 0),t=r=>{if(r.type==="auxclick"&&r.button!==1)return;const p=r.target,i=p&&p.closest?p.closest("a[href],area[href]"):null;if(!i)return;const d=i.getAttribute("href");if(!d)return;let u,h;try{u=new URL(d,document.baseURI),h=new URL(document.baseURI).origin}catch{return}if((u.protocol==="http:"||u.protocol==="https:")&&u.origin!==h){r.preventDefault();const _=(i.getAttribute("target")??"").toLowerCase(),C=r.type==="auxclick"||r.metaKey||r.ctrlKey||r.shiftKey||r.altKey||!["","_self","_top","_parent"].includes(_);parent.postMessage({__frame_nav:!0,url:u.href,newTab:C},"*")}};addEventListener("click",t,!0),addEventListener("auxclick",t,!0);const n={},s=r=>{r.isTrusted&&(n.pointer=!0)},o=r=>{r.isTrusted&&(n.click=!0)};addEventListener("pointermove",s,{capture:!0,passive:!0}),addEventListener("click",o,{capture:!0,passive:!0}),e.then(r=>{r?.wireNav&&(r.wireNav(),removeEventListener("click",t,!0),removeEventListener("auxclick",t,!0),removeEventListener("pointermove",s,!0),removeEventListener("click",o,!0),r.wireEngagement?.(n))});let l=null;try{l=de()}catch{}const c=U?.value??{};q(window,"claude",c);for(const r of Object.keys(M)){if(c[r]!==void 0){q(c,r,c[r]);continue}R.set(r,ye())}if(c.use===void 0){const r=p=>{if(typeof p!="string"||!Object.hasOwn(M,p))return Promise.resolve(null);const i=R.get(p);return i?i.u:Promise.resolve(c[p]??null)};try{Object.defineProperty(c,"use",{value:r,writable:!0,configurable:!0,enumerable:!1})}catch{}}let f=null,S=null,v=0;const b=r=>{r.source!==parent||!F(r.origin)||oe(r.data)&&(f=r.data.__frame_init,w=r.origin,removeEventListener("message",b),clearTimeout(v),S?.())};addEventListener("message",b),parent.postMessage({__frame_connect:!0},"*");const m=new Promise(r=>{S=r,v=setTimeout(()=>{removeEventListener("message",b),r()},he)}),y=document.readyState==="loading"?new Promise(r=>document.addEventListener("DOMContentLoaded",()=>r(),{once:!0})):Promise.resolve();y.then(()=>{try{l?.restore()}catch{}});const g={cb:null},E=r=>{if(!(r.source!==parent||!F(r.origin))&&ie(r.data)){try{l?.promoted()}catch{}g.cb?.()}};addEventListener("message",E),m.then(async()=>{if(!f||!w){for(const a of R.values())a.nulled=!0,a.r(null);return}K(f.theme);const r=w;let p=!1,i=!1;addEventListener("message",a=>{if(a.source!==parent||a.origin!==r)return;le(a.data)&&K(a.data.__frame_theme.theme),ae(a.data)&&ve(a.data.__frame_patch,r);const k=a.data?.__fc_mode;k&&typeof k=="object"&&!p&&N&&L.test(N)&&(p=!0,T(N).then(x=>x.install?.(r,k.on===!0)).catch(()=>{}));const A=a.data?.__ft_cmd;A&&typeof A=="object"&&!i&&I&&L.test(I)&&(i=!0,T(I).then(x=>x.install?.(r,A)).catch(()=>{}))});const d=Object.keys(f.capabilities??{}).filter(a=>Object.hasOwn(M,a)).map(a=>[a,M[a]]).filter(a=>typeof a[1]=="string"&&L.test(a[1])),u=await Promise.allSettled(d.map(([,a])=>T(a))),h=await e,_=w;if(h?.buildBoot||parent.postMessage({__frame_cap_telemetry:{kind:"cap-load-error",cap:"_transforms"}},_),h?.buildBoot)try{P=h.buildBoot(f,h.TRANSFORMS??{},{shellOrigin:_,mount:W},a=>parent.postMessage({__frame_cap_telemetry:a},_))}catch{parent.postMessage({__frame_cap_telemetry:{kind:"cap-load-error",cap:"_transforms"}},_),P=z(f,_)}else P=z(f,_);const C=a=>parent.postMessage({__frame_cap_telemetry:{kind:"cap-load-error",cap:a}},_),we=P;u.forEach((a,k)=>{const A=d[k][0];if(a.status!=="fulfilled"){C(A);return}try{a.value?.install?.(we)}catch{C(A)}});for(const a of R.values())a.done||(a.nulled=!0,a.r(null));await y,parent.postMessage({__frame_ready:!0},w),e.then(a=>a?.installSizeReporter?.(_,g))})}})();</script><!-- /frame-runtime --><meta name="viewport" content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style></head><body>
+<title>Izigo API Contract</title>
+
+<style>
+  :root {
+    --bg: #F5F7FA;
+    --surface: #FFFFFF;
+    --surface-2: #EAEEF4;
+    --line: #DBE2EB;
+    --line-2: #C4CFDC;
+    --text: #131A24;
+    --text-2: #4C5867;
+    --text-3: #788594;
+    --accent: #C96B04;
+    --accent-2: #0C6B60;
+    --accent-tint: rgba(201, 107, 4, 0.10);
+    --driver-tint: rgba(12, 107, 96, 0.10);
+    --get: #1A6396;
+    --post: #1B7548;
+    --patch: #9A5C10;
+    --del: #A63232;
+    --ws: #5F45A6;
+    --warn-bg: rgba(201, 107, 4, 0.08);
+    --shadow: 0 1px 2px rgba(19, 26, 36, .05), 0 8px 24px -16px rgba(19, 26, 36, .18);
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --serif: ui-serif, "New York", Georgia, "Times New Roman", serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Cascadia Mono", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0C1118;
+      --surface: #121A24;
+      --surface-2: #19232F;
+      --line: #222E3C;
+      --line-2: #33414F;
+      --text: #E7EDF4;
+      --text-2: #A6B3C1;
+      --text-3: #7B8998;
+      --accent: #F0A548;
+      --accent-2: #43BFAE;
+      --accent-tint: rgba(240, 165, 72, 0.12);
+      --driver-tint: rgba(67, 191, 174, 0.12);
+      --get: #6BB2E4;
+      --post: #63C48D;
+      --patch: #E0AC5E;
+      --del: #E68080;
+      --ws: #AC93EE;
+      --warn-bg: rgba(240, 165, 72, 0.09);
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px -16px rgba(0, 0, 0, .7);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0C1118;
+    --surface: #121A24;
+    --surface-2: #19232F;
+    --line: #222E3C;
+    --line-2: #33414F;
+    --text: #E7EDF4;
+    --text-2: #A6B3C1;
+    --text-3: #7B8998;
+    --accent: #F0A548;
+    --accent-2: #43BFAE;
+    --accent-tint: rgba(240, 165, 72, 0.12);
+    --driver-tint: rgba(67, 191, 174, 0.12);
+    --get: #6BB2E4;
+    --post: #63C48D;
+    --patch: #E0AC5E;
+    --del: #E68080;
+    --ws: #AC93EE;
+    --warn-bg: rgba(240, 165, 72, 0.09);
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px -16px rgba(0, 0, 0, .7);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 40px 28px 96px;
+    display: grid;
+    grid-template-columns: 244px minmax(0, 1fr);
+    gap: 44px;
+    align-items: start;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead { grid-column: 1 / -1; border-bottom: 2px solid var(--text); padding-bottom: 22px; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .eyebrow span::after { content: " ·"; color: var(--text-3); }
+  .eyebrow span:last-child::after { content: ""; }
+  h1 {
+    font-size: clamp(30px, 5vw, 46px);
+    line-height: 1.02;
+    letter-spacing: -.028em;
+    font-weight: 800;
+    margin: 12px 0 0;
+    text-wrap: balance;
+  }
+  .deck {
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--text-2);
+    max-width: 62ch;
+    margin-top: 14px;
+  }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 9px 14px;
+    min-width: 104px;
+  }
+  .stat b {
+    display: block;
+    font-size: 21px;
+    font-weight: 750;
+    letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat small {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+
+  /* ---------- rail ---------- */
+  .rail { position: sticky; top: 24px; }
+  .rail-group { margin-bottom: 20px; }
+  .rail-group > p {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 4px;
+  }
+  .rail a {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 4px 0;
+    color: var(--text-2);
+    text-decoration: none;
+    font-size: 13.5px;
+    border-bottom: 1px solid transparent;
+  }
+  .rail a:hover { color: var(--accent); }
+  .rail a em {
+    font-style: normal;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .rail a:focus-visible, .toolbar button:focus-visible, #q:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* ---------- toolbar ---------- */
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--bg);
+    padding: 14px 0 12px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  #q {
+    flex: 1 1 210px;
+    min-width: 0;
+    font: inherit;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 3px;
+    padding: 8px 11px;
+  }
+  #q::placeholder { color: var(--text-3); }
+  .toolbar button {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-2);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 3px;
+    padding: 8px 11px;
+    cursor: pointer;
+  }
+  .toolbar button[aria-pressed="true"] {
+    background: var(--text);
+    border-color: var(--text);
+    color: var(--bg);
+  }
+  #count { font-family: var(--mono); font-size: 11px; color: var(--text-3); margin-left: auto; }
+
+  /* ---------- sections ---------- */
+  section { margin-top: 40px; scroll-margin-top: 74px; }
+  section.hidden { display: none; }
+  h2 {
+    font-size: 21px;
+    font-weight: 750;
+    letter-spacing: -.02em;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--accent);
+    letter-spacing: .04em;
+  }
+  h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 26px 0 8px;
+    letter-spacing: -.01em;
+  }
+  section > p, .note p { color: var(--text-2); max-width: 74ch; margin-top: 8px; }
+  .lede { font-family: var(--serif); font-size: 16.5px; }
+
+  /* ---------- tables ---------- */
+  .tbl { overflow-x: auto; margin-top: 14px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  thead th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    font-weight: 400;
+    padding: 9px 12px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr.hidden { display: none; }
+  td.p { font-family: var(--mono); font-size: 12.5px; white-space: nowrap; color: var(--text); }
+  td.n { color: var(--text-2); font-size: 13px; }
+  td.m { width: 1%; white-space: nowrap; }
+  td.a { width: 1%; white-space: nowrap; }
+  code {
+    font-family: var(--mono);
+    font-size: .92em;
+    background: var(--surface-2);
+    border-radius: 3px;
+    padding: 1px 4px;
+  }
+  td.p code { background: none; padding: 0; }
+
+  .m-tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .07em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid currentColor;
+  }
+  .GET { color: var(--get); }
+  .POST { color: var(--post); }
+  .PATCH, .PUT { color: var(--patch); }
+  .DELETE { color: var(--del); }
+  .WS, .EVT { color: var(--ws); }
+
+  .aud {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 10px;
+  }
+  .aud.rider { background: var(--accent-tint); color: var(--accent); }
+  .aud.driver { background: var(--driver-tint); color: var(--accent-2); }
+  .aud.both { background: var(--surface-2); color: var(--text-2); }
+
+  /* ---------- misc blocks ---------- */
+  pre {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 14px 16px;
+    margin-top: 14px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--text-2);
+  }
+  pre b { color: var(--text); font-weight: 600; }
+
+  .note {
+    background: var(--warn-bg);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 14px 16px;
+    margin-top: 18px;
+  }
+  .note > strong { display: block; font-size: 13px; letter-spacing: -.01em; }
+  .note p { margin-top: 6px; font-size: 13.5px; }
+
+  ol.dec, ul.list { margin-top: 12px; padding-left: 0; list-style: none; display: grid; gap: 12px; }
+  ol.dec { counter-reset: d; }
+  ol.dec > li {
+    counter-increment: d;
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text-2);
+    max-width: 82ch;
+  }
+  ol.dec > li::before {
+    content: counter(d, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    padding-top: 3px;
+  }
+  ol.dec b, ul.list b { color: var(--text); }
+  ul.list > li {
+    border-left: 2px solid var(--line-2);
+    padding-left: 12px;
+    font-size: 14px;
+    color: var(--text-2);
+    max-width: 82ch;
+  }
+
+  .flow { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 14px; }
+  .flow span {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 3px;
+    padding: 5px 8px;
+    color: var(--text-2);
+  }
+  .flow span.term { border-color: var(--accent); color: var(--accent); }
+  .flow i { color: var(--text-3); font-style: normal; font-size: 12px; }
+
+  footer {
+    grid-column: 1 / -1;
+    margin-top: 56px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+
+  @media (max-width: 940px) {
+    .wrap { grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 28px 18px 72px; }
+    .rail { position: static; }
+    .rail-group { margin-bottom: 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow"><span>Backend Work Order</span><span>Izigo Platform</span><span>Rider + Driver apps</span><span>v1</span></div>
+    <h1>Izigo API Contract</h1>
+    <p class="deck">Every endpoint the two Flutter clients need, module by module, so the backend can be built once and both apps bound to it. Three service verticals — Ride, Co-Ride, Package — plus the account, money, safety and support surfaces around them.</p>
+    <div class="stats">
+      <div class="stat"><b id="s-total">212</b><small>Endpoints</small></div>
+      <div class="stat"><b id="s-mod">25</b><small>Modules</small></div>
+      <div class="stat"><b id="s-rider">65</b><small>Rider only</small></div>
+      <div class="stat"><b id="s-driver">67</b><small>Driver only</small></div>
+      <div class="stat"><b id="s-both">80</b><small>Shared</small></div>
+    </div>
+  </header>
+
+  <nav class="rail" aria-label="Modules"><div class="rail-group"><p>Foundation</p><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#conventions"><span>Conventions</span></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#config"><span>Platform &amp; config</span><em>8</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#auth"><span>Authentication</span><em>19</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#devices"><span>Devices &amp; push</span><em>3</em></a></div><div class="rail-group"><p>Rider app</p><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#profile"><span>Profile &amp; account</span><em>14</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#places"><span>Saved places</span><em>5</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#geo"><span>Geo &amp; maps proxy</span><em>7</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#quotes"><span>Fares &amp; quotes</span><em>3</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#rides"><span>Ride hailing</span><em>16</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#coride"><span>Co-Ride</span><em>16</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#packages"><span>Package delivery</span><em>8</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#safety"><span>Safety &amp; sharing</span><em>6</em></a></div><div class="rail-group"><p>Money</p><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#payments"><span>Payments</span><em>9</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#wallet"><span>Rider wallet</span><em>8</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#promos"><span>Promotions</span><em>4</em></a></div><div class="rail-group"><p>Cross-cutting</p><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#notifications"><span>Notifications</span><em>5</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#chat"><span>Chat</span><em>6</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#support"><span>Help &amp; support</span><em>8</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#realtime"><span>Realtime &amp; push</span><em>14</em></a></div><div class="rail-group"><p>Driver app</p><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#kyc"><span>Onboarding &amp; KYC</span><em>13</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#dispatch"><span>Availability &amp; dispatch</span><em>6</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#jobs"><span>Job lifecycle</span><em>12</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#earnings"><span>Earnings &amp; payouts</span><em>11</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#performance"><span>Performance</span><em>4</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#vehicle"><span>Vehicle &amp; documents</span><em>7</em></a></div><div class="rail-group"><p>Reference</p><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#interlock"><span>Trip identity &amp; state map</span><em>9</em></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#enums"><span>Enums &amp; reference</span></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#decisions"><span>Open decisions</span></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#security"><span>Security fixes</span></a><a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#binding"><span>Client-side plan</span></a></div></nav>
+
+  <main>
+    <div class="toolbar">
+      <input id="q" type="search" placeholder="Filter by path or purpose…" aria-label="Filter endpoints">
+      <button data-f="all" aria-pressed="true">All</button>
+      <button data-f="rider" aria-pressed="false">Rider</button>
+      <button data-f="driver" aria-pressed="false">Driver</button>
+      <span id="count">212 endpoints</span>
+    </div>
+
+    <!-- ============ FOUNDATION ============ -->
+
+    <section id="conventions" data-group="Foundation" data-title="Conventions">
+      <h2><span class="num">00</span>Conventions</h2>
+      <p class="lede">Settle these once and every module below becomes mechanical to implement and to bind.</p>
+
+      <h3>Transport &amp; base</h3>
+      <ul class="list">
+        <li><b>Base URL:</b> <code>https://api.izigo.app/api/v1</code> — HTTPS only. The current rider base is <code>http://159.223.19.239/index.php</code>: plain HTTP, raw IP, and <code>index.php</code> in the path. All three need to go before launch.</li>
+        <li><b>Auth:</b> <code>Authorization: Bearer &lt;access_token&gt;</code> on everything except <code>/config</code>, <code>/pages/*</code>, the auth module, and public package tracking.</li>
+        <li><b>Headers on every request:</b> <code>Accept: application/json</code>, <code>X-App: rider|driver</code>, <code>X-App-Version</code>, <code>X-Platform: android|ios</code>, <code>X-Device-Id</code>, <code>Accept-Language: fr|en</code>.</li>
+        <li><b>Bodies:</b> JSON, <code>snake_case</code> keys. File uploads use <code>multipart/form-data</code>.</li>
+        <li><b>Money:</b> integer minor units + explicit <code>currency</code> (<code>XOF</code> has no minor unit — send whole numbers). Never floats.</li>
+        <li><b>Time:</b> ISO-8601 with offset (<code>2026-08-12T14:03:00Z</code>). Server is the clock — the clients currently derive trip state from local wall-clock time and that has to stop.</li>
+        <li><b>Phone:</b> E.164 (<code>+2250700000000</code>).</li>
+        <li><b>Coordinates:</b> <code>lat</code> / <code>lng</code> as decimals, 6 places.</li>
+      </ul>
+
+      <h3>Response envelope</h3>
+      <pre>{
+  "<b>success</b>": true,
+  "<b>data</b>": { ... } | [ ... ],
+  "<b>meta</b>": { "page": 1, "per_page": 20, "total": 143, "last_page": 8 }
+}
+
+// error — same shape, always
+{
+  "<b>success</b>": false,
+  "<b>error</b>": {
+    "code": "RIDE_ALREADY_CANCELLED",       // stable, machine-readable
+    "message": "This trip was already cancelled.",  // localised, safe to show
+    "fields": { "phone": ["Phone already registered."] }  // 422 only
+  }
+}</pre>
+      <p>Status codes: <code>200</code> ok, <code>201</code> created, <code>204</code> deleted, <code>400</code> bad request, <code>401</code> expired/absent token, <code>403</code> role or KYC not permitted, <code>404</code>, <code>409</code> state conflict (accepting an expired job offer), <code>422</code> validation, <code>429</code> rate limited, <code>503</code> maintenance mode.</p>
+
+      <h3>Rules that save rework</h3>
+      <ul class="list">
+        <li><b>Idempotency:</b> every POST that creates money or a trip (<code>/rides</code>, <code>/packages</code>, <code>/co-ride/bookings</code>, all wallet and payment calls) must accept <code>Idempotency-Key</code> and replay the original response. Riders double-tap on bad networks.</li>
+        <li><b>Server owns fares.</b> The client currently computes prices locally. Every price shown must come from a signed, expiring <code>quote_id</code>, and the trip must be created from that quote id, not from a client-sent amount.</li>
+        <li><b>Pagination:</b> <code>?page=</code> &amp; <code>?per_page=</code> on every list, with the <code>meta</code> block above.</li>
+        <li><b>Lists accept</b> <code>?status=</code>, <code>?from=</code>, <code>?to=</code>, <code>?vertical=</code> where sensible.</li>
+        <li><b>Soft enums:</b> clients must tolerate unknown enum values without crashing — send new statuses freely, but never rename existing ones.</li>
+        <li><b>No secrets in the app.</b> Payment gateway keys, map keys and SMS credentials stay server-side. See <a href="https://f107c007-8c80-484a-80c9-993da17d2939.frame.claudeusercontent.com/_f/1786692237-7ec4/#security">Security fixes</a>.</li>
+      </ul>
+    </section>
+
+    <section id="config" data-group="Foundation" data-title="Platform &amp; config">
+      <h2><span class="num">01</span>Platform &amp; Config</h2>
+      <p>Called on splash before anything else. Drives force-update, maintenance mode, currency, which verticals are live, and the fare/cancellation rules the UI displays.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/config</code></td><td>Bootstrap config.</td><td class="n">Returns <code>min_app_version</code> per platform, <code>maintenance_mode</code>, <code>currency</code>, <code>currency_symbol</code>, <code>country</code>, <code>default_map_center</code>, <code>verticals_enabled[]</code>, <code>payment_methods[]</code>, <code>support_phone</code>, <code>sos_phone</code>, <code>cancellation_policy</code>, <code>referral_enabled</code>, <code>wallet_enabled</code>, <code>tipping_enabled</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/config/version-check</code></td><td>Force / soft update gate.</td><td class="n">Query <code>platform</code>, <code>version</code>. Returns <code>action: none|soft_update|force_update|maintenance</code>, <code>store_url</code>. Drives the existing update &amp; maintenance screens.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/zones</code></td><td>Service areas.</td><td class="n">Geofence polygons + per-zone <code>verticals_enabled</code>, so the app can say "we don't operate here yet" before a request is made.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/pages/{slug}</code></td><td>Legal &amp; info pages.</td><td class="n">Slugs: <code>terms</code>, <code>privacy</code>, <code>about</code>, <code>driver-terms</code>, <code>cancellation-policy</code>. Return HTML or markdown + <code>updated_at</code>. Currently hardcoded in the clients.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/languages</code></td><td>Supported locales.</td><td class="n">Apps ship <code>fr</code> + <code>en</code>; endpoint lets you add one without a release.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/onboarding-slides</code></td><td>First-run carousel.</td><td class="n">Query <code>audience=rider|driver</code>. <code>image_url</code>, <code>title</code>, <code>subtitle</code>, <code>order</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/banners</code></td><td>Home promo carousel.</td><td class="n"><code>image_url</code>, <code>deep_link</code>, <code>placement=home|wallet</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/service-classes</code></td><td>Catalogue of ride classes.</td><td class="n">Static definitions behind the quote: <code>code</code> (<code>zen_car</code>, <code>zen_bike</code>, <code>zen_coride</code>, <code>package_small</code>, <code>package_large</code>), display name, icon key, seat capacity, description.</td><td class="a"><span class="aud both">Both</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="auth" data-group="Foundation" data-title="Authentication">
+      <h2><span class="num">02</span>Authentication &amp; Sessions</h2>
+      <p>One auth surface, <code>role</code>-aware (<code>rider</code> | <code>driver</code>), so both apps share it. Phone + OTP is the primary path for this market; email/password stays as a fallback because both apps already have those screens built.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/auth/otp/request</code></td><td>Send OTP to phone.</td><td class="n"><code>phone</code>, <code>role</code>, <code>purpose=login|register|verify_phone</code>. Returns <code>otp_token</code>, <code>expires_in</code>, <code>resend_after</code>, <code>is_new_user</code>. Rate limit per phone + per IP.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/auth/otp/verify</code></td><td>Exchange OTP for tokens.</td><td class="n"><code>otp_token</code>, <code>code</code>, <code>device</code> object. Returns the auth bundle below. Lock after 5 bad attempts.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/auth/otp/resend</code></td><td>Resend the code.</td><td class="n"><code>otp_token</code>, optional <code>channel=sms|whatsapp|call</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/auth/register</code></td><td>Create account.</td><td class="n"><code>first_name</code>, <code>last_name</code>, <code>phone</code>, <code>email?</code>, <code>password?</code>, <code>role</code>, <code>referral_code?</code>, <code>language</code>, <code>device</code>. 422 with <code>fields</code> on duplicates.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/auth/login</code></td><td>Password login.</td><td class="n"><code>identifier</code> (phone or email), <code>password</code>, <code>role</code>, <code>device</code>. Keep accepting the legacy <code>email_or_phone</code> key during migration.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/auth/social</code></td><td>Google / Apple sign-in.</td><td class="n"><code>provider=google|apple</code>, <code>id_token</code>, <code>role</code>, <code>device</code>. Returns <code>needs_phone: true</code> when the account still has to bind a number.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/auth/refresh</code></td><td>Rotate access token.</td><td class="n"><code>refresh_token</code>. Rotate the refresh token too and revoke the old one. Drivers stay logged in for weeks — this endpoint is not optional.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/auth/logout</code></td><td>End this session.</td><td class="n">Revokes the current refresh token and unregisters the device push token.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/auth/sessions</code></td><td>List active devices.</td><td class="n"><code>id</code>, <code>device_name</code>, <code>platform</code>, <code>ip</code>, <code>location</code>, <code>last_active_at</code>, <code>is_current</code>. Backs "Active Logged-In Sessions" in driver settings.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag DELETE">DELETE</span></td><td class="p"><code>/auth/sessions/{id}</code></td><td>Revoke one device.</td><td class="n">—</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/auth/sessions/revoke-others</code></td><td>Log out all other devices.</td><td class="n">Backs the "Log Out All Other Devices" action.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/auth/check-availability</code></td><td>Is phone/email free?</td><td class="n"><code>phone</code> or <code>email</code>, <code>role</code>. Replaces <code>check-phone</code> / <code>check-email</code>. Throttle hard — this enumerates users.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/auth/password/forgot</code></td><td>Start reset.</td><td class="n"><code>identifier</code>, <code>role</code>. Sends OTP; returns <code>reset_token</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/auth/password/verify-code</code></td><td>Validate reset code.</td><td class="n"><code>reset_token</code>, <code>code</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/auth/password/reset</code></td><td>Set new password.</td><td class="n"><code>reset_token</code>, <code>code</code>, <code>password</code>, <code>password_confirmation</code>. Revokes all sessions.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/auth/password/change</code></td><td>Change while logged in.</td><td class="n"><code>current_password</code>, <code>password</code>, <code>password_confirmation</code>. Min 8 chars — the driver UI already states that rule.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/auth/biometric/enroll</code></td><td>Bind biometric login.</td><td class="n">Device sends a public key / opaque device secret; server returns a long-lived <code>biometric_token</code> usable only from that <code>X-Device-Id</code>. Backs "Enable Biometric Login".</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/auth/biometric/login</code></td><td>Biometric sign-in.</td><td class="n"><code>biometric_token</code> + signed challenge → auth bundle.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag DELETE">DELETE</span></td><td class="p"><code>/auth/biometric</code></td><td>Disable biometrics.</td><td class="n">—</td><td class="a"><span class="aud both">Both</span></td></tr>
+        </tbody>
+      </table></div>
+      <h3>Auth bundle (returned by every successful sign-in)</h3>
+      <pre>{
+  "<b>access_token</b>": "eyJ...", "<b>token_type</b>": "Bearer", "<b>expires_in</b>": 3600,
+  "<b>refresh_token</b>": "rt_...", "<b>refresh_expires_in</b>": 2592000,
+  "<b>user</b>": {
+    "id": "usr_01J...", "role": "driver",
+    "first_name": "Tunde", "last_name": "Adebayo",
+    "phone": "+2348030000000", "phone_verified": true,
+    "email": "t@example.com", "email_verified": false,
+    "photo_url": null, "language": "en", "created_at": "2026-03-04T09:00:00Z",
+    "rating": 4.86, "wallet_balance": 12500, "currency": "NGN"
+  },
+  "<b>driver</b>": {                        // present when role = driver
+    "kyc_status": "approved",            // pending | in_review | approved | rejected
+    "onboarding_complete": true,
+    "is_online": false,
+    "verticals_allowed": ["ride", "package"],
+    "vehicle": { "type": "bike", "make_model": "Bajaj Boxer", "plate": "ABJ-421-KL" }
+  },
+  "<b>next_step</b>": "home"               // home | verify_phone | complete_profile | kyc
+}</pre>
+      <div class="note"><strong>Decide before building: token strategy.</strong><p>JWT with refresh rotation, or Laravel Sanctum personal access tokens? It changes how I handle 401 retry and silent refresh in both apps' dio interceptors. JWT + rotating refresh is my recommendation — drivers run the app all day and must never be bounced to login mid-trip.</p></div>
+    </section>
+
+    <section id="devices" data-group="Foundation" data-title="Devices &amp; push">
+      <h2><span class="num">03</span>Devices &amp; Push Tokens</h2>
+      <p>Both apps already ship <code>firebase_messaging</code>. Replaces the legacy <code>/customer/cm-firebase-token</code>.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/devices</code></td><td>Register / refresh FCM token.</td><td class="n"><code>fcm_token</code>, <code>device_id</code>, <code>platform</code>, <code>app_version</code>, <code>os_version</code>, <code>model</code>, <code>locale</code>, <code>timezone</code>. Upsert on <code>device_id</code>. Called after login and on every token rotation.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag DELETE">DELETE</span></td><td class="p"><code>/devices/{device_id}</code></td><td>Unregister on logout.</td><td class="n">Stops push going to a signed-out handset.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/devices/{device_id}/diagnostics</code></td><td>Battery / GPS / network health.</td><td class="n">Optional but valuable: <code>battery_level</code>, <code>location_permission</code>, <code>background_permission</code>, <code>mock_location_detected</code>. Explains "driver went dark" support tickets.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ RIDER ============ -->
+
+    <section id="profile" data-group="Rider app" data-title="Profile &amp; account">
+      <h2><span class="num">04</span>Rider Profile &amp; Account</h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/me</code></td><td>Current user.</td><td class="n">Same shape as the <code>user</code> block in the auth bundle. Single source of truth after any edit.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag PATCH">PATCH</span></td><td class="p"><code>/me</code></td><td>Edit profile.</td><td class="n"><code>first_name</code>, <code>last_name</code>, <code>email</code>, <code>language</code>, <code>gender?</code>, <code>date_of_birth?</code>. Backs the Edit Profile form (Full Name / Email / Phone / Password).</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/me/photo</code></td><td>Upload avatar.</td><td class="n">multipart <code>photo</code>, max 5 MB, jpg/png. Returns <code>photo_url</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/me/stats</code></td><td>Header stats.</td><td class="n"><code>total_trips</code>, <code>wallet_balance</code>, <code>rating</code>, <code>member_since</code>, <code>co2_saved_kg?</code>. Backs the menu header (Total Rides / Wallet Balance / Member Since).</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/me/phone/change</code></td><td>Start phone change.</td><td class="n"><code>new_phone</code> → OTP. Then <code>POST /me/phone/verify</code> with <code>code</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/me/email/verify/send</code></td><td>Send email verification.</td><td class="n">Pairs with <code>POST /me/email/verify</code> (<code>code</code>).</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/me/preferences</code></td><td>Read preferences.</td><td class="n">Keys the UIs already toggle: <code>incoming_trip_requests</code>, <code>earnings_payout_alerts</code>, <code>promotional_peak_hours</code>, <code>trip_updates</code>, <code>chat_messages</code>, plus <code>language</code>, <code>theme</code>, <code>marketing_opt_in</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag PATCH">PATCH</span></td><td class="p"><code>/me/preferences</code></td><td>Save preferences.</td><td class="n">Partial update, one or many keys.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/me/emergency-contacts</code></td><td>List SOS contacts.</td><td class="n">Needed for the safety module.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/me/emergency-contacts</code></td><td>Add contact.</td><td class="n"><code>name</code>, <code>phone</code>, <code>relationship?</code>, <code>notify_on_trip_start</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag DELETE">DELETE</span></td><td class="p"><code>/me/emergency-contacts/{id}</code></td><td>Remove contact.</td><td class="n">—</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/me/referral</code></td><td>Referral code &amp; progress.</td><td class="n"><code>code</code>, <code>share_message</code>, <code>invited_count</code>, <code>earned_total</code>, <code>reward_per_invite</code>, <code>terms_url</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/me/close-account</code></td><td>Request deletion.</td><td class="n"><code>reason</code>, <code>password_or_otp</code>. Must 409 with the outstanding figure when a wallet balance or unsettled cash exists. Required by both stores.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/me/export</code></td><td>Data export (GDPR-style).</td><td class="n">Queues a job, emails a link. Nice-to-have, cheap to add now.</td><td class="a"><span class="aud both">Both</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="places" data-group="Rider app" data-title="Saved places">
+      <h2><span class="num">05</span>Saved Places &amp; Address Book</h2>
+      <p>Backs Home / Office / custom labels, the "Add an address" sheet and the RECENT list on the home map.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/places</code></td><td>Saved places.</td><td class="n"><code>id</code>, <code>label</code> (<code>home|office|custom</code>), <code>name</code>, <code>address</code>, <code>lat</code>, <code>lng</code>, <code>place_id</code>, <code>building</code>, <code>floor</code>, <code>instructions</code>, <code>contact_phone</code>, <code>is_default</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/places</code></td><td>Add a place.</td><td class="n">Same fields. 422 when the label <code>home</code>/<code>office</code> is already taken.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag PATCH">PATCH</span></td><td class="p"><code>/places/{id}</code></td><td>Edit a place.</td><td class="n">—</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag DELETE">DELETE</span></td><td class="p"><code>/places/{id}</code></td><td>Delete a place.</td><td class="n">—</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/places/recent</code></td><td>Recent destinations.</td><td class="n">Server-derived from trip history, <code>?limit=5</code>. Feeds the RECENT rows on the destination search screen.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="geo" data-group="Rider app" data-title="Geo &amp; maps proxy">
+      <h2><span class="num">06</span>Geo &amp; Maps Proxy</h2>
+      <p>Proxy Google Maps server-side. The key is currently in <code>.env</code> and hardcoded in the driver app — proxying kills that exposure and lets you cache aggressively, which is the single biggest Maps bill lever you have.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/geo/autocomplete</code></td><td>Place search.</td><td class="n"><code>q</code>, <code>lat</code>, <code>lng</code>, <code>session_token</code>, <code>country</code>. Returns <code>place_id</code>, <code>primary_text</code>, <code>secondary_text</code>, <code>distance_m</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/geo/place/{place_id}</code></td><td>Place details.</td><td class="n">Returns <code>name</code>, <code>formatted_address</code>, <code>lat</code>, <code>lng</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/geo/reverse-geocode</code></td><td>Pin → address.</td><td class="n"><code>lat</code>, <code>lng</code>. Used every time the map pin settles ("Current Location" label).</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/geo/geocode</code></td><td>Address → coords.</td><td class="n">—</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/geo/route</code></td><td>Directions + polyline.</td><td class="n"><code>origin</code>, <code>destination</code>, <code>waypoints?</code>, <code>mode=driving|bike</code>. Returns <code>encoded_polyline</code>, <code>distance_m</code>, <code>duration_s</code>, <code>duration_in_traffic_s</code>. Both apps draw this.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/geo/eta</code></td><td>Distance matrix.</td><td class="n">Batch origins/destinations for ETA badges.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/geo/nearby-drivers</code></td><td>Idle driver markers.</td><td class="n"><code>lat</code>, <code>lng</code>, <code>radius_m</code>, <code>vertical</code>. Return <b>fuzzed</b> positions and no identities — this is decoration for the home map, not tracking.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="quotes" data-group="Rider app" data-title="Fares &amp; quotes">
+      <h2><span class="num">07</span>Fares &amp; Quotes</h2>
+      <p>The pricing gate for all three verticals. One quote, many options — the Choose Ride sheet renders whatever comes back.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/quotes</code></td><td>Price a journey.</td><td class="n"><code>vertical=ride|co_ride|package</code>, <code>pickup</code>, <code>dropoff</code>, <code>stops[]?</code>, <code>seats?</code>, <code>package?</code> (<code>size</code>, <code>is_express</code>, <code>is_fragile</code>), <code>scheduled_at?</code>, <code>promo_code?</code>. Returns the object below.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/quotes/{quote_id}</code></td><td>Re-read a quote.</td><td class="n">For resuming after backgrounding. 410 once expired.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/fare-rules</code></td><td>Explain pricing.</td><td class="n">Base / per-km / per-min / minimum / waiting / cancellation fee per class. Powers the "how is this calculated" sheet.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+        </tbody>
+      </table></div>
+      <pre>// POST /quotes → 200
+{
+  "<b>quote_id</b>": "qt_01J8Z...", "<b>expires_at</b>": "2026-08-12T14:05:00Z", "<b>currency</b>": "XOF",
+  "<b>pickup</b>":  { "label": "Cocody", "lat": 5.3599, "lng": -3.9970, "place_id": "Ch..." },
+  "<b>dropoff</b>": { "label": "Plateau", "lat": 5.3197, "lng": -4.0244, "place_id": "Ch..." },
+  "<b>distance_m</b>": 6400, "<b>duration_s</b>": 1080, "<b>encoded_polyline</b>": "e{~vF...",
+  "<b>surge</b>": { "active": false, "multiplier": 1.0, "reason": null },
+  "<b>options</b>": [
+    { "class_code": "zen_car",    "name": "Zen Car",     "icon": "car",    "seats": 4,
+      "eta_pickup_min": 4, "duration_min": 18, "available": true,
+      "fare": { "total": 2500, "base": 500, "distance": 1600, "time": 200, "service_fee": 200, "discount": 0 } },
+    { "class_code": "zen_bike",   "name": "Zen Bike",    "icon": "bike",   "seats": 1,
+      "eta_pickup_min": 2, "duration_min": 14, "available": true,
+      "fare": { "total": 1750, "base": 400, "distance": 1150, "time": 100, "service_fee": 100, "discount": 0 } },
+    { "class_code": "zen_coride", "name": "Zen Co-Ride", "icon": "group",  "seats": 6,
+      "eta_pickup_min": 6, "duration_min": 23, "available": true,
+      "fare": { "total": 1375, "base": 300, "distance": 875, "time": 100, "service_fee": 100, "discount": 0 } }
+  ],
+  "<b>payment_methods</b>": ["cash", "wallet", "orange_money", "moov_money", "mtn_momo", "wave"]
+}</pre>
+    </section>
+
+    <section id="rides" data-group="Rider app" data-title="Ride hailing">
+      <h2><span class="num">08</span>Ride (hailing)</h2>
+      <p>The core vertical. States below are the rider-facing view of the same machine the driver drives in module 20.</p>
+      <div class="flow">
+        <span>searching</span><i>→</i><span>driver_assigned</span><i>→</i><span>driver_arriving</span><i>→</i><span>driver_arrived</span><i>→</i><span>in_progress</span><i>→</i><span class="term">completed</span><i>|</i><span class="term">cancelled</span><i>|</i><span class="term">no_drivers_found</span>
+      </div>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/rides</code></td><td>Request a ride.</td><td class="n"><code>quote_id</code>, <code>class_code</code>, <code>payment_method</code>, <code>promo_code?</code>, <code>note?</code>, <code>scheduled_at?</code>, <code>for_someone_else?</code> (<code>name</code>, <code>phone</code>). Requires <code>Idempotency-Key</code>. Returns the ride object in <code>searching</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/rides/active</code></td><td>Resume in-flight trip.</td><td class="n">Called on every cold start. Returns the live ride/booking/package or <code>null</code> — this is what lets the app restore the tracking screen after a kill.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/rides/{id}</code></td><td>Ride detail.</td><td class="n">Full object incl. driver, vehicle, fare breakdown, polyline, OTP.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/rides/{id}/driver-location</code></td><td>Poll driver position.</td><td class="n"><code>lat</code>, <code>lng</code>, <code>heading</code>, <code>eta_min</code>, <code>updated_at</code>. HTTP fallback for when the socket is down.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/rides/{id}/cancel</code></td><td>Cancel.</td><td class="n"><code>reason_code</code>, <code>note?</code>. Returns <code>cancellation_fee</code> and whether it was charged. Fee rules must be server-side.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/rides/cancellation-reasons</code></td><td>Reason picker.</td><td class="n"><code>?audience=rider|driver</code>, localised labels.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag PATCH">PATCH</span></td><td class="p"><code>/rides/{id}/destination</code></td><td>Change destination mid-trip.</td><td class="n">New <code>dropoff</code> → re-quoted fare. Common real-world need; skip only if you're deliberately deferring it.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag PATCH">PATCH</span></td><td class="p"><code>/rides/{id}/payment-method</code></td><td>Switch payment method.</td><td class="n">Allowed until the fare is captured.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/rides/{id}/note</code></td><td>Note to driver.</td><td class="n">Text, and <code>multipart audio</code> for the voice note the rider app already records.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/rides</code></td><td>Trip history.</td><td class="n"><code>?status=</code>, <code>?vertical=</code>, <code>?category=business|eco_friendly|luxury</code>, <code>?from=</code>, <code>?to=</code>, paginated. Backs Recent Trips + its filter chips.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/rides/{id}/receipt</code></td><td>Receipt.</td><td class="n">JSON breakdown + <code>pdf_url</code>. Backs "Download Receipt".</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/rides/{id}/rate</code></td><td>Rate the driver.</td><td class="n"><code>stars</code> 1–5, <code>tags[]</code>, <code>comment?</code>, <code>tip_amount?</code>. One rating per trip; 409 on repeat.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/rides/{id}/tip</code></td><td>Tip after the fact.</td><td class="n">Only if tipping is enabled in <code>/config</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/rides/{id}/lost-item</code></td><td>Report a lost item.</td><td class="n">Opens a support ticket bound to the trip.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/rides/scheduled</code></td><td>Upcoming scheduled rides.</td><td class="n">Only if scheduling ships in v1 — the Terms page already promises it.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag DELETE">DELETE</span></td><td class="p"><code>/rides/scheduled/{id}</code></td><td>Cancel a scheduled ride.</td><td class="n">—</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+        </tbody>
+      </table></div>
+      <pre>// GET /rides/{id} → 200  (the shape the tracking screen binds to)
+{
+  "<b>trip_id</b>": "trp_01J8Z…", "<b>code</b>": "ZR-4801", "<b>vertical</b>": "ride",
+  "<b>status</b>": "in_progress", "<b>class_code</b>": "zen_car",
+  "<b>pickup</b>":  { "label": "Cocody", "lat": 5.3599, "lng": -3.9970 },
+  "<b>dropoff</b>": { "label": "Plateau", "lat": 5.3197, "lng": -4.0244 },
+  "<b>start_otp</b>": "4821",                      // rider shows this to the driver
+  "<b>eta</b>": { "pickup_min": 0, "dropoff_min": 12, "arrives_at": "2026-08-12T14:26:00Z" },
+  "<b>encoded_polyline</b>": "e{~vF...", "<b>progress</b>": 0.42,
+  "<b>driver</b>": { "id": "drv_...", "name": "Marcus K.", "rating": 4.9, "photo_url": "...",
+               "phone_masked": "+225 07 •• •• 42", "trips_completed": 1240,
+               "vehicle": { "make_model": "Toyota Corolla", "plate": "CI-01-8392-A", "color": "white" } },
+  "<b>fare</b>": { "total": 2500, "base": 500, "distance": 1600, "time": 200, "service_fee": 200,
+            "discount": 0, "tip": 0, "currency": "XOF", "is_final": false },
+  "<b>payment</b>": { "method": "orange_money", "status": "authorized" },
+  "<b>timestamps</b>": { "requested_at": "...", "assigned_at": "...", "arrived_at": "...",
+                  "started_at": "...", "completed_at": null },
+  "<b>actions</b>": { "can_cancel": true, "cancellation_fee": 500, "can_change_destination": true,
+               "can_chat": true, "can_call": true },
+  "<b>share_url</b>": "https://izigo.app/t/9fJ2kQ"
+}</pre>
+    </section>
+
+    <section id="coride" data-group="Rider app" data-title="Co-Ride">
+      <h2><span class="num">09</span>Co-Ride (shared trips)</h2>
+      <p>Two halves: riders search &amp; book seats on a listing; drivers publish listings. Seat inventory is the tricky part — it must be transactional, because the current client decrements seats locally and will oversell the moment it's real.</p>
+      <div class="flow">
+        <span>upcoming</span><i>→</i><span>driver_arriving</span><i>→</i><span>in_ride</span><i>→</i><span class="term">completed</span><i>|</i><span class="term">cancelled</span>
+      </div>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/co-ride/listings</code></td><td>Search listings.</td><td class="n"><code>from_lat/lng</code>, <code>to_lat/lng</code>, <code>radius_m</code>, <code>departure_from</code>, <code>departure_to</code>, <code>seats</code>, <code>sort=departure|price|rating</code>, <code>eco_only</code>. Returns the listing object below with <code>seats_left</code> and <code>route_overlap_pct</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/co-ride/listings/{id}</code></td><td>Listing detail.</td><td class="n">Includes driver profile, vehicle, stops, seat map.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/co-ride/requests</code></td><td>Ask to be matched.</td><td class="n">When no listing fits: <code>pickup</code>, <code>dropoff</code>, <code>seats_needed</code>, <code>departure_window</code>. Returns <code>request_id</code>, <code>status=searching</code>. Server matches and pushes <code>coride.request_matched</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/co-ride/requests</code></td><td>My open requests.</td><td class="n">Backs the "Finding matching drivers…" state.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag DELETE">DELETE</span></td><td class="p"><code>/co-ride/requests/{id}</code></td><td>Cancel the search.</td><td class="n">—</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/co-ride/bookings</code></td><td>Book seats.</td><td class="n"><code>listing_id</code>, <code>seats</code>, <code>payment_method</code>, <code>promo_code?</code>, <code>Idempotency-Key</code>. Must lock inventory in a transaction and 409 <code>SEATS_UNAVAILABLE</code>. Returns <code>seat_labels[]</code> and the fare breakdown (<code>price_per_seat</code>, <code>service_fee</code>, <code>promo_discount</code>, <code>total</code>).</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/co-ride/bookings</code></td><td>My bookings.</td><td class="n"><code>?state=active|past</code>. Backs Active Co-Rides + history.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/co-ride/bookings/{id}</code></td><td>Booking detail.</td><td class="n">Live status, driver position, <code>departure_at</code>, seat labels, proof of payment.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/co-ride/bookings/{id}/cancel</code></td><td>Cancel a booking.</td><td class="n"><code>reason_code</code>. Releases seats, applies the refund/fee policy.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/co-ride/bookings/{id}/rate</code></td><td>Rate the driver.</td><td class="n"><code>stars</code>, <code>tags[]</code>, <code>comment?</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/co-ride/listings</code></td><td>Publish a trip.</td><td class="n"><code>from</code>, <code>to</code>, <code>departure_at</code>, <code>seats_total</code>, <code>price_per_seat</code>, <code>is_eco</code>, <code>recurring?</code>. Server may cap the price.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/co-ride/listings</code></td><td>My listings.</td><td class="n">With booked-seat counts and passenger manifest.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag PATCH">PATCH</span></td><td class="p"><code>/driver/co-ride/listings/{id}</code></td><td>Edit a listing.</td><td class="n">Blocked once a passenger has booked, except for <code>departure_at</code> nudges.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag DELETE">DELETE</span></td><td class="p"><code>/driver/co-ride/listings/{id}</code></td><td>Withdraw a listing.</td><td class="n">Must notify and refund booked passengers.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/co-ride/listings/{id}/manifest</code></td><td>Passenger list.</td><td class="n">Names, seat labels, pickup order, payment status, boarding checkboxes.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/co-ride/bookings/{id}/board</code></td><td>Mark passenger aboard.</td><td class="n">Per-passenger pickup confirmation.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+        </tbody>
+      </table></div>
+      <pre>// co-ride listing
+{ "<b>id</b>": "CRL-10023", "<b>driver</b>": { "id": "drv_...", "name": "Marcus K.", "rating": 4.9,
+    "vehicle": "Toyota Corolla", "plate": "CI-01-8392-A", "is_eco": false, "badges": ["top_rated"] },
+  "<b>from</b>": { "label": "Cocody", "lat": 5.3599, "lng": -3.9970 },
+  "<b>to</b>":   { "label": "Plateau", "lat": 5.3197, "lng": -4.0244 },
+  "<b>departure_at</b>": "2026-08-12T14:20:00Z", "<b>minutes_to_departure</b>": 17,
+  "<b>seats_total</b>": 6, "<b>seats_taken</b>": 4, "<b>seats_left</b>": 2,
+  "<b>price_per_seat</b>": 1500, "<b>service_fee</b>": 200, "<b>currency</b>": "XOF",
+  "<b>route_overlap_pct</b>": 78, "<b>from_request_id</b>": null }</pre>
+    </section>
+
+    <section id="packages" data-group="Rider app" data-title="Package delivery">
+      <h2><span class="num">10</span>Package Delivery</h2>
+      <p>Tracking IDs are user-visible (<code>ZD-1234-5678</code>) and a 4-digit <code>proof_code</code> is handed to the recipient. Public tracking must work without a login so senders can share the link.</p>
+      <div class="flow">
+        <span>searching</span><i>→</i><span>matched</span><i>→</i><span>picked_up</span><i>→</i><span>in_transit</span><i>→</i><span class="term">delivered</span><i>|</i><span class="term">cancelled</span><i>|</i><span class="term">returned</span>
+      </div>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/packages</code></td><td>Send a package.</td><td class="n"><code>quote_id</code>, <code>pickup</code>, <code>dropoff</code>, <code>recipient</code> (<code>name</code>, <code>phone</code>), <code>size=small|large</code>, <code>is_express</code>, <code>is_fragile</code>, <code>description?</code>, <code>instructions?</code>, <code>recipient_pays</code>, <code>declared_value?</code>, <code>payment_method</code>, <code>Idempotency-Key</code>. Returns <code>tracking_id</code> + <code>proof_code</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/packages</code></td><td>My deliveries.</td><td class="n"><code>?state=active|past</code>, paginated. Backs My Deliveries.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/packages/{id}</code></td><td>Delivery detail.</td><td class="n">Courier, live position, progress, timestamps, proof code, fare.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/packages/track/{tracking_id}</code></td><td>Public tracking.</td><td class="n"><b>No auth.</b> Redacted view: status, ETA, courier first name, coarse position. Rate limit by IP.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/packages/{id}/cancel</code></td><td>Cancel.</td><td class="n"><code>reason_code</code>. Fee applies once a courier is en route.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/packages/{id}/rate</code></td><td>Rate the courier.</td><td class="n"><code>stars</code>, <code>tags[]</code>, <code>comment?</code>, <code>tip_amount?</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/packages/{id}/proof</code></td><td>Proof of delivery.</td><td class="n">multipart <code>photo</code> + <code>proof_code</code> and/or <code>signature</code>. Server validates the code; wrong code must 422, not silently pass.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/packages/{id}/failed-delivery</code></td><td>Recipient unreachable.</td><td class="n"><code>reason_code</code>, <code>photo?</code> → <code>returned</code> or a retry window.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="safety" data-group="Rider app" data-title="Safety &amp; sharing">
+      <h2><span class="num">11</span>Trip Safety &amp; Sharing</h2>
+      <p>Both apps have SOS UI already. This module makes it real, and it's the one you don't want to ship late.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/safety/sos</code></td><td>Panic button.</td><td class="n"><code>trip_id?</code>, <code>lat</code>, <code>lng</code>, <code>source=rider|driver</code>, <code>type=accident|harassment|medical|other</code>. Alerts ops, notifies emergency contacts, returns <code>emergency_number</code> to dial. Must respond fast and log unconditionally.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/safety/sos/{id}/resolve</code></td><td>False alarm / stand down.</td><td class="n">—</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/trips/{id}/share</code></td><td>Share live trip.</td><td class="n">Returns a short-lived <code>share_url</code> + <code>expires_at</code>; optionally SMSes chosen emergency contacts.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/trips/shared/{token}</code></td><td>Public live view.</td><td class="n">No auth, expiring, redacted.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/trips/{id}/report</code></td><td>Report an issue.</td><td class="n"><code>category</code>, <code>description</code>, <code>attachments[]</code>. Backs "Report Issue" on both sides.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/safety/checkin</code></td><td>Silent check-in ping.</td><td class="n">Optional: long-stationary or off-route detection asks "are you ok?".</td><td class="a"><span class="aud both">Both</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="payments" data-group="Money" data-title="Payments">
+      <h2><span class="num">12</span>Payments &amp; Payment Methods</h2>
+      <p>Gateways in play: CinetPay (Orange / Moov / MTN mobile money), Wave, cash, and the in-app wallet. All initiation moves server-side.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/payment-methods</code></td><td>Available + saved methods.</td><td class="n">Enabled gateways from config plus the user's saved instruments (<code>id</code>, <code>type</code>, <code>label</code> "Debit Card (ending in 4242)", <code>brand</code>, <code>last4</code>, <code>is_default</code>).</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/payment-methods</code></td><td>Add a method.</td><td class="n">Card via gateway token only — never raw PAN. Mobile money: <code>provider</code> + <code>phone</code> (OTP-confirmed).</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag PATCH">PATCH</span></td><td class="p"><code>/payment-methods/{id}/default</code></td><td>Set default.</td><td class="n">—</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag DELETE">DELETE</span></td><td class="p"><code>/payment-methods/{id}</code></td><td>Remove a method.</td><td class="n">—</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/payments/intents</code></td><td>Start a payment.</td><td class="n"><code>purpose=trip|booking|package|wallet_topup|cash_settlement</code>, <code>reference_id</code>, <code>amount</code>, <code>method</code>, <code>Idempotency-Key</code>. Returns <code>payment_id</code>, <code>status</code>, and one of <code>checkout_url</code> / <code>ussd_code</code> / <code>deep_link</code> / <code>otp_required</code>. <b>Server holds the gateway keys.</b></td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/payments/{id}</code></td><td>Poll payment status.</td><td class="n"><code>pending|processing|succeeded|failed|cancelled|refunded</code> + <code>failure_reason</code>. The app polls this after returning from the gateway sheet.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/payments/{id}/cancel</code></td><td>Abandon a pending payment.</td><td class="n">Called when the user backs out of the gateway sheet.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/payments</code></td><td>Payment history.</td><td class="n">Paginated, filter by purpose and status.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/webhooks/{gateway}</code></td><td>Gateway callback.</td><td class="n">Server-to-server, signature-verified, idempotent by gateway event id. <code>{gateway}</code> = <code>cinetpay</code> | <code>wave</code>. This — not client polling — is the source of truth for settlement.</td><td class="a"><span class="aud both">Both</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><strong>Rotate these keys now.</strong><p>A CinetPay <code>apikey</code> + <code>site_id</code> and a live Wave bearer token are hardcoded in the rider app's <code>mobile_payment_repo.dart</code>, meaning they ship inside every APK. Treat them as compromised, rotate them, and never issue client-side gateway credentials again — <code>/payments/intents</code> exists to make that unnecessary.</p></div>
+    </section>
+
+    <section id="wallet" data-group="Money" data-title="Rider wallet">
+      <h2><span class="num">13</span>Rider Wallet</h2>
+      <p>The app already has Add Funds, Transfer Funds, Withdraw Funds and a weekly-spending chart built.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/wallet</code></td><td>Balance.</td><td class="n"><code>balance</code>, <code>currency</code>, <code>pending_in</code>, <code>pending_out</code>, <code>is_locked</code>, <code>min_topup</code>, <code>max_balance</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/wallet/transactions</code></td><td>Ledger.</td><td class="n"><code>?type=topup|trip|refund|transfer_in|transfer_out|withdrawal|bonus</code>, <code>?from=</code>, <code>?to=</code>. Each row: <code>id</code>, <code>type</code>, <code>amount</code> (signed), <code>balance_after</code>, <code>title</code>, <code>subtitle</code>, <code>reference_id</code>, <code>status</code>, <code>created_at</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/wallet/summary</code></td><td>Spending chart.</td><td class="n"><code>?period=week|month</code> → per-bucket totals. Backs the Weekly Spending card.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/wallet/topup</code></td><td>Add funds.</td><td class="n"><code>amount</code>, <code>method</code>. Creates a payment intent under the hood; returns <code>payment_id</code> + checkout handoff.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/wallet/transfer/lookup</code></td><td>Resolve recipient.</td><td class="n"><code>phone</code> → <code>{ name_masked, user_id }</code> or 404. Confirms who you're sending to before you send.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/wallet/transfer</code></td><td>Send to another user.</td><td class="n"><code>recipient_user_id</code>, <code>amount</code>, <code>note?</code>, <code>pin_or_otp</code>, <code>Idempotency-Key</code>. Requires a second factor — this moves money.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/wallet/withdraw</code></td><td>Withdraw out.</td><td class="n"><code>amount</code>, <code>destination</code> (<code>mobile_money</code> + provider/phone, or <code>bank</code> + account), <code>pin_or_otp</code>. Returns <code>fee</code>, <code>net_amount</code>, <code>eta</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/wallet/limits</code></td><td>Limits &amp; fees.</td><td class="n">Per-transaction and daily caps, withdrawal fee schedule. Lets the UI validate before submitting.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="promos" data-group="Money" data-title="Promotions">
+      <h2><span class="num">14</span>Promotions &amp; Coupons</h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="rider"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/coupons</code></td><td>My available coupons.</td><td class="n"><code>code</code>, <code>title</code>, <code>discount_type=percent|fixed</code>, <code>value</code>, <code>max_discount</code>, <code>min_order</code>, <code>verticals[]</code>, <code>expires_at</code>, <code>usage_left</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/coupons/validate</code></td><td>Apply a code.</td><td class="n"><code>code</code>, <code>vertical</code>, <code>quote_id</code>. Returns <code>discount</code> + <code>new_total</code>, or a 422 with a human reason. Validation must be server-side.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/referrals/redeem</code></td><td>Enter a referral code.</td><td class="n"><code>code</code>. Post-signup entry path.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/incentives</code></td><td>Bonuses &amp; quests.</td><td class="n">Active incentive programmes with <code>progress</code> / <code>target</code> / <code>reward</code>. Backs the "ChopMonie Bonus 3.5%" line in earnings.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="notifications" data-group="Cross-cutting" data-title="Notifications">
+      <h2><span class="num">15</span>Notifications</h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/notifications</code></td><td>Inbox.</td><td class="n">Paginated. <code>id</code>, <code>type</code>, <code>title</code>, <code>body</code>, <code>image_url?</code>, <code>deep_link</code>, <code>is_read</code>, <code>created_at</code>, <code>group=trip|payment|promo|system</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/notifications/unread-count</code></td><td>Badge count.</td><td class="n">Cheap; polled on resume.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/notifications/{id}/read</code></td><td>Mark read.</td><td class="n">—</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/notifications/read-all</code></td><td>Mark all read.</td><td class="n">—</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag DELETE">DELETE</span></td><td class="p"><code>/notifications/{id}</code></td><td>Delete one.</td><td class="n">Both notification screens support swipe-away.</td><td class="a"><span class="aud both">Both</span></td></tr>
+        </tbody>
+      </table></div>
+      <p>Preference toggles live on <code>/me/preferences</code> (module 04). Push payload contract is in module 25.</p>
+    </section>
+
+    <section id="chat" data-group="Cross-cutting" data-title="Chat">
+      <h2><span class="num">16</span>Chat &amp; Messaging</h2>
+      <p>Two thread kinds: rider↔driver scoped to a trip, and user↔support. Text, image and voice-note messages — the rider app already records audio.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/conversations</code></td><td>Thread list.</td><td class="n"><code>id</code>, <code>kind=trip|support</code>, <code>trip_id?</code>, <code>counterpart</code> (name, photo, role), <code>last_message</code>, <code>unread_count</code>, <code>is_closed</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/conversations/{id}/messages</code></td><td>Message history.</td><td class="n">Cursor pagination (<code>?before=</code>). <code>id</code>, <code>sender_role</code>, <code>type=text|image|audio|system</code>, <code>body</code>, <code>media_url</code>, <code>duration_s</code>, <code>sent_at</code>, <code>read_at</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/conversations/{id}/messages</code></td><td>Send a message.</td><td class="n">JSON for text; multipart for <code>image</code> / <code>audio</code>. Accept a client <code>local_id</code> and echo it back so the app can reconcile optimistic sends.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/conversations/{id}/read</code></td><td>Mark thread read.</td><td class="n">—</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/conversations/trip/{trip_id}</code></td><td>Open/find trip thread.</td><td class="n">Idempotent — returns the existing conversation if there is one. Auto-closes some hours after trip completion.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/calls/mask</code></td><td>Masked voice call.</td><td class="n"><code>trip_id</code> → a proxy number valid for the trip, so neither party sees the other's real number. Both apps have Call buttons.</td><td class="a"><span class="aud both">Both</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="support" data-group="Cross-cutting" data-title="Help &amp; support">
+      <h2><span class="num">17</span>Help &amp; Support</h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/support/faqs</code></td><td>FAQ list.</td><td class="n"><code>?audience=rider|driver</code>, grouped by category, localised. Currently hardcoded in both apps.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/support/channels</code></td><td>How to reach us.</td><td class="n"><code>call_number</code>, <code>whatsapp</code>, <code>email</code>, <code>sos_number</code>, <code>hours</code>, <code>live_chat_enabled</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/support/categories</code></td><td>Ticket categories.</td><td class="n">Driver app already shows: Earnings &amp; Payouts, Trip / Customer Issue, Technical Issue. Serve these so ops can change them.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/support/tickets</code></td><td>Raise a ticket.</td><td class="n">multipart: <code>category</code>, <code>description</code>, <code>trip_id?</code>, <code>attachments[]</code>. Returns <code>reference</code> to show the user.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/support/tickets</code></td><td>My tickets.</td><td class="n"><code>status=open|pending|resolved|closed</code>, paginated.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/support/tickets/{id}</code></td><td>Ticket thread.</td><td class="n">Messages + attachments + status history.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/support/tickets/{id}/reply</code></td><td>Reply.</td><td class="n">Text + attachments.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/support/tickets/{id}/close</code></td><td>Close ticket.</td><td class="n">—</td><td class="a"><span class="aud both">Both</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ DRIVER ============ -->
+
+    <section id="kyc" data-group="Driver app" data-title="Onboarding &amp; KYC">
+      <h2><span class="num">18</span>Driver Onboarding &amp; KYC</h2>
+      <p>The app ships an 8-step checklist. Each step needs its own submit so a driver can be sent back to fix exactly one thing, and each needs a per-step <code>status</code> + <code>rejection_reason</code>.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/onboarding</code></td><td>Checklist state.</td><td class="n">Per step: <code>key</code>, <code>title</code>, <code>status=empty|submitted|approved|rejected</code>, <code>rejection_reason</code>, <code>required_fields[]</code>, <code>required_documents[]</code>. Plus <code>progress</code>, <code>can_submit</code>. Drives the hub screen instead of local booleans.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/onboarding/personal</code></td><td>Step 1 — personal info.</td><td class="n">Names, DOB, gender, address, city, emergency contact.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/onboarding/identity</code></td><td>Step 2 — government ID.</td><td class="n"><code>id_type=nin|bvn|passport|voters_card|cni</code>, <code>id_number</code>, front/back images. Return the verification result if you integrate an identity bureau.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/onboarding/license</code></td><td>Step 3 — driver's licence.</td><td class="n"><code>number</code>, <code>class</code>, <code>issued_at</code>, <code>expires_at</code>, front/back images.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/onboarding/vehicle</code></td><td>Step 4 — vehicle &amp; registration.</td><td class="n"><code>type=bike|car|tricycle|van</code>, <code>make</code>, <code>model</code>, <code>year</code>, <code>color</code>, <code>plate</code>, <code>seats</code>, registration doc, 4 vehicle photos.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/onboarding/insurance</code></td><td>Step 5 — insurance.</td><td class="n"><code>provider</code>, <code>policy_number</code>, <code>expires_at</code>, document.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/onboarding/guarantor</code></td><td>Step 6 — guarantor.</td><td class="n"><code>name</code>, <code>phone</code>, <code>relationship</code>, <code>occupation</code>, <code>address</code>, ID document. Consider an SMS consent confirmation to the guarantor.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/onboarding/payout</code></td><td>Step 7 — bank / payout.</td><td class="n"><code>method=bank|mobile_money</code>, <code>bank_code</code>, <code>account_number</code>, <code>account_name</code> (verify against the bank and echo the resolved name back).</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/onboarding/selfie</code></td><td>Step 8 — selfie &amp; liveness.</td><td class="n">multipart selfie (+ liveness video/frames). Returns <code>match_score</code> against the ID photo.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/onboarding/submit</code></td><td>Submit for review.</td><td class="n">422 listing incomplete steps. Sets <code>kyc_status=in_review</code>.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/kyc</code></td><td>Review status.</td><td class="n"><code>status</code>, <code>submitted_at</code>, <code>reviewed_at</code>, <code>estimated_hours</code>, <code>rejected_steps[]</code>. Backs the KYC review screen; also pushed as <code>kyc.status_changed</code>.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/banks</code></td><td>Bank list.</td><td class="n">For the payout picker.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/payout/resolve-account</code></td><td>Name enquiry.</td><td class="n"><code>bank_code</code> + <code>account_number</code> → <code>account_name</code>. Stops payouts going to typos.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="dispatch" data-group="Driver app" data-title="Availability &amp; dispatch">
+      <h2><span class="num">19</span>Driver Availability &amp; Dispatch</h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/status</code></td><td>Go online / offline.</td><td class="n"><code>is_online</code>, <code>verticals[]</code> (<code>ride</code>, <code>co_ride</code>, <code>package</code>), <code>lat</code>, <code>lng</code>. 403 with a reason when KYC isn't approved, documents have expired, or cash owed exceeds the cap — the app needs that reason string to explain the block.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/status</code></td><td>Current availability.</td><td class="n">Also returns <code>online_seconds_today</code> and any <code>block_reason</code>.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/location</code></td><td>Location heartbeat.</td><td class="n">Accept a <b>batch</b>: <code>points[]</code> of <code>{lat, lng, heading, speed, accuracy, recorded_at}</code> plus <code>job_id?</code>. Batching is what keeps this from killing battery and data. Agree the cadence: ~5 s on-trip, ~20 s idle.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/home</code></td><td>Dashboard bootstrap.</td><td class="n">One call for the whole home screen: <code>today</code> (<code>earnings</code>, <code>trips</code>, <code>online_seconds</code>, <code>acceptance_rate</code>), <code>wallet_balance</code>, <code>rating</code>, <code>active_job?</code>, <code>demand_zones[]</code>, <code>announcement?</code>.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/demand</code></td><td>Demand / surge map.</td><td class="n">Hex or polygon cells with <code>demand_level</code> and <code>multiplier</code>. Backs "where should I go".</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/jobs/offer</code></td><td>Fetch the pending offer.</td><td class="n">HTTP fallback for a missed push: returns the current offer + <code>expires_in_s</code>, or 204.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="jobs" data-group="Driver app" data-title="Job lifecycle">
+      <h2><span class="num">20</span>Driver Job Lifecycle</h2>
+      <p>One unified job object across all three verticals — this already matches the <code>JobState</code> backbone in the driver app, so the mapping is 1:1.</p>
+      <div class="flow">
+        <span>broadcasting</span><i>→</i><span>offered</span><i>→</i><span>accepted</span><i>→</i><span>en_route_to_pickup</span><i>→</i><span>arrived_at_pickup</span><i>→</i><span>picked_up</span><i>→</i><span>en_route_to_dropoff</span><i>→</i><span>arrived_at_dropoff</span><i>→</i><span class="term">completed</span>
+      </div>
+      <div class="flow">
+        <i>terminal alternatives:</i><span class="term">rejected_by_driver</span><span class="term">expired</span><span class="term">cancelled_by_rider</span><span class="term">cancelled_by_driver</span><span class="term">cancelled_by_admin</span><span class="term">returned</span><span class="term">disputed</span>
+      </div>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/jobs/{id}/accept</code></td><td>Accept the offer.</td><td class="n">Must 409 <code>OFFER_EXPIRED</code> / <code>OFFER_TAKEN</code> — first accept wins. Returns the full job with pickup route.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/jobs/{id}/decline</code></td><td>Decline.</td><td class="n"><code>reason_code</code>. Feeds acceptance rate.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/jobs/active</code></td><td>Resume active job.</td><td class="n">Called on cold start — the app currently loses the trip on restart. Returns job + state + route + customer.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/jobs/{id}/arrived-pickup</code></td><td>Arrived at pickup.</td><td class="n"><code>lat</code>, <code>lng</code>. Server may geofence-validate and start the waiting-time clock.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/jobs/{id}/start</code></td><td>Start the trip.</td><td class="n"><code>otp?</code> for rides (the rider's <code>start_otp</code>), <code>package_photo?</code> for packages, boarding list for co-ride. 422 on a wrong OTP.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/jobs/{id}/arrived-dropoff</code></td><td>Arrived at destination.</td><td class="n"><code>lat</code>, <code>lng</code>.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/jobs/{id}/complete</code></td><td>Complete.</td><td class="n"><code>final_distance_m</code>, <code>final_duration_s</code>, <code>waiting_minutes</code>, <code>cash_collected?</code>, <code>proof_code?</code>, <code>proof_photo?</code>. Server computes the final fare and returns the settlement: <code>fare</code>, <code>driver_earnings</code>, <code>commission</code>, <code>cash_to_remit</code>, <code>wallet_credit</code>. Backs the completion screen.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/jobs/{id}/cancel</code></td><td>Driver cancels.</td><td class="n"><code>reason_code</code>, <code>note?</code>, <code>lat</code>, <code>lng</code>. Returns any penalty applied so the UI can warn honestly.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/jobs/{id}/rate-customer</code></td><td>Rate the customer.</td><td class="n"><code>stars</code>, <code>tags[]</code>, <code>comment?</code>.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/jobs</code></td><td>Activity history.</td><td class="n"><code>?vertical=</code>, <code>?status=</code>, <code>?from=</code>, <code>?to=</code>, paginated. Backs the Activity list.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/jobs/{id}</code></td><td>Trip detail.</td><td class="n">Route travelled, timeline, fare + earnings breakdown, customer rating given/received.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/jobs/{id}/waiting</code></td><td>Waiting time events.</td><td class="n"><code>event=start|stop</code>. Only if waiting charges are in the fare model.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+        </tbody>
+      </table></div>
+      <pre>// job offer — pushed on `job.offered`, also readable at GET /driver/jobs/offer
+{
+  "<b>trip_id</b>": "trp_01J8Z…", "<b>vertical</b>": "package", "<b>state</b>": "offered",
+  "<b>expires_in_s</b>": 15, "<b>offered_at</b>": "2026-08-12T14:03:00Z",
+  "<b>pickup</b>":  { "label": "Salamander Café, Wuse 2", "lat": 9.0810, "lng": 7.4740 },
+  "<b>dropoff</b>": { "label": "Gwarinpa 3rd Avenue",     "lat": 9.1010, "lng": 7.4110 },
+  "<b>customer</b>": { "first_name": "Bisi", "rating": 4.8 },
+  "<b>distance_km</b>": 2.1, "<b>eta_min</b>": 8,
+  "<b>estimated_earnings</b>": 1850, "<b>currency</b>": "NGN",
+  "<b>payment_method</b>": "cash",              // cash | card | wallet
+  "<b>sub_label</b>": "3 items · ready in 8 min",
+  "<b>package</b>":  { "count": 3, "size": "small", "is_fragile": true },
+  "<b>co_ride</b>":  null,                      // { "seat_count": 3, "route_overlap_pct": 78 }
+  "<b>encoded_polyline</b>": "e{~vF..."
+}</pre>
+    </section>
+
+    <section id="earnings" data-group="Driver app" data-title="Earnings &amp; payouts">
+      <h2><span class="num">21</span>Driver Earnings, Wallet &amp; Payouts</h2>
+      <p>The screens already model commission, bonus, net, pending cash settlement and adjustments — so those have to be real ledger concepts, not display math.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/earnings</code></td><td>Earnings summary.</td><td class="n"><code>?period=today|current_week|last_week|last_3_months</code> or <code>from</code>/<code>to</code>. Returns <code>gross</code>, <code>commission</code> (amount + rate), <code>bonus</code> (amount + rate), <code>net</code>, <code>trips</code>, <code>online_hours</code>. Matches the existing Earnings Breakdown card exactly.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/earnings/series</code></td><td>Chart data.</td><td class="n"><code>?granularity=day|week|month</code> → buckets with <code>label</code> + <code>amount</code>. Drives the Mon–Fri / Mar–May bars.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/earnings/trips</code></td><td>Per-trip earnings.</td><td class="n">Paginated: trip code, vertical, time, fare, commission, net, payment method.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/wallet</code></td><td>Driver wallet.</td><td class="n"><code>available_balance</code>, <code>pending_cash_settlement</code>, <code>adjustments_total</code>, <code>currency</code>, <code>payout_bank</code>, <code>instant_withdrawal_enabled</code>, <code>min_withdrawal</code>, <code>withdrawal_fee</code>.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/wallet/transactions</code></td><td>Ledger.</td><td class="n"><code>?type=earnings|withdrawals|adjustments</code> — the three tabs already in the UI. Signed amounts, <code>balance_after</code>, <code>status=pending|processed|completed|failed</code>, <code>reference_id</code>.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/wallet/withdraw</code></td><td>Instant withdrawal.</td><td class="n"><code>amount</code>, <code>payout_method_id</code>, <code>Idempotency-Key</code>. Returns <code>fee</code>, <code>net_amount</code>, <code>eta</code>, <code>status</code>. 422 when below minimum or above available.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/payout-methods</code></td><td>Payout destinations.</td><td class="n">Bank accounts / mobile money wallets, with <code>is_default</code>.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/payout-methods</code></td><td>Add payout destination.</td><td class="n">Name-enquiry verified. Changing it should require OTP.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/cash-settlement</code></td><td>Cash owed.</td><td class="n"><code>amount_owed</code>, <code>limit</code>, <code>blocks_going_online_at</code>, <code>how_to_pay[]</code>, <code>trips[]</code>. Cash trips mean the driver owes the platform its cut — this is the account that goes wrong most often.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/cash-settlement/pay</code></td><td>Remit cash.</td><td class="n"><code>amount</code>, <code>method</code> (mobile money / wallet deduction) → payment intent.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/wallet/dispute</code></td><td>Dispute an adjustment.</td><td class="n"><code>transaction_id</code>, <code>reason</code>, <code>attachments[]</code>. Backs the "Cash shortfall adjustment" queries that will follow.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="performance" data-group="Driver app" data-title="Performance">
+      <h2><span class="num">22</span>Driver Performance &amp; Insights</h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/performance</code></td><td>Scorecard.</td><td class="n"><code>?period=week|month</code>. <code>customer_rating</code>, <code>acceptance_rate</code>, <code>cancellation_rate</code>, <code>completion_rate</code>, <code>avg_trip_minutes</code>, each with a <code>delta_vs_previous</code> and a <code>target</code>. Backs the Performance Scorecard incl. "this week vs last week".</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/insights/peak-hours</code></td><td>Best times to drive.</td><td class="n">Day × hour demand grid with expected earnings.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/badges</code></td><td>Badges &amp; tier.</td><td class="n">e.g. <code>top_rated</code> with earned date and criteria. The UI already shows a "Top Rated Driver" badge.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/ratings</code></td><td>Recent reviews.</td><td class="n">Paginated: stars, tags, comment, date, trip code. Anonymised customer.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section id="vehicle" data-group="Driver app" data-title="Vehicle &amp; documents">
+      <h2><span class="num">23</span>Driver Vehicle &amp; Documents</h2>
+      <div class="tbl"><table>
+        <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Notes / payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/vehicles</code></td><td>My vehicles.</td><td class="n">Supports more than one, with <code>is_active</code>.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/vehicles</code></td><td>Add a vehicle.</td><td class="n">Same fields as onboarding step 4; goes to review.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag PATCH">PATCH</span></td><td class="p"><code>/driver/vehicles/{id}</code></td><td>Update / switch active.</td><td class="n">Plate or type changes must re-trigger review.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/documents</code></td><td>Document wallet.</td><td class="n">Every doc with <code>type</code>, <code>status</code>, <code>expires_at</code>, <code>days_to_expiry</code>, <code>file_url</code>. Backs "Vehicle &amp; documents" and expiry nagging.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag POST">POST</span></td><td class="p"><code>/driver/documents</code></td><td>Upload / renew a doc.</td><td class="n">multipart <code>type</code>, <code>file</code>, <code>expires_at</code>. Same endpoint handles renewals.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag GET">GET</span></td><td class="p"><code>/driver/preferences</code></td><td>Driver preferences.</td><td class="n"><code>verticals[]</code> accepted, <code>max_pickup_distance_km</code>, <code>auto_accept</code>, plus notification toggles. Extends <code>/me/preferences</code>.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag PATCH">PATCH</span></td><td class="p"><code>/driver/preferences</code></td><td>Save preferences.</td><td class="n">—</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ REALTIME + REFERENCE ============ -->
+
+    <section id="realtime" data-group="Cross-cutting" data-title="Realtime &amp; push">
+      <h2><span class="num">24</span>Realtime Channels &amp; Events</h2>
+      <p class="lede">This is the module that makes or breaks the app, and neither client has a socket layer yet. Polling cannot deliver a 15-second job offer.</p>
+      <h3>Channels</h3>
+      <ul class="list">
+        <li><code>private-rider.{user_id}</code> — everything addressed to one rider.</li>
+        <li><code>private-driver.{driver_id}</code> — offers, wallet, KYC, broadcasts.</li>
+        <li><code>presence-trip.{trip_id}</code> — the shared trip room both parties join; carries driver position and chat.</li>
+        <li>Auth endpoint: <code>POST /realtime/auth</code> (Bearer token in, channel signature out), plus <code>GET /realtime/config</code> returning transport, host, key and cluster so the app doesn't hardcode any of it.</li>
+      </ul>
+      <div class="tbl"><table>
+        <thead><tr><th>Kind</th><th>Event</th><th>Purpose</th><th>Payload</th><th>Used by</th></tr></thead>
+        <tbody>
+          <tr data-aud="rider"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>ride.status_changed</code></td><td>Any status transition.</td><td class="n"><code>ride_id</code>, <code>status</code>, <code>driver?</code>, <code>eta?</code>, <code>changed_at</code>. One event covers assigned / arriving / arrived / started / completed / cancelled.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>driver.location</code></td><td>Live car on the map.</td><td class="n"><code>trip_id</code>, <code>lat</code>, <code>lng</code>, <code>heading</code>, <code>eta_min</code>. Throttle to ~1 every 3–5 s per trip room.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>ride.no_drivers_found</code></td><td>Search gave up.</td><td class="n"><code>ride_id</code>, <code>retry_allowed</code>. The "Finding driver…" screen needs a defined dead end.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>package.status_changed</code></td><td>Delivery progress.</td><td class="n"><code>tracking_id</code>, <code>status</code>, <code>courier?</code>, <code>progress</code>, <code>eta_min</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>coride.request_matched</code></td><td>A match was found.</td><td class="n"><code>request_id</code>, <code>listing</code>. Ends the matchmaking spinner.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="rider"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>coride.booking_updated</code></td><td>Seat/booking change.</td><td class="n"><code>booking_id</code>, <code>status</code>, <code>departure_at</code>.</td><td class="a"><span class="aud rider">Rider</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>job.offered</code></td><td>New job offer.</td><td class="n">Full offer object + <code>expires_in_s</code>. Must arrive as both a socket event and a high-priority FCM push with sound, so it fires on a locked phone.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>job.offer_revoked</code></td><td>Offer gone.</td><td class="n"><code>job_id</code>, <code>reason=expired|taken|cancelled</code>. Dismisses the offer sheet.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>job.updated</code></td><td>Job changed underneath.</td><td class="n">Destination changed, rider cancelled, admin intervened.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="driver"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>kyc.status_changed</code></td><td>Review outcome.</td><td class="n"><code>status</code>, <code>rejected_steps[]</code>.</td><td class="a"><span class="aud driver">Driver</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>wallet.balance_changed</code></td><td>Money moved.</td><td class="n"><code>balance</code>, <code>delta</code>, <code>transaction_id</code>. Keeps wallet screens honest without a refresh.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>chat.message</code></td><td>New message.</td><td class="n">Full message object + <code>conversation_id</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>notification.created</code></td><td>Inbox item.</td><td class="n">Notification object + new <code>unread_count</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+          <tr data-aud="both"><td class="m"><span class="m-tag EVT">EVT</span></td><td class="p"><code>broadcast.message</code></td><td>Ops announcement.</td><td class="n"><code>title</code>, <code>body</code>, <code>severity</code>, <code>audience</code>.</td><td class="a"><span class="aud both">Both</span></td></tr>
+        </tbody>
+      </table></div>
+      <h3>FCM payload contract</h3>
+      <pre>{
+  "notification": { "title": "Driver on the way", "body": "Marcus is 4 min away" },
+  "data": {
+    "<b>type</b>": "ride.status_changed",   // same vocabulary as the socket events
+    "<b>entity_id</b>": "trp_01J8Z…",
+    "<b>deep_link</b>": "izigo://trip/trp_01J8Z…",
+    "<b>payload</b>": "{...}"               // compact JSON, so the app can act without a fetch
+  },
+  "android": { "priority": "high", "notification": { "channel_id": "trip_offers", "sound": "offer" } },
+  "apns": { "headers": { "apns-priority": "10" } }
+}</pre>
+      <p>Channel ids the apps should register: <code>trip_offers</code> (driver, loud, bypasses DND), <code>trip_updates</code>, <code>chat</code>, <code>payments</code>, <code>promos</code>. Every push needs a <code>deep_link</code> — a notification that opens the home screen is a wasted notification.</p>
+    </section>
+
+    <section id="interlock" data-group="Reference" data-title="Trip identity &amp; state map">
+      <h2><span class="num">SHARED</span>One Trip, One Identity — and the State Map</h2>
+      <p class="lede">This section is identical in the rider and driver contracts. It is the seam where the two apps meet: get it wrong and both sides work perfectly on their own while never seeing each other.</p>
+
+      <h3>One row, one id, one name</h3>
+      <p>A ride is a single row in a single table. The rider app and the driver app are two views of it, not two objects that need reconciling.</p>
+      <ul class="list">
+        <li><b>Canonical identifier:</b> <code>trip_id</code>, prefixed <code>trp_</code>. Both apps receive it under that exact key. Do not expose a separate <code>ride_id</code> to one app and a <code>job_id</code> to the other — they were named differently in earlier drafts of these two documents, and that mismatch is precisely what this section exists to close.</li>
+        <li><b>Driver paths keep their noun.</b> <code>/driver/jobs/{id}</code> stays as written — "job" is the driver's word for their side of the trip — but the <code>{id}</code> passed is the <code>trip_id</code>. One value, addressable from either app's routes.</li>
+        <li><b>One realtime room:</b> <code>presence-trip.{trip_id}</code>. Both parties join the same channel with the same string. Driver position, chat and state changes all flow through it.</li>
+        <li><b>The rider-facing code</b> (<code>ZR-4801</code>, <code>ZD-1234-5678</code>) is a display label for support and receipts. It is never the key, never in a URL, and never used to join a channel.</li>
+      </ul>
+
+      <h3>The state map</h3>
+      <p>The server owns <b>one</b> state machine — the sixteen-state driver machine. What the rider sees is a projection of it, not a second machine kept in sync. Compute the rider status from the trip state on the way out; never store both.</p>
+      <div class="tbl"><table>
+        <thead><tr><th>Driver state (canonical)</th><th>Rider status (projection)</th><th>What the rider is shown</th><th>Visible to rider?</th></tr></thead>
+        <tbody>
+          <tr><td class="p"><code>broadcasting</code>, <code>offered</code>,<br><code>rejected_by_driver</code>, <code>expired</code></td><td class="p"><code>searching</code></td><td class="n">“Finding you a driver…”</td><td class="a"><span style="color:var(--text-3)">No</span></td></tr>
+          <tr><td class="p"><code>accepted</code></td><td class="p"><code>driver_assigned</code></td><td class="n">Driver card appears: name, rating, vehicle, plate</td><td class="a"><b>Yes</b></td></tr>
+          <tr><td class="p"><code>en_route_to_pickup</code></td><td class="p"><code>driver_arriving</code></td><td class="n">Live car on the map, ETA counting down</td><td class="a"><b>Yes</b></td></tr>
+          <tr><td class="p"><code>arrived_at_pickup</code></td><td class="p"><code>driver_arrived</code></td><td class="n">“Your driver is here” + the 4-digit start OTP</td><td class="a"><b>Yes</b></td></tr>
+          <tr><td class="p"><code>picked_up</code>, <code>en_route_to_dropoff</code>,<br><code>arrived_at_dropoff</code></td><td class="p"><code>in_progress</code></td><td class="n">Trip in progress, route and ETA to destination</td><td class="a"><b>Yes</b></td></tr>
+          <tr><td class="p"><code>completed</code></td><td class="p"><code>completed</code></td><td class="n">Fare breakdown, rate the driver, receipt</td><td class="a"><b>Yes</b></td></tr>
+          <tr><td class="p"><code>cancelled_by_rider</code>, <code>cancelled_by_driver</code>,<br><code>cancelled_by_admin</code></td><td class="p"><code>cancelled</code></td><td class="n">Reason, and any cancellation fee charged</td><td class="a"><b>Yes</b></td></tr>
+          <tr><td class="p">no driver accepted before the search window closed</td><td class="p"><code>no_drivers_found</code></td><td class="n">“No drivers available” + retry</td><td class="a"><b>Yes</b></td></tr>
+          <tr><td class="p"><code>returned</code>, <code>disputed</code></td><td class="p"><code>completed</code> + flag</td><td class="n">Package returned, or the trip is under review</td><td class="a"><b>Yes</b></td></tr>
+        </tbody>
+      </table></div>
+
+      <div class="note"><strong>The first row is the one that matters.</strong><p>Everything about offering, declining and expiring is invisible to the rider by design. A trip can be offered to four drivers and declined by three while the rider sees one uninterrupted “finding you a driver”. Leak those transitions into <code>ride.status_changed</code> and the rider watches their trip flicker between states for reasons they cannot see — and support inherits the calls.</p></div>
+
+      <h3>Fan-out: one change, two payloads</h3>
+      <p>Each transition emits <b>two different events</b> on the same trip. Sending the driver's state to the rider is the most common way this seam breaks.</p>
+      <pre>// driver POSTs /driver/jobs/trp_01J8Z…/arrived-pickup
+
+// → to the driver's own channel
+{ "event": "job.updated",
+  "<b>trip_id</b>": "trp_01J8Z…", "<b>state</b>": "arrived_at_pickup",
+  "waiting_started_at": "2026-08-13T14:07:00Z", "free_waiting_minutes": 3 }
+
+// → to the rider's channel, same instant, same trip
+{ "event": "ride.status_changed",
+  "<b>trip_id</b>": "trp_01J8Z…", "<b>status</b>": "driver_arrived",
+  "start_otp": "4821",
+  "driver": { "name": "Marcus K.", "plate": "CI-01-8392-A", "phone_masked": "+225 07 •• •• 42" } }</pre>
+
+      <h3>Two things endpoints alone will not give you</h3>
+      <ol class="dec">
+        <li><b>A dispatch engine.</b> Every route in these contracts can be implemented correctly and a rider will still sit on “finding a driver” forever, because <em>which</em> drivers get offered a trip, in what order, within what radius, and what happens on decline or timeout is business logic, not a route. The config for it is specified (<code>offer_timeout_seconds</code>, <code>search_radius_m</code>, strategy, max concurrent offers); the algorithm is yours to write, and it is the actual product.</li>
+        <li><b>Cold-start recovery.</b> Both apps must be able to rejoin a trip already in progress after a crash, a kill or a dead battery — <code>GET /rides/active</code> and <code>GET /driver/jobs/active</code>. Without them a dropped connection ends the trip from that side's point of view while the other side keeps going.</li>
+      </ol>
+    </section>
+
+    <section id="enums" data-group="Reference" data-title="Enums &amp; reference">
+      <h2><span class="num">25</span>Enums &amp; Reference Values</h2>
+      <p>Fix these strings now; both clients will switch on them.</p>
+      <ul class="list">
+        <li><b>vertical</b> — <code>ride</code>, <code>co_ride</code>, <code>package</code></li>
+        <li><b>service class</b> — <code>zen_car</code>, <code>zen_bike</code>, <code>zen_coride</code>, <code>package_small</code>, <code>package_large</code></li>
+        <li><b>ride status</b> — <code>searching</code>, <code>driver_assigned</code>, <code>driver_arriving</code>, <code>driver_arrived</code>, <code>in_progress</code>, <code>completed</code>, <code>cancelled</code>, <code>no_drivers_found</code></li>
+        <li><b>job state</b> — <code>broadcasting</code>, <code>offered</code>, <code>accepted</code>, <code>en_route_to_pickup</code>, <code>arrived_at_pickup</code>, <code>picked_up</code>, <code>en_route_to_dropoff</code>, <code>arrived_at_dropoff</code>, <code>completed</code>, <code>cancelled_by_rider</code>, <code>cancelled_by_driver</code>, <code>cancelled_by_admin</code>, <code>expired</code>, <code>rejected_by_driver</code>, <code>returned</code>, <code>disputed</code></li>
+        <li><b>package status</b> — <code>searching</code>, <code>matched</code>, <code>picked_up</code>, <code>in_transit</code>, <code>delivered</code>, <code>cancelled</code>, <code>returned</code></li>
+        <li><b>co-ride booking status</b> — <code>upcoming</code>, <code>driver_arriving</code>, <code>in_ride</code>, <code>completed</code>, <code>cancelled</code></li>
+        <li><b>payment method</b> — <code>cash</code>, <code>wallet</code>, <code>card</code>, <code>orange_money</code>, <code>moov_money</code>, <code>mtn_momo</code>, <code>wave</code></li>
+        <li><b>payment status</b> — <code>pending</code>, <code>processing</code>, <code>authorized</code>, <code>succeeded</code>, <code>failed</code>, <code>cancelled</code>, <code>refunded</code></li>
+        <li><b>wallet txn type</b> — <code>topup</code>, <code>trip</code>, <code>refund</code>, <code>transfer_in</code>, <code>transfer_out</code>, <code>withdrawal</code>, <code>bonus</code>, <code>adjustment</code>, <code>cash_settlement</code></li>
+        <li><b>kyc status</b> — <code>pending</code>, <code>in_review</code>, <code>approved</code>, <code>rejected</code></li>
+        <li><b>document type</b> — <code>government_id</code>, <code>drivers_license</code>, <code>vehicle_registration</code>, <code>insurance</code>, <code>guarantor_id</code>, <code>selfie</code>, <code>vehicle_photo</code></li>
+        <li><b>trip category</b> (rider history filters) — <code>business</code>, <code>eco_friendly</code>, <code>luxury</code></li>
+        <li><b>support category</b> — <code>earnings_payouts</code>, <code>trip_customer_issue</code>, <code>technical</code>, <code>account</code>, <code>lost_item</code>, <code>safety</code></li>
+        <li><b>notification preference keys</b> — <code>incoming_trip_requests</code>, <code>earnings_payout_alerts</code>, <code>promotional_peak_hours</code>, <code>trip_updates</code>, <code>chat_messages</code></li>
+        <li><b>cancellation reason codes</b> — needed for both sides; serve them from <code>/rides/cancellation-reasons</code> rather than hardcoding.</li>
+      </ul>
+    </section>
+
+    <section id="decisions" data-group="Reference" data-title="Open decisions">
+      <h2><span class="num">26</span>Decisions the Backend Must Settle</h2>
+      <p>Each of these changes client code, so answers unblock me directly.</p>
+      <ol class="dec">
+        <li><b>Market and currency.</b> The rider app is built for Abidjan — XOF, French default, Orange/Moov/MTN/Wave. The driver app's data is Abuja — Naira, NIN/BVN KYC. Both can't be right. Serve <code>country</code>, <code>currency</code> and the KYC field set from <code>/config</code> so one build works in both, and tell me which market launches first.</li>
+        <li><b>Is the existing admin backend being replaced?</b> The rider app currently points at <code>http://159.223.19.239/index.php</code> with food-delivery endpoints (<code>/products</code>, <code>/cart</code>, <code>/wish-list</code>, <code>/set-menu</code>) inherited from the template it was forked from. I'd rather bind to a clean <code>/api/v1</code> than bend those. Confirm and I'll delete the dead template layer.</li>
+        <li><b>Token strategy.</b> JWT + rotating refresh, or Sanctum? I need the access-token lifetime and the refresh semantics to write the 401 interceptor.</li>
+        <li><b>Realtime transport.</b> Pusher/Ably, self-hosted Soketi, or Firebase Realtime Database? Neither app has a socket client, so this choice decides which package I add and how <code>/realtime/auth</code> is shaped.</li>
+        <li><b>Payment gateway of record.</b> CinetPay for all mobile money, or CinetPay + Wave direct? And who owns refunds — gateway or wallet credit?</li>
+        <li><b>Commission model.</b> The driver UI hardcodes 25% commission and a 3.5% bonus. Are those global, per-vertical, or per-driver? Return the rate in the earnings payload either way.</li>
+        <li><b>Cash handling.</b> On a cash trip the driver holds the platform's cut. Confirm the settlement mechanic and the cash cap that blocks going online — the driver wallet already displays "Pending Cash Settlement".</li>
+        <li><b>Dispatch rules.</b> Offer timeout (15 s?), sequential or broadcast-to-many, search radius, and how many drivers see one job. This determines whether accept can 409 and how the offer sheet behaves.</li>
+        <li><b>Location cadence.</b> Confirm on-trip vs idle intervals and batch size, so the driver app's background location config matches what your ingest can take.</li>
+        <li><b>Scheduled rides in v1?</b> The Terms page promises scheduling. If it's in, module 08's scheduled endpoints are required; if not, I'll hide the entry points.</li>
+      </ol>
+    </section>
+
+    <section id="security" data-group="Reference" data-title="Security fixes">
+      <h2><span class="num">27</span>Security Fixes to Land With v1</h2>
+      <p>Found while mapping the clients. All four ship inside the app bundles today.</p>
+      <ul class="list">
+        <li><b>Live payment credentials in the app.</b> A CinetPay <code>apikey</code> + <code>site_id</code> and a Wave bearer token sit in the rider app's <code>mobile_payment_repo.dart</code>. Anyone can pull them out of the APK. Rotate all three and move initiation behind <code>/payments/intents</code>.</li>
+        <li><b>Google Maps key exposed.</b> The same key is committed in <code>.env</code> and hardcoded in the driver app's <code>app_constants.dart</code>. Rotate it, restrict it by package name + SHA-1 and per-API, and proxy the billable calls through <code>/geo/*</code>.</li>
+        <li><b>Plaintext HTTP.</b> The base URL is <code>http://</code> against a raw IP. Tokens and locations over cleartext — TLS and a real domain before any real traffic.</li>
+        <li><b>Client-computed prices.</b> Fares are currently calculated in the client. Move that to the server and make trips creatable only from a signed quote id, or fares become editable by anyone with the APK.</li>
+      </ul>
+    </section>
+
+    <section id="binding" data-group="Reference" data-title="Client-side plan">
+      <h2><span class="num">28</span>What Happens on the Client Side</h2>
+      <p>For context on how this contract gets consumed — this is my work, not the backend's, listed so the sequencing is clear.</p>
+      <ul class="list">
+        <li><b>Rider app.</b> Turn off the mock interceptor (<code>useMockData</code> is <code>true</code> today, so no call reaches the network), rewrite the constants and repo layer against <code>/api/v1</code>, and replace the three local simulators — <code>CoRideProvider</code>, <code>DeliveryProvider</code> and the <code>demoTrips</code> history list — with real repos. Strip the inherited food-delivery modules (cart, checkout-as-order, categories, products, wishlist, set-menu) that no ride-hailing screen uses.</li>
+        <li><b>Driver app.</b> There is no data layer at all — no dio client, no repos, no models, no auth storage beyond a token key. It needs building from scratch against this contract, and <code>JobProvider</code>'s local state machine rewired to server state.</li>
+        <li><b>Both apps.</b> Add the realtime client and reconnection handling, background location for the driver, deep-link routing for push, token-refresh interceptors, and cold-start recovery via <code>/rides/active</code> and <code>/driver/jobs/active</code>.</li>
+        <li><b>Order I'd like it in.</b> Config + auth first (unblocks every screen), then geo + quotes + ride, then driver dispatch and the job lifecycle, then money, then chat/support/notifications. A staging URL with modules 01–02 live is enough for me to start binding.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>Izigo API Contract · v1 draft · derived from izigo_user + zenride_driver Flutter clients</footer>
+</div>
+
+<script>
+  (function () {
+    var sections = Array.prototype.slice.call(document.querySelectorAll('main section'));
+    var rail = document.querySelector('.rail');
+    var groups = {};
+    var order = [];
+
+    sections.forEach(function (s) {
+      var g = s.dataset.group || 'Other';
+      if (!groups[g]) { groups[g] = []; order.push(g); }
+      groups[g].push(s);
+    });
+
+    order.forEach(function (g) {
+      var box = document.createElement('div');
+      box.className = 'rail-group';
+      var label = document.createElement('p');
+      label.textContent = g;
+      box.appendChild(label);
+      groups[g].forEach(function (s) {
+        var a = document.createElement('a');
+        a.href = '#' + s.id;
+        var n = s.querySelectorAll('tbody tr').length;
+        a.innerHTML = '<span>' + s.dataset.title + '</span>' + (n ? '<em>' + n + '</em>' : '');
+        box.appendChild(a);
+      });
+      rail.appendChild(box);
+    });
+
+    var rows = Array.prototype.slice.call(document.querySelectorAll('tbody tr[data-aud]'));
+    var total = rows.length;
+    document.getElementById('s-total').textContent = total;
+    document.getElementById('s-mod').textContent = sections.filter(function (s) {
+      return s.querySelector('tbody tr');
+    }).length;
+    ['rider', 'driver', 'both'].forEach(function (k) {
+      document.getElementById('s-' + k).textContent = rows.filter(function (r) {
+        return r.dataset.aud === k;
+      }).length;
+    });
+
+    var q = document.getElementById('q');
+    var counter = document.getElementById('count');
+    var buttons = Array.prototype.slice.call(document.querySelectorAll('.toolbar button'));
+    var filter = 'all';
+
+    function apply() {
+      var term = q.value.trim().toLowerCase();
+      var shown = 0;
+      rows.forEach(function (r) {
+        var audOk = filter === 'all' || r.dataset.aud === filter || r.dataset.aud === 'both';
+        var textOk = !term || r.textContent.toLowerCase().indexOf(term) !== -1;
+        var ok = audOk && textOk;
+        r.classList.toggle('hidden', !ok);
+        if (ok) shown++;
+      });
+      sections.forEach(function (s) {
+        var has = s.querySelectorAll('tbody tr');
+        if (!has.length) {
+          s.classList.toggle('hidden', !!term);
+          return;
+        }
+        var visible = s.querySelectorAll('tbody tr:not(.hidden)').length;
+        s.classList.toggle('hidden', visible === 0);
+      });
+      counter.textContent = shown === total ? total + ' endpoints' : shown + ' of ' + total;
+    }
+
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () {
+        filter = b.dataset.f;
+        buttons.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+        apply();
+      });
+    });
+    q.addEventListener('input', apply);
+    apply();
+  })();
+</script>
+
+</body></html>

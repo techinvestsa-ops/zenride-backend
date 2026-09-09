@@ -1,0 +1,1274 @@
+{
+  "info": {
+    "_postman_id": "izigo-api-collection-v1",
+    "name": "Izigo API",
+    "description": "Rider + Driver + Admin API — Ride, Co-Ride, Package verticals.\n\nEnvironment variables required:\n- base_url: http://localhost:5000\n- app_token: (set after login)\n- admin_token: (set after admin login)\n- otp_token: (set from OTP request response)\n\nAll money values are integers in minor units (XOF/NGN face value).\nAll timestamps are ISO-8601 UTC.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url",    "value": "http://localhost:5000", "type": "string" },
+    { "key": "app_token",   "value": "", "type": "string" },
+    { "key": "admin_token", "value": "", "type": "string" },
+    { "key": "otp_token",   "value": "", "type": "string" },
+    { "key": "trip_id",     "value": "", "type": "string" },
+    { "key": "driver_id",   "value": "", "type": "string" },
+    { "key": "rider_id",    "value": "", "type": "string" }
+  ],
+  "item": [
+
+    {
+      "name": "01 · Auth",
+      "item": [
+        {
+          "name": "Request OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/otp/request", "host": ["{{base_url}}"], "path": ["api","v1","auth","otp","request"] },
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"+2250700000001\",\n  \"role\": \"rider\",\n  \"purpose\": \"Login\"\n}" }
+          }
+        },
+        {
+          "name": "Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/otp/verify", "host": ["{{base_url}}"], "path": ["api","v1","auth","otp","verify"] },
+            "body": { "mode": "raw", "raw": "{\n  \"otp_token\": \"{{otp_token}}\",\n  \"code\": \"123456\",\n  \"device\": {\n    \"device_id\": \"device-001\",\n    \"platform\": \"android\",\n    \"app_version\": \"1.0.0\",\n    \"model\": \"Pixel 7\",\n    \"os_version\": \"14\",\n    \"locale\": \"fr\",\n    \"timezone\": \"Africa/Abidjan\"\n  }\n}" }
+          }
+        },
+        {
+          "name": "Resend OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/otp/resend", "host": ["{{base_url}}"], "path": ["api","v1","auth","otp","resend"] },
+            "body": { "mode": "raw", "raw": "{\n  \"otp_token\": \"{{otp_token}}\",\n  \"channel\": \"sms\"\n}" }
+          }
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/register", "host": ["{{base_url}}"], "path": ["api","v1","auth","register"] },
+            "body": { "mode": "raw", "raw": "{\n  \"first_name\": \"Kouassi\",\n  \"last_name\": \"Yao\",\n  \"phone\": \"+2250700000001\",\n  \"email\": \"kouassi@example.com\",\n  \"role\": \"rider\",\n  \"language\": \"fr\",\n  \"referral_code\": null,\n  \"device\": {\n    \"device_id\": \"device-001\",\n    \"platform\": \"android\",\n    \"app_version\": \"1.0.0\"\n  }\n}" }
+          }
+        },
+        {
+          "name": "Login (password)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/login", "host": ["{{base_url}}"], "path": ["api","v1","auth","login"] },
+            "body": { "mode": "raw", "raw": "{\n  \"identifier\": \"+2250700000001\",\n  \"password\": \"MyP@ssw0rd!\",\n  \"role\": \"rider\",\n  \"device\": {\n    \"device_id\": \"device-001\",\n    \"platform\": \"android\",\n    \"app_version\": \"1.0.0\"\n  }\n}" }
+          }
+        },
+        {
+          "name": "Social Login (Google / Apple)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/social", "host": ["{{base_url}}"], "path": ["api","v1","auth","social"] },
+            "body": { "mode": "raw", "raw": "{\n  \"provider\": \"google\",\n  \"id_token\": \"eyJhbGciOi...\",\n  \"role\": \"rider\",\n  \"device\": {\n    \"device_id\": \"device-001\",\n    \"platform\": \"ios\",\n    \"app_version\": \"1.0.0\"\n  }\n}" }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/refresh", "host": ["{{base_url}}"], "path": ["api","v1","auth","refresh"] },
+            "body": { "mode": "raw", "raw": "{\n  \"refresh_token\": \"rt_abc123...\"\n}" }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/password/forgot", "host": ["{{base_url}}"], "path": ["api","v1","auth","password","forgot"] },
+            "body": { "mode": "raw", "raw": "{\n  \"identifier\": \"+2250700000001\",\n  \"role\": \"rider\"\n}" }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/password/reset", "host": ["{{base_url}}"], "path": ["api","v1","auth","password","reset"] },
+            "body": { "mode": "raw", "raw": "{\n  \"reset_token\": \"abc123\",\n  \"code\": \"123456\",\n  \"password\": \"NewP@ss1!\",\n  \"password_confirmation\": \"NewP@ss1!\"\n}" }
+          }
+        },
+        {
+          "name": "Check Availability (phone / email)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/check-availability", "host": ["{{base_url}}"], "path": ["api","v1","auth","check-availability"] },
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"+2250700000001\",\n  \"role\": \"rider\"\n}" }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/logout", "host": ["{{base_url}}"], "path": ["api","v1","auth","logout"] }
+          }
+        },
+        {
+          "name": "Get Sessions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/sessions", "host": ["{{base_url}}"], "path": ["api","v1","auth","sessions"] }
+          }
+        },
+        {
+          "name": "Revoke Session",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/sessions/:id", "host": ["{{base_url}}"], "path": ["api","v1","auth","sessions",":id"], "variable": [{ "key": "id", "value": "session-id" }] }
+          }
+        },
+        {
+          "name": "Revoke Other Sessions",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/sessions/revoke-others", "host": ["{{base_url}}"], "path": ["api","v1","auth","sessions","revoke-others"] }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/password/change", "host": ["{{base_url}}"], "path": ["api","v1","auth","password","change"] },
+            "body": { "mode": "raw", "raw": "{\n  \"current_password\": \"OldP@ss!\",\n  \"password\": \"NewP@ss1!\",\n  \"password_confirmation\": \"NewP@ss1!\"\n}" }
+          }
+        },
+        {
+          "name": "Enroll Biometric",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" },{ "key": "X-Device-Id", "value": "device-001" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/biometric/enroll", "host": ["{{base_url}}"], "path": ["api","v1","auth","biometric","enroll"] },
+            "body": { "mode": "raw", "raw": "{\n  \"public_key_or_secret\": \"base64encodedkey...\"\n}" }
+          }
+        },
+        {
+          "name": "Biometric Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/biometric/login", "host": ["{{base_url}}"], "path": ["api","v1","auth","biometric","login"] },
+            "body": { "mode": "raw", "raw": "{\n  \"biometric_token\": \"tok_abc123\",\n  \"device_id\": \"device-001\"\n}" }
+          }
+        },
+        {
+          "name": "Remove Biometric",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "X-Device-Id", "value": "device-001" }],
+            "url": { "raw": "{{base_url}}/api/v1/auth/biometric", "host": ["{{base_url}}"], "path": ["api","v1","auth","biometric"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "02 · Config",
+      "item": [
+        {
+          "name": "Get Platform Config",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-App", "value": "rider" }],
+            "url": { "raw": "{{base_url}}/api/v1/config", "host": ["{{base_url}}"], "path": ["api","v1","config"] }
+          }
+        },
+        {
+          "name": "Version Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/v1/config/version-check?platform=android&version=1.0.0", "host": ["{{base_url}}"], "path": ["api","v1","config","version-check"], "query": [{ "key": "platform", "value": "android" },{ "key": "version", "value": "1.0.0" }] }
+          }
+        },
+        {
+          "name": "Get Zones",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/v1/zones", "host": ["{{base_url}}"], "path": ["api","v1","zones"] }
+          }
+        },
+        {
+          "name": "Get Page (terms / privacy)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/v1/pages/:slug", "host": ["{{base_url}}"], "path": ["api","v1","pages",":slug"], "variable": [{ "key": "slug", "value": "terms" }] }
+          }
+        },
+        {
+          "name": "Get Onboarding Slides",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/v1/onboarding-slides?audience=rider", "host": ["{{base_url}}"], "path": ["api","v1","onboarding-slides"], "query": [{ "key": "audience", "value": "rider" }] }
+          }
+        },
+        {
+          "name": "Get Banners",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/banners?placement=home", "host": ["{{base_url}}"], "path": ["api","v1","banners"], "query": [{ "key": "placement", "value": "home" }] }
+          }
+        },
+        {
+          "name": "Get Realtime Config",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/realtime/config", "host": ["{{base_url}}"], "path": ["api","v1","realtime","config"] }
+          }
+        },
+        {
+          "name": "Realtime Auth",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/realtime/auth", "host": ["{{base_url}}"], "path": ["api","v1","realtime","auth"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "03 · Profile",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/me", "host": ["{{base_url}}"], "path": ["api","v1","me"] }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/me", "host": ["{{base_url}}"], "path": ["api","v1","me"] },
+            "body": { "mode": "raw", "raw": "{\n  \"first_name\": \"Kouassi\",\n  \"last_name\": \"Yao\",\n  \"email\": \"kouassi@example.com\",\n  \"language\": \"fr\",\n  \"gender\": \"male\",\n  \"date_of_birth\": \"1992-05-14\"\n}" }
+          }
+        },
+        {
+          "name": "Upload Photo",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/me/photo", "host": ["{{base_url}}"], "path": ["api","v1","me","photo"] },
+            "body": { "mode": "formdata", "formdata": [{ "key": "photo", "type": "file", "src": "" }] }
+          }
+        },
+        {
+          "name": "Get Stats",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/me/stats", "host": ["{{base_url}}"], "path": ["api","v1","me","stats"] }
+          }
+        },
+        {
+          "name": "Change Phone — Request OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/me/phone/change", "host": ["{{base_url}}"], "path": ["api","v1","me","phone","change"] },
+            "body": { "mode": "raw", "raw": "{\n  \"new_phone\": \"+2250700000099\"\n}" }
+          }
+        },
+        {
+          "name": "Change Phone — Verify OTP",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/me/phone/verify", "host": ["{{base_url}}"], "path": ["api","v1","me","phone","verify"] },
+            "body": { "mode": "raw", "raw": "{\n  \"otp_token\": \"{{otp_token}}\",\n  \"code\": \"123456\"\n}" }
+          }
+        },
+        {
+          "name": "Send Email Verification",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/me/email/verify/send", "host": ["{{base_url}}"], "path": ["api","v1","me","email","verify","send"] }
+          }
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/me/email/verify", "host": ["{{base_url}}"], "path": ["api","v1","me","email","verify"] },
+            "body": { "mode": "raw", "raw": "{\n  \"code\": \"123456\"\n}" }
+          }
+        },
+        {
+          "name": "Get Preferences",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/me/preferences", "host": ["{{base_url}}"], "path": ["api","v1","me","preferences"] }
+          }
+        },
+        {
+          "name": "Update Preferences",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/me/preferences", "host": ["{{base_url}}"], "path": ["api","v1","me","preferences"] },
+            "body": { "mode": "raw", "raw": "{\n  \"marketing_opt_in\": true,\n  \"notifications_enabled\": true\n}" }
+          }
+        },
+        {
+          "name": "Get Emergency Contacts",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/me/emergency-contacts", "host": ["{{base_url}}"], "path": ["api","v1","me","emergency-contacts"] }
+          }
+        },
+        {
+          "name": "Add Emergency Contact",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/me/emergency-contacts", "host": ["{{base_url}}"], "path": ["api","v1","me","emergency-contacts"] },
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Amara Diallo\",\n  \"phone\": \"+2250700000002\",\n  \"relationship\": \"Sister\",\n  \"notify_on_trip_start\": true\n}" }
+          }
+        },
+        {
+          "name": "Delete Emergency Contact",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/me/emergency-contacts/:id", "host": ["{{base_url}}"], "path": ["api","v1","me","emergency-contacts",":id"], "variable": [{ "key": "id", "value": "contact-id" }] }
+          }
+        },
+        {
+          "name": "Get Referral Info",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/me/referral", "host": ["{{base_url}}"], "path": ["api","v1","me","referral"] }
+          }
+        },
+        {
+          "name": "Close Account",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/me/close-account", "host": ["{{base_url}}"], "path": ["api","v1","me","close-account"] },
+            "body": { "mode": "raw", "raw": "{\n  \"reason\": \"No longer need the service\",\n  \"password_or_otp\": \"MyP@ssw0rd!\"\n}" }
+          }
+        },
+        {
+          "name": "Export Data (GDPR)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/me/export", "host": ["{{base_url}}"], "path": ["api","v1","me","export"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "04 · Devices",
+      "item": [
+        {
+          "name": "Register / Update Device",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/devices", "host": ["{{base_url}}"], "path": ["api","v1","devices"] },
+            "body": { "mode": "raw", "raw": "{\n  \"device_id\": \"device-001\",\n  \"fcm_token\": \"fcm:APA91bH...\",\n  \"platform\": \"android\",\n  \"app_version\": \"1.0.0\",\n  \"os_version\": \"14\",\n  \"model\": \"Pixel 7\",\n  \"locale\": \"fr\",\n  \"timezone\": \"Africa/Abidjan\"\n}" }
+          }
+        },
+        {
+          "name": "Deregister Device",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/devices/:device_id", "host": ["{{base_url}}"], "path": ["api","v1","devices",":device_id"], "variable": [{ "key": "device_id", "value": "device-001" }] }
+          }
+        },
+        {
+          "name": "Submit Diagnostics",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/devices/:device_id/diagnostics", "host": ["{{base_url}}"], "path": ["api","v1","devices",":device_id","diagnostics"], "variable": [{ "key": "device_id", "value": "device-001" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"battery_level\": 82,\n  \"location_permission\": true,\n  \"background_permission\": true,\n  \"mock_location_detected\": false\n}" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "05 · Saved Places",
+      "item": [
+        {
+          "name": "Get Saved Places",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/places", "host": ["{{base_url}}"], "path": ["api","v1","places"] }
+          }
+        },
+        {
+          "name": "Add Saved Place",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/places", "host": ["{{base_url}}"], "path": ["api","v1","places"] },
+            "body": { "mode": "raw", "raw": "{\n  \"label\": \"home\",\n  \"name\": \"Maison\",\n  \"address\": \"Cocody, Abidjan\",\n  \"lat\": 5.3463,\n  \"lng\": -3.9940,\n  \"place_id\": \"ChIJ...\",\n  \"is_default\": true\n}" }
+          }
+        },
+        {
+          "name": "Update Saved Place",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/places/:id", "host": ["{{base_url}}"], "path": ["api","v1","places",":id"], "variable": [{ "key": "id", "value": "place-id" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"label\": \"work\",\n  \"name\": \"Bureau\",\n  \"address\": \"Plateau, Abidjan\",\n  \"lat\": 5.3200,\n  \"lng\": -4.0167\n}" }
+          }
+        },
+        {
+          "name": "Delete Saved Place",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/places/:id", "host": ["{{base_url}}"], "path": ["api","v1","places",":id"], "variable": [{ "key": "id", "value": "place-id" }] }
+          }
+        },
+        {
+          "name": "Get Recent Places",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/places/recent?limit=5", "host": ["{{base_url}}"], "path": ["api","v1","places","recent"], "query": [{ "key": "limit", "value": "5" }] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "06 · Geo & Maps",
+      "item": [
+        {
+          "name": "Autocomplete",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/geo/autocomplete?q=Plateau&lat=5.3599&lng=-3.9970", "host": ["{{base_url}}"], "path": ["api","v1","geo","autocomplete"], "query": [{ "key": "q", "value": "Plateau" },{ "key": "lat", "value": "5.3599" },{ "key": "lng", "value": "-3.9970" }] }
+          }
+        },
+        {
+          "name": "Place Detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/geo/place/:place_id", "host": ["{{base_url}}"], "path": ["api","v1","geo","place",":place_id"], "variable": [{ "key": "place_id", "value": "ChIJ..." }] }
+          }
+        },
+        {
+          "name": "Reverse Geocode",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/geo/reverse-geocode?lat=5.3599&lng=-3.9970", "host": ["{{base_url}}"], "path": ["api","v1","geo","reverse-geocode"], "query": [{ "key": "lat", "value": "5.3599" },{ "key": "lng", "value": "-3.9970" }] }
+          }
+        },
+        {
+          "name": "Geocode Address",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/geo/geocode?address=Plateau%20Abidjan", "host": ["{{base_url}}"], "path": ["api","v1","geo","geocode"], "query": [{ "key": "address", "value": "Plateau Abidjan" }] }
+          }
+        },
+        {
+          "name": "Get Route",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/geo/route?origin_lat=5.3599&origin_lng=-3.9970&dest_lat=5.4000&dest_lng=-4.0100&mode=driving", "host": ["{{base_url}}"], "path": ["api","v1","geo","route"], "query": [{ "key": "origin_lat", "value": "5.3599" },{ "key": "origin_lng", "value": "-3.9970" },{ "key": "dest_lat", "value": "5.4000" },{ "key": "dest_lng", "value": "-4.0100" },{ "key": "mode", "value": "driving" }] }
+          }
+        },
+        {
+          "name": "Get ETA",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/geo/eta?origin_lat=5.3599&origin_lng=-3.9970&destinations=5.4000,-4.0100", "host": ["{{base_url}}"], "path": ["api","v1","geo","eta"], "query": [{ "key": "origin_lat", "value": "5.3599" },{ "key": "origin_lng", "value": "-3.9970" },{ "key": "destinations", "value": "5.4000,-4.0100" }] }
+          }
+        },
+        {
+          "name": "Nearby Drivers",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/geo/nearby-drivers?lat=5.3599&lng=-3.9970&radius_m=3000&vertical=ride", "host": ["{{base_url}}"], "path": ["api","v1","geo","nearby-drivers"], "query": [{ "key": "lat", "value": "5.3599" },{ "key": "lng", "value": "-3.9970" },{ "key": "radius_m", "value": "3000" },{ "key": "vertical", "value": "ride" }] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "07 · Quotes & Fares",
+      "item": [
+        {
+          "name": "Create Quote",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/quotes", "host": ["{{base_url}}"], "path": ["api","v1","quotes"] },
+            "body": { "mode": "raw", "raw": "{\n  \"vertical\": \"ride\",\n  \"pickup\": {\n    \"lat\": 5.3599,\n    \"lng\": -3.9970,\n    \"label\": \"Cocody, Abidjan\",\n    \"place_id\": \"ChIJ...\"\n  },\n  \"dropoff\": {\n    \"lat\": 5.3200,\n    \"lng\": -4.0167,\n    \"label\": \"Plateau, Abidjan\",\n    \"place_id\": \"ChIJ...\"\n  },\n  \"promo_code\": null\n}" }
+          }
+        },
+        {
+          "name": "Get Quote",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/quotes/:quote_id", "host": ["{{base_url}}"], "path": ["api","v1","quotes",":quote_id"], "variable": [{ "key": "quote_id", "value": "qt_abc123" }] }
+          }
+        },
+        {
+          "name": "Get Fare Rules",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/fare-rules", "host": ["{{base_url}}"], "path": ["api","v1","fare-rules"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "08 · Rides",
+      "item": [
+        {
+          "name": "Book Ride",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" },{ "key": "Idempotency-Key", "value": "idem-{{$randomUUID}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/rides", "host": ["{{base_url}}"], "path": ["api","v1","rides"] },
+            "body": { "mode": "raw", "raw": "{\n  \"quote_id\": \"qt_abc123\",\n  \"class_code\": \"zen_car\",\n  \"payment_method\": \"cash\",\n  \"note\": \"Please call on arrival\",\n  \"scheduled_at\": null,\n  \"for_someone_else\": null\n}" }
+          }
+        },
+        {
+          "name": "Get Ride History",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/rides?page=1&per_page=20", "host": ["{{base_url}}"], "path": ["api","v1","rides"], "query": [{ "key": "page", "value": "1" },{ "key": "per_page", "value": "20" },{ "key": "vertical", "value": "ride", "disabled": true },{ "key": "status", "value": "completed", "disabled": true }] }
+          }
+        },
+        {
+          "name": "Get Active Ride",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/rides/active", "host": ["{{base_url}}"], "path": ["api","v1","rides","active"] }
+          }
+        },
+        {
+          "name": "Get Scheduled Rides",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/rides/scheduled", "host": ["{{base_url}}"], "path": ["api","v1","rides","scheduled"] }
+          }
+        },
+        {
+          "name": "Get Cancellation Reasons",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/rides/cancellation-reasons?audience=rider&lang=fr", "host": ["{{base_url}}"], "path": ["api","v1","rides","cancellation-reasons"], "query": [{ "key": "audience", "value": "rider" },{ "key": "lang", "value": "fr" }] }
+          }
+        },
+        {
+          "name": "Get Ride Detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/rides/:id", "host": ["{{base_url}}"], "path": ["api","v1","rides",":id"], "variable": [{ "key": "id", "value": "{{trip_id}}" }] }
+          }
+        },
+        {
+          "name": "Get Driver Location (polling fallback)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/rides/:id/driver-location", "host": ["{{base_url}}"], "path": ["api","v1","rides",":id","driver-location"], "variable": [{ "key": "id", "value": "{{trip_id}}" }] }
+          }
+        },
+        {
+          "name": "Get Receipt",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/rides/:id/receipt", "host": ["{{base_url}}"], "path": ["api","v1","rides",":id","receipt"], "variable": [{ "key": "id", "value": "{{trip_id}}" }] }
+          }
+        },
+        {
+          "name": "Cancel Ride",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/rides/:id/cancel", "host": ["{{base_url}}"], "path": ["api","v1","rides",":id","cancel"], "variable": [{ "key": "id", "value": "{{trip_id}}" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"reason_code\": \"driver_too_long\",\n  \"note\": null\n}" }
+          }
+        },
+        {
+          "name": "Change Destination",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/rides/:id/destination", "host": ["{{base_url}}"], "path": ["api","v1","rides",":id","destination"], "variable": [{ "key": "id", "value": "{{trip_id}}" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"label\": \"Marché Treichville\",\n  \"lat\": 5.2989,\n  \"lng\": -4.0167,\n  \"place_id\": \"ChIJ...\"\n}" }
+          }
+        },
+        {
+          "name": "Change Payment Method",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/rides/:id/payment-method", "host": ["{{base_url}}"], "path": ["api","v1","rides",":id","payment-method"], "variable": [{ "key": "id", "value": "{{trip_id}}" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"payment_method\": \"wallet\"\n}" }
+          }
+        },
+        {
+          "name": "Add Note to Driver",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/rides/:id/note", "host": ["{{base_url}}"], "path": ["api","v1","rides",":id","note"], "variable": [{ "key": "id", "value": "{{trip_id}}" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"text\": \"Please wait at gate 2\",\n  \"audio_url\": null\n}" }
+          }
+        },
+        {
+          "name": "Rate Ride",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/rides/:id/rate", "host": ["{{base_url}}"], "path": ["api","v1","rides",":id","rate"], "variable": [{ "key": "id", "value": "{{trip_id}}" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"stars\": 5,\n  \"tags\": [\"clean_car\", \"safe_driver\"],\n  \"comment\": \"Great ride!\",\n  \"tip_amount\": 500\n}" }
+          }
+        },
+        {
+          "name": "Tip Driver",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/rides/:id/tip", "host": ["{{base_url}}"], "path": ["api","v1","rides",":id","tip"], "variable": [{ "key": "id", "value": "{{trip_id}}" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"amount\": 500\n}" }
+          }
+        },
+        {
+          "name": "Report Lost Item",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/rides/:id/lost-item", "host": ["{{base_url}}"], "path": ["api","v1","rides",":id","lost-item"], "variable": [{ "key": "id", "value": "{{trip_id}}" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"description\": \"Left black backpack in the car\"\n}" }
+          }
+        },
+        {
+          "name": "Cancel Scheduled Ride",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/rides/scheduled/:id", "host": ["{{base_url}}"], "path": ["api","v1","rides","scheduled",":id"], "variable": [{ "key": "id", "value": "{{trip_id}}" }] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "09 · Co-Ride",
+      "item": [
+        {
+          "name": "Search Listings",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/co-ride/listings?pickup_lat=5.3599&pickup_lng=-3.9970&dropoff_lat=5.3200&dropoff_lng=-4.0167", "host": ["{{base_url}}"], "path": ["api","v1","co-ride","listings"], "query": [{ "key": "pickup_lat", "value": "5.3599" },{ "key": "pickup_lng", "value": "-3.9970" },{ "key": "dropoff_lat", "value": "5.3200" },{ "key": "dropoff_lng", "value": "-4.0167" }] }
+          }
+        },
+        {
+          "name": "Get Listing Detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/co-ride/listings/:id", "host": ["{{base_url}}"], "path": ["api","v1","co-ride","listings",":id"], "variable": [{ "key": "id", "value": "listing-id" }] }
+          }
+        },
+        {
+          "name": "Create Match Request",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/co-ride/requests", "host": ["{{base_url}}"], "path": ["api","v1","co-ride","requests"] },
+            "body": { "mode": "raw", "raw": "{\n  \"listing_id\": \"crl_abc123\"\n}" }
+          }
+        },
+        {
+          "name": "Get My Requests",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/co-ride/requests", "host": ["{{base_url}}"], "path": ["api","v1","co-ride","requests"] }
+          }
+        },
+        {
+          "name": "Withdraw Request",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/co-ride/requests/:id", "host": ["{{base_url}}"], "path": ["api","v1","co-ride","requests",":id"], "variable": [{ "key": "id", "value": "request-id" }] }
+          }
+        },
+        {
+          "name": "Book Seats",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" },{ "key": "Idempotency-Key", "value": "idem-{{$randomUUID}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/co-ride/bookings", "host": ["{{base_url}}"], "path": ["api","v1","co-ride","bookings"] },
+            "body": { "mode": "raw", "raw": "{\n  \"listing_id\": \"crl_abc123\",\n  \"seats\": 2,\n  \"payment_method\": \"wallet\"\n}" }
+          }
+        },
+        {
+          "name": "Get My Bookings",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/co-ride/bookings?state=active", "host": ["{{base_url}}"], "path": ["api","v1","co-ride","bookings"], "query": [{ "key": "state", "value": "active" }] }
+          }
+        },
+        {
+          "name": "Get Booking Detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/co-ride/bookings/:id", "host": ["{{base_url}}"], "path": ["api","v1","co-ride","bookings",":id"], "variable": [{ "key": "id", "value": "bkg_abc123" }] }
+          }
+        },
+        {
+          "name": "Cancel Booking",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/co-ride/bookings/:id/cancel", "host": ["{{base_url}}"], "path": ["api","v1","co-ride","bookings",":id","cancel"], "variable": [{ "key": "id", "value": "bkg_abc123" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"reason\": \"Change of plans\"\n}" }
+          }
+        },
+        {
+          "name": "Rate Co-Ride",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/co-ride/bookings/:id/rate", "host": ["{{base_url}}"], "path": ["api","v1","co-ride","bookings",":id","rate"], "variable": [{ "key": "id", "value": "bkg_abc123" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"stars\": 5,\n  \"comment\": \"Smooth shared ride\"\n}" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "10 · Packages",
+      "item": [
+        {
+          "name": "Create Package",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" },{ "key": "Idempotency-Key", "value": "idem-{{$randomUUID}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/packages", "host": ["{{base_url}}"], "path": ["api","v1","packages"] },
+            "body": { "mode": "raw", "raw": "{\n  \"quote_id\": \"qt_abc123\",\n  \"class_code\": \"package_small\",\n  \"payment_method\": \"cash\",\n  \"recipient_name\": \"Marie Konan\",\n  \"recipient_phone\": \"+2250700000010\",\n  \"description\": \"Documents\",\n  \"is_fragile\": false,\n  \"is_express\": false,\n  \"recipient_pays\": false,\n  \"declared_value\": null\n}" }
+          }
+        },
+        {
+          "name": "Get Package History",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/packages?page=1&per_page=20", "host": ["{{base_url}}"], "path": ["api","v1","packages"], "query": [{ "key": "page", "value": "1" },{ "key": "per_page", "value": "20" }] }
+          }
+        },
+        {
+          "name": "Get Package Detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/packages/:id", "host": ["{{base_url}}"], "path": ["api","v1","packages",":id"], "variable": [{ "key": "id", "value": "pkg_abc123" }] }
+          }
+        },
+        {
+          "name": "Track Package (public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/v1/packages/track/:tracking_id", "host": ["{{base_url}}"], "path": ["api","v1","packages","track",":tracking_id"], "variable": [{ "key": "tracking_id", "value": "PKG-A1B2C3" }] }
+          }
+        },
+        {
+          "name": "Cancel Package",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/packages/:id/cancel", "host": ["{{base_url}}"], "path": ["api","v1","packages",":id","cancel"], "variable": [{ "key": "id", "value": "pkg_abc123" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"reason\": \"Recipient unavailable\"\n}" }
+          }
+        },
+        {
+          "name": "Rate Package",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/packages/:id/rate", "host": ["{{base_url}}"], "path": ["api","v1","packages",":id","rate"], "variable": [{ "key": "id", "value": "pkg_abc123" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"stars\": 5,\n  \"comment\": \"Fast delivery\"\n}" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "11 · Wallet",
+      "item": [
+        {
+          "name": "Get Wallet",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/wallet", "host": ["{{base_url}}"], "path": ["api","v1","wallet"] }
+          }
+        },
+        {
+          "name": "Get Transactions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/wallet/transactions?page=1&per_page=20", "host": ["{{base_url}}"], "path": ["api","v1","wallet","transactions"], "query": [{ "key": "page", "value": "1" },{ "key": "per_page", "value": "20" },{ "key": "type", "value": "topup", "disabled": true }] }
+          }
+        },
+        {
+          "name": "Get Spending Summary",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/wallet/summary?period=week", "host": ["{{base_url}}"], "path": ["api","v1","wallet","summary"], "query": [{ "key": "period", "value": "week" }] }
+          }
+        },
+        {
+          "name": "Top Up",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" },{ "key": "Idempotency-Key", "value": "idem-{{$randomUUID}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/wallet/topup", "host": ["{{base_url}}"], "path": ["api","v1","wallet","topup"] },
+            "body": { "mode": "raw", "raw": "{\n  \"amount\": 5000,\n  \"method\": \"orange_money\",\n  \"phone\": \"+2250700000001\"\n}" }
+          }
+        },
+        {
+          "name": "Lookup Transfer Recipient",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/wallet/transfer/lookup", "host": ["{{base_url}}"], "path": ["api","v1","wallet","transfer","lookup"] },
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"+2250700000002\"\n}" }
+          }
+        },
+        {
+          "name": "Transfer to Another Rider",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" },{ "key": "Idempotency-Key", "value": "idem-{{$randomUUID}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/wallet/transfer", "host": ["{{base_url}}"], "path": ["api","v1","wallet","transfer"] },
+            "body": { "mode": "raw", "raw": "{\n  \"recipient_user_id\": \"usr_abc123\",\n  \"amount\": 2000,\n  \"note\": \"Split the bill\"\n}" }
+          }
+        },
+        {
+          "name": "Withdraw",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" },{ "key": "Idempotency-Key", "value": "idem-{{$randomUUID}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/wallet/withdraw", "host": ["{{base_url}}"], "path": ["api","v1","wallet","withdraw"] },
+            "body": { "mode": "raw", "raw": "{\n  \"amount\": 10000,\n  \"payment_method_id\": \"pm_abc123\"\n}" }
+          }
+        },
+        {
+          "name": "Get Wallet Limits",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/wallet/limits", "host": ["{{base_url}}"], "path": ["api","v1","wallet","limits"] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "12 · Payments",
+      "item": [
+        {
+          "name": "Get Payment Methods",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/payment-methods", "host": ["{{base_url}}"], "path": ["api","v1","payment-methods"] }
+          }
+        },
+        {
+          "name": "Add Payment Method",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/payment-methods", "host": ["{{base_url}}"], "path": ["api","v1","payment-methods"] },
+            "body": { "mode": "raw", "raw": "{\n  \"type\": \"orange_money\",\n  \"phone\": \"+2250700000001\",\n  \"label\": \"Orange Money principal\"\n}" }
+          }
+        },
+        {
+          "name": "Set Default Payment Method",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/payment-methods/:id/default", "host": ["{{base_url}}"], "path": ["api","v1","payment-methods",":id","default"], "variable": [{ "key": "id", "value": "pm_abc123" }] }
+          }
+        },
+        {
+          "name": "Delete Payment Method",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/payment-methods/:id", "host": ["{{base_url}}"], "path": ["api","v1","payment-methods",":id"], "variable": [{ "key": "id", "value": "pm_abc123" }] }
+          }
+        },
+        {
+          "name": "Create Payment Intent",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" },{ "key": "Idempotency-Key", "value": "idem-{{$randomUUID}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/payments/intents", "host": ["{{base_url}}"], "path": ["api","v1","payments","intents"] },
+            "body": { "mode": "raw", "raw": "{\n  \"amount\": 5000,\n  \"currency\": \"XOF\",\n  \"method\": \"orange_money\",\n  \"phone\": \"+2250700000001\",\n  \"purpose\": \"wallet_topup\"\n}" }
+          }
+        },
+        {
+          "name": "Get Payment Status",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/payments/:id", "host": ["{{base_url}}"], "path": ["api","v1","payments",":id"], "variable": [{ "key": "id", "value": "pay_abc123" }] }
+          }
+        },
+        {
+          "name": "Cancel Payment",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/payments/:id/cancel", "host": ["{{base_url}}"], "path": ["api","v1","payments",":id","cancel"], "variable": [{ "key": "id", "value": "pay_abc123" }] }
+          }
+        },
+        {
+          "name": "Get Payment History",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/payments?page=1&per_page=20", "host": ["{{base_url}}"], "path": ["api","v1","payments"], "query": [{ "key": "page", "value": "1" },{ "key": "per_page", "value": "20" }] }
+          }
+        },
+        {
+          "name": "Payment Webhook (CinetPay / Wave)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" },{ "key": "X-Wave-Signature", "value": "sha256=..." }],
+            "url": { "raw": "{{base_url}}/api/v1/webhooks/:gateway", "host": ["{{base_url}}"], "path": ["api","v1","webhooks",":gateway"], "variable": [{ "key": "gateway", "value": "wave" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"type\": \"payment.completed\",\n  \"data\": {\n    \"client_reference\": \"pay_abc123\",\n    \"amount\": 5000,\n    \"currency\": \"XOF\"\n  }\n}" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "13 · Chat",
+      "item": [
+        {
+          "name": "Get Conversations",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/conversations", "host": ["{{base_url}}"], "path": ["api","v1","conversations"] }
+          }
+        },
+        {
+          "name": "Get or Create Trip Conversation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/conversations/trip/:trip_id", "host": ["{{base_url}}"], "path": ["api","v1","conversations","trip",":trip_id"], "variable": [{ "key": "trip_id", "value": "{{trip_id}}" }] }
+          }
+        },
+        {
+          "name": "Get Messages",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/conversations/:id/messages?limit=30", "host": ["{{base_url}}"], "path": ["api","v1","conversations",":id","messages"], "variable": [{ "key": "id", "value": "cnv_abc123" }], "query": [{ "key": "limit", "value": "30" }] }
+          }
+        },
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/conversations/:id/messages", "host": ["{{base_url}}"], "path": ["api","v1","conversations",":id","messages"], "variable": [{ "key": "id", "value": "cnv_abc123" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"type\": \"text\",\n  \"body\": \"I am at the gate\",\n  \"local_id\": \"client-local-uuid-001\"\n}" }
+          }
+        },
+        {
+          "name": "Mark Conversation Read",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/conversations/:id/read", "host": ["{{base_url}}"], "path": ["api","v1","conversations",":id","read"], "variable": [{ "key": "id", "value": "cnv_abc123" }] }
+          }
+        },
+        {
+          "name": "Initiate Masked Call",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/calls/mask", "host": ["{{base_url}}"], "path": ["api","v1","calls","mask"] },
+            "body": { "mode": "raw", "raw": "{\n  \"trip_id\": \"{{trip_id}}\"\n}" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "14 · Notifications",
+      "item": [
+        {
+          "name": "Get Notifications",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/notifications?page=1&per_page=20", "host": ["{{base_url}}"], "path": ["api","v1","notifications"], "query": [{ "key": "page", "value": "1" },{ "key": "per_page", "value": "20" },{ "key": "group", "value": "trip", "disabled": true }] }
+          }
+        },
+        {
+          "name": "Get Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/notifications/unread-count", "host": ["{{base_url}}"], "path": ["api","v1","notifications","unread-count"] }
+          }
+        },
+        {
+          "name": "Mark Notification Read",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/notifications/:id/read", "host": ["{{base_url}}"], "path": ["api","v1","notifications",":id","read"], "variable": [{ "key": "id", "value": "ntf_abc123" }] }
+          }
+        },
+        {
+          "name": "Mark All Read",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/notifications/read-all", "host": ["{{base_url}}"], "path": ["api","v1","notifications","read-all"] }
+          }
+        },
+        {
+          "name": "Delete Notification",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/notifications/:id", "host": ["{{base_url}}"], "path": ["api","v1","notifications",":id"], "variable": [{ "key": "id", "value": "ntf_abc123" }] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "15 · Safety",
+      "item": [
+        {
+          "name": "Raise SOS",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/safety/sos", "host": ["{{base_url}}"], "path": ["api","v1","safety","sos"] },
+            "body": { "mode": "raw", "raw": "{\n  \"trip_id\": \"{{trip_id}}\",\n  \"type\": \"Accident\",\n  \"source\": \"rider\",\n  \"lat\": 5.3599,\n  \"lng\": -3.9970,\n  \"note\": null\n}" }
+          }
+        },
+        {
+          "name": "Resolve Own SOS",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/safety/sos/:id/resolve", "host": ["{{base_url}}"], "path": ["api","v1","safety","sos",":id","resolve"], "variable": [{ "key": "id", "value": "sos_abc123" }] }
+          }
+        },
+        {
+          "name": "Share Trip",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/trips/:id/share", "host": ["{{base_url}}"], "path": ["api","v1","trips",":id","share"], "variable": [{ "key": "id", "value": "{{trip_id}}" }] }
+          }
+        },
+        {
+          "name": "View Shared Trip (public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/v1/trips/shared/:token", "host": ["{{base_url}}"], "path": ["api","v1","trips","shared",":token"], "variable": [{ "key": "token", "value": "share-token-abc" }] }
+          }
+        },
+        {
+          "name": "Report Trip",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/trips/:id/report", "host": ["{{base_url}}"], "path": ["api","v1","trips",":id","report"], "variable": [{ "key": "id", "value": "{{trip_id}}" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"category\": \"inappropriate_behaviour\",\n  \"description\": \"Driver was rude and took wrong route\"\n}" }
+          }
+        },
+        {
+          "name": "Safety Check-In",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/safety/checkin", "host": ["{{base_url}}"], "path": ["api","v1","safety","checkin"] },
+            "body": { "mode": "raw", "raw": "{\n  \"note\": \"All good, just checking in\"\n}" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "16 · Support",
+      "item": [
+        {
+          "name": "Get FAQs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/support/faqs?audience=rider", "host": ["{{base_url}}"], "path": ["api","v1","support","faqs"], "query": [{ "key": "audience", "value": "rider" }] }
+          }
+        },
+        {
+          "name": "Get Support Channels",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/support/channels", "host": ["{{base_url}}"], "path": ["api","v1","support","channels"] }
+          }
+        },
+        {
+          "name": "Get Ticket Categories",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/support/categories", "host": ["{{base_url}}"], "path": ["api","v1","support","categories"] }
+          }
+        },
+        {
+          "name": "Create Ticket",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/support/tickets", "host": ["{{base_url}}"], "path": ["api","v1","support","tickets"] },
+            "body": { "mode": "raw", "raw": "{\n  \"category\": \"payment_issue\",\n  \"description\": \"I was charged twice for trip trp_abc123\",\n  \"trip_id\": \"{{trip_id}}\"\n}" }
+          }
+        },
+        {
+          "name": "Get My Tickets",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/support/tickets?page=1&per_page=20", "host": ["{{base_url}}"], "path": ["api","v1","support","tickets"], "query": [{ "key": "page", "value": "1" },{ "key": "per_page", "value": "20" }] }
+          }
+        },
+        {
+          "name": "Get Ticket Detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/support/tickets/:id", "host": ["{{base_url}}"], "path": ["api","v1","support","tickets",":id"], "variable": [{ "key": "id", "value": "tkt_abc123" }] }
+          }
+        },
+        {
+          "name": "Reply to Ticket",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/support/tickets/:id/reply", "host": ["{{base_url}}"], "path": ["api","v1","support","tickets",":id","reply"], "variable": [{ "key": "id", "value": "tkt_abc123" }] },
+            "body": { "mode": "raw", "raw": "{\n  \"body\": \"Still not resolved, please check again\"\n}" }
+          }
+        },
+        {
+          "name": "Close Ticket",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/support/tickets/:id/close", "host": ["{{base_url}}"], "path": ["api","v1","support","tickets",":id","close"], "variable": [{ "key": "id", "value": "tkt_abc123" }] }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "17 · Promotions",
+      "item": [
+        {
+          "name": "Get Coupons",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" }],
+            "url": { "raw": "{{base_url}}/api/v1/coupons", "host": ["{{base_url}}"], "path": ["api","v1","coupons"] }
+          }
+        },
+        {
+          "name": "Validate / Apply Coupon",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/coupons/validate", "host": ["{{base_url}}"], "path": ["api","v1","coupons","validate"] },
+            "body": { "mode": "raw", "raw": "{\n  \"code\": \"SAVE500\"\n}" }
+          }
+        },
+        {
+          "name": "Redeem Referral",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{app_token}}" },{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/v1/referrals/redeem", "host": ["{{base_url}}"], "path": ["api","v1","referrals","redeem"] },
+            "body": { "mode": "raw", "raw": "{\n  \"code\": \"KY2025\"\n}" }
+          }
+        }
+      ]
+    }
+  ]
+}

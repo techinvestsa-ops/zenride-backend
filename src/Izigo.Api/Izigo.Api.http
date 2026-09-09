@@ -1,0 +1,6 @@
+@Izigo.Api_HostAddress = http://localhost:5067
+
+GET {{Izigo.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

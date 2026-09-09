@@ -1,0 +1,6 @@
+{
+  "Izigo.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Projects\\izigo-api\\src\\Izigo.Api",
+  "Izigo.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Projects\\izigo-api\\src\\Izigo.Application",
+  "Izigo.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Projects\\izigo-api\\src\\Izigo.Domain",
+  "Izigo.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Projects\\izigo-api\\src\\Izigo.Infrastructure"
+}

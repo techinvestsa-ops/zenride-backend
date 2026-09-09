@@ -1,0 +1,15 @@
+C:\Projects\izigo-api\src\Izigo.Application\obj\Debug\net9.0\Izigo.Application.csproj.AssemblyReference.cache
+C:\Projects\izigo-api\src\Izigo.Application\obj\Debug\net9.0\Izigo.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projects\izigo-api\src\Izigo.Application\obj\Debug\net9.0\Izigo.Application.AssemblyInfoInputs.cache
+C:\Projects\izigo-api\src\Izigo.Application\obj\Debug\net9.0\Izigo.Application.AssemblyInfo.cs
+C:\Projects\izigo-api\src\Izigo.Application\obj\Debug\net9.0\Izigo.Application.csproj.CoreCompileInputs.cache
+C:\Projects\izigo-api\src\Izigo.Application\bin\Debug\net9.0\Izigo.Application.deps.json
+C:\Projects\izigo-api\src\Izigo.Application\bin\Debug\net9.0\Izigo.Application.dll
+C:\Projects\izigo-api\src\Izigo.Application\bin\Debug\net9.0\Izigo.Application.pdb
+C:\Projects\izigo-api\src\Izigo.Application\bin\Debug\net9.0\Izigo.Domain.dll
+C:\Projects\izigo-api\src\Izigo.Application\bin\Debug\net9.0\Izigo.Domain.pdb
+C:\Projects\izigo-api\src\Izigo.Application\obj\Debug\net9.0\Izigo.Ap.353E345F.Up2Date
+C:\Projects\izigo-api\src\Izigo.Application\obj\Debug\net9.0\Izigo.Application.dll
+C:\Projects\izigo-api\src\Izigo.Application\obj\Debug\net9.0\refint\Izigo.Application.dll
+C:\Projects\izigo-api\src\Izigo.Application\obj\Debug\net9.0\Izigo.Application.pdb
+C:\Projects\izigo-api\src\Izigo.Application\obj\Debug\net9.0\ref\Izigo.Application.dll

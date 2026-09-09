@@ -1,0 +1,7163 @@
+[
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "GetAuditLog",
+    "RelativePath": "api/v1/admin/audit-log",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "actor",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "action",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "target_type",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "target_id",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "q",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "GetAuditLogEntry",
+    "RelativePath": "api/v1/admin/audit-log/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "ExportAuditLog",
+    "RelativePath": "api/v1/admin/audit-log/export",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.AdminAuthController",
+    "Method": "Enroll2Fa",
+    "RelativePath": "api/v1/admin/auth/2fa/enroll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.AdminAuthController",
+    "Method": "Verify2Fa",
+    "RelativePath": "api/v1/admin/auth/2fa/verify",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Admin.Auth.Dtos.TwoFaVerifyRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.AdminAuthController",
+    "Method": "AcceptInvite",
+    "RelativePath": "api/v1/admin/auth/accept-invite",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Admin.Auth.Dtos.AcceptInviteRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.AdminAuthController",
+    "Method": "Login",
+    "RelativePath": "api/v1/admin/auth/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Admin.Auth.Dtos.AdminLoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.AdminAuthController",
+    "Method": "Logout",
+    "RelativePath": "api/v1/admin/auth/logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.AdminAuthController",
+    "Method": "ForgotPassword",
+    "RelativePath": "api/v1/admin/auth/password/forgot",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Admin.Auth.Dtos.ForgotPasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.AdminAuthController",
+    "Method": "ResetPassword",
+    "RelativePath": "api/v1/admin/auth/password/reset",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Admin.Auth.Dtos.ResetPasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.AdminAuthController",
+    "Method": "Refresh",
+    "RelativePath": "api/v1/admin/auth/refresh",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Admin.Auth.Dtos.AdminRefreshRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "GetBroadcasts",
+    "RelativePath": "api/v1/admin/broadcasts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "channel",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "CreateBroadcast",
+    "RelativePath": "api/v1/admin/broadcasts",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.CreateBroadcastRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "CancelBroadcast",
+    "RelativePath": "api/v1/admin/broadcasts/{id}/cancel",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "EstimateBroadcast",
+    "RelativePath": "api/v1/admin/broadcasts/estimate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.EstimateBroadcastRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "TestBroadcast",
+    "RelativePath": "api/v1/admin/broadcasts/test",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.TestBroadcastRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "GetCashSettlement",
+    "RelativePath": "api/v1/admin/cash-settlement",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "RecordCashSettlement",
+    "RelativePath": "api/v1/admin/cash-settlement/{driverId}/record",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "driverId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.RecordCashRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "WriteOffCashSettlement",
+    "RelativePath": "api/v1/admin/cash-settlement/{driverId}/write-off",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "driverId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.WriteOffRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.CoRideAdminController",
+    "Method": "RefundBooking",
+    "RelativePath": "api/v1/admin/co-ride/bookings/{id}/refund",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "Idempotency-Key",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.CoRideAdminController",
+    "Method": "GetListings",
+    "RelativePath": "api/v1/admin/co-ride/listings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "zone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "driver_id",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.CoRideAdminController",
+    "Method": "GetListing",
+    "RelativePath": "api/v1/admin/co-ride/listings/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.CoRideAdminController",
+    "Method": "CancelListing",
+    "RelativePath": "api/v1/admin/co-ride/listings/{id}/cancel",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.CancelListingRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.CoRideAdminController",
+    "Method": "GetRequests",
+    "RelativePath": "api/v1/admin/co-ride/requests",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "GetConfig",
+    "RelativePath": "api/v1/admin/config",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "UpdateDispatchConfig",
+    "RelativePath": "api/v1/admin/config/dispatch",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Admin.Config.Dtos.UpdateDispatchConfigRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "GetFlags",
+    "RelativePath": "api/v1/admin/config/flags",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "UpdateFlag",
+    "RelativePath": "api/v1/admin/config/flags/{key}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Admin.Config.Dtos.UpdateFeatureFlagRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "UpdateMaintenance",
+    "RelativePath": "api/v1/admin/config/maintenance",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Admin.Config.Dtos.UpdateMaintenanceRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "UpdateVersionConfig",
+    "RelativePath": "api/v1/admin/config/versions",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.UpdateVersionConfigRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "GetContent",
+    "RelativePath": "api/v1/admin/content",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "UpdateContent",
+    "RelativePath": "api/v1/admin/content/{key}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.UpdateContentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "UpsertBanner",
+    "RelativePath": "api/v1/admin/content/banners",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.CreateBannerRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "GetCoupons",
+    "RelativePath": "api/v1/admin/coupons",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "CreateCoupon",
+    "RelativePath": "api/v1/admin/coupons",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.CreateCouponRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "UpdateCoupon",
+    "RelativePath": "api/v1/admin/coupons/{code}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "code",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.UpdateCouponRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "GetCouponPerformance",
+    "RelativePath": "api/v1/admin/coupons/{code}/performance",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "code",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.KycAdminController",
+    "Method": "ReviewDocument",
+    "RelativePath": "api/v1/admin/documents/{id}/review",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.DocumentReviewRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.KycAdminController",
+    "Method": "GetExpiringDocuments",
+    "RelativePath": "api/v1/admin/documents/expiring",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "within_days",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.DriversAdminController",
+    "Method": "GetDrivers",
+    "RelativePath": "api/v1/admin/drivers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "kyc_status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "online",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "vertical",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "vehicle_type",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "zone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "suspended",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "has_cash_owed",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "docs_expiring_within_days",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "q",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.DriversAdminController",
+    "Method": "GetDriver",
+    "RelativePath": "api/v1/admin/drivers/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.DriversAdminController",
+    "Method": "UpdateDriver",
+    "RelativePath": "api/v1/admin/drivers/{id}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.UpdateDriverRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.DriversAdminController",
+    "Method": "BlockDriver",
+    "RelativePath": "api/v1/admin/drivers/{id}/block",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.BlockDriverRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.DriversAdminController",
+    "Method": "GetDriverJobs",
+    "RelativePath": "api/v1/admin/drivers/{id}/jobs",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.DriversAdminController",
+    "Method": "GetLocationHistory",
+    "RelativePath": "api/v1/admin/drivers/{id}/location-history",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.DriversAdminController",
+    "Method": "SendPasswordResetLink",
+    "RelativePath": "api/v1/admin/drivers/{id}/password/reset-link",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.DriversAdminController",
+    "Method": "GetDriverRatings",
+    "RelativePath": "api/v1/admin/drivers/{id}/ratings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.DriversAdminController",
+    "Method": "ResetPerformance",
+    "RelativePath": "api/v1/admin/drivers/{id}/reset-performance",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.ResetPerformanceRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.DriversAdminController",
+    "Method": "RevokeSessions",
+    "RelativePath": "api/v1/admin/drivers/{id}/sessions/revoke",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.DriversAdminController",
+    "Method": "SuspendDriver",
+    "RelativePath": "api/v1/admin/drivers/{id}/suspend",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.SuspendDriverRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.DriversAdminController",
+    "Method": "UnblockDriver",
+    "RelativePath": "api/v1/admin/drivers/{id}/unblock",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.ReasonOnlyRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.DriversAdminController",
+    "Method": "UpdateVehicle",
+    "RelativePath": "api/v1/admin/drivers/{id}/vehicle",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.UpdateVehicleRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.DriversAdminController",
+    "Method": "UpdateVerticals",
+    "RelativePath": "api/v1/admin/drivers/{id}/verticals",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.UpdateVerticalsRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.DriversAdminController",
+    "Method": "ExportDrivers",
+    "RelativePath": "api/v1/admin/drivers/export",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "GetIncentives",
+    "RelativePath": "api/v1/admin/incentives",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "CreateIncentive",
+    "RelativePath": "api/v1/admin/incentives",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.CreateIncentiveRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "GetIntegrations",
+    "RelativePath": "api/v1/admin/integrations",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "UpdateIntegration",
+    "RelativePath": "api/v1/admin/integrations/{key}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Admin.Config.Dtos.UpdateIntegrationRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "GetJob",
+    "RelativePath": "api/v1/admin/jobs/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.KycAdminController",
+    "Method": "GetDriverKyc",
+    "RelativePath": "api/v1/admin/kyc/{driverId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "driverId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.KycAdminController",
+    "Method": "ApproveKyc",
+    "RelativePath": "api/v1/admin/kyc/{driverId}/approve",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "driverId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.KycAdminController",
+    "Method": "AssignReviewer",
+    "RelativePath": "api/v1/admin/kyc/{driverId}/assign",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "driverId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.KycAdminController",
+    "Method": "GetDocument",
+    "RelativePath": "api/v1/admin/kyc/{driverId}/documents/{docId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "driverId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "docId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.KycAdminController",
+    "Method": "RejectKyc",
+    "RelativePath": "api/v1/admin/kyc/{driverId}/reject",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "driverId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.KycApplicationRejectRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.KycAdminController",
+    "Method": "ApproveStep",
+    "RelativePath": "api/v1/admin/kyc/{driverId}/steps/{step}/approve",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "driverId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "step",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.KycAdminController",
+    "Method": "RejectStep",
+    "RelativePath": "api/v1/admin/kyc/{driverId}/steps/{step}/reject",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "driverId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "step",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.KycStepRejectRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.KycAdminController",
+    "Method": "GetKycMetrics",
+    "RelativePath": "api/v1/admin/kyc/metrics",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.KycAdminController",
+    "Method": "GetQueue",
+    "RelativePath": "api/v1/admin/kyc/queue",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "q",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.AdminAuthController",
+    "Method": "GetMe",
+    "RelativePath": "api/v1/admin/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.AdminAuthController",
+    "Method": "ChangePassword",
+    "RelativePath": "api/v1/admin/me/password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Admin.Auth.Dtos.ChangePasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.AdminAuthController",
+    "Method": "GetSessions",
+    "RelativePath": "api/v1/admin/me/sessions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.AdminAuthController",
+    "Method": "RevokeOtherSessions",
+    "RelativePath": "api/v1/admin/me/sessions/revoke-others",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.MetricsController",
+    "Method": "GetAlerts",
+    "RelativePath": "api/v1/admin/metrics/alerts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.MetricsController",
+    "Method": "GetCohorts",
+    "RelativePath": "api/v1/admin/metrics/cohorts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.MetricsController",
+    "Method": "GetFunnels",
+    "RelativePath": "api/v1/admin/metrics/funnels",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.MetricsController",
+    "Method": "GetGmvSeries",
+    "RelativePath": "api/v1/admin/metrics/gmv-series",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "days",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.MetricsController",
+    "Method": "GetKpis",
+    "RelativePath": "api/v1/admin/metrics/kpis",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "range",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.MetricsController",
+    "Method": "GetSupplyDemand",
+    "RelativePath": "api/v1/admin/metrics/supply-demand",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.MetricsController",
+    "Method": "GetVerticalMix",
+    "RelativePath": "api/v1/admin/metrics/vertical-mix",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "days",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.ModerationAdminController",
+    "Method": "GetModerationLog",
+    "RelativePath": "api/v1/admin/moderation/log",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "actor",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "target_type",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "action",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.OpsController",
+    "Method": "BroadcastZone",
+    "RelativePath": "api/v1/admin/ops/broadcast-zone",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.BroadcastZoneRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.OpsController",
+    "Method": "GetDemand",
+    "RelativePath": "api/v1/admin/ops/demand",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.OpsController",
+    "Method": "GetDriversOnline",
+    "RelativePath": "api/v1/admin/ops/drivers-online",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "zone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "vertical",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "state",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.OpsController",
+    "Method": "ForceDriverOffline",
+    "RelativePath": "api/v1/admin/ops/drivers/{id}/force-offline",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.ForceOfflineRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.OpsController",
+    "Method": "GetHeatmap",
+    "RelativePath": "api/v1/admin/ops/heatmap",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "metric",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.OpsController",
+    "Method": "CancelJob",
+    "RelativePath": "api/v1/admin/ops/jobs/{id}/cancel",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.CancelJobRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.OpsController",
+    "Method": "ReassignJob",
+    "RelativePath": "api/v1/admin/ops/jobs/{id}/reassign",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.ReassignJobRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.OpsController",
+    "Method": "TrackJob",
+    "RelativePath": "api/v1/admin/ops/jobs/{id}/track",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.OpsController",
+    "Method": "GetLive",
+    "RelativePath": "api/v1/admin/ops/live",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.CoRideAdminController",
+    "Method": "GetPackages",
+    "RelativePath": "api/v1/admin/packages",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "proof",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "size",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "fragile",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "courier_id",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.CoRideAdminController",
+    "Method": "GetPackage",
+    "RelativePath": "api/v1/admin/packages/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.CoRideAdminController",
+    "Method": "MarkLost",
+    "RelativePath": "api/v1/admin/packages/{id}/mark-lost",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.MarkLostRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.CoRideAdminController",
+    "Method": "ReviewProof",
+    "RelativePath": "api/v1/admin/packages/{id}/review-proof",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.ReviewProofRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "GetPayments",
+    "RelativePath": "api/v1/admin/payments",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "gateway",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "method",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "purpose",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "fail_reason",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "min_amount",
+        "Type": "System.Nullable\u00601[[System.Int64, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "max_amount",
+        "Type": "System.Nullable\u00601[[System.Int64, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "q",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "GetPayment",
+    "RelativePath": "api/v1/admin/payments/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "MarkReconciled",
+    "RelativePath": "api/v1/admin/payments/{id}/mark-reconciled",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.MarkReconciledRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "RefundPayment",
+    "RelativePath": "api/v1/admin/payments/{id}/refund",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.PaymentRefundRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "ReplayWebhook",
+    "RelativePath": "api/v1/admin/payments/{id}/replay-webhook",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.ReplayWebhookRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "RetryPayment",
+    "RelativePath": "api/v1/admin/payments/{id}/retry",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "ExportPayments",
+    "RelativePath": "api/v1/admin/payments/export",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "GetPaymentStats",
+    "RelativePath": "api/v1/admin/payments/stats",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "GetPayouts",
+    "RelativePath": "api/v1/admin/payouts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "bank",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "min_amount",
+        "Type": "System.Nullable\u00601[[System.Int64, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "max_amount",
+        "Type": "System.Nullable\u00601[[System.Int64, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "GetPayout",
+    "RelativePath": "api/v1/admin/payouts/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "ApprovePayout",
+    "RelativePath": "api/v1/admin/payouts/{id}/approve",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "NetOffCash",
+    "RelativePath": "api/v1/admin/payouts/{id}/net-off-cash",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "RejectPayout",
+    "RelativePath": "api/v1/admin/payouts/{id}/reject",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.ReasonOnlyRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "RetryPayout",
+    "RelativePath": "api/v1/admin/payouts/{id}/retry",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "BulkApprovePayout",
+    "RelativePath": "api/v1/admin/payouts/bulk-approve",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.BulkApproveRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "GetPermissions",
+    "RelativePath": "api/v1/admin/permissions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "GetCommission",
+    "RelativePath": "api/v1/admin/pricing/commission",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "UpdateCommission",
+    "RelativePath": "api/v1/admin/pricing/commission",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.CommissionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "GetFareRules",
+    "RelativePath": "api/v1/admin/pricing/fare-rules",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "UpsertFareRule",
+    "RelativePath": "api/v1/admin/pricing/fare-rules/{serviceClass}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "serviceClass",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.FareRuleRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "GetFareRuleHistory",
+    "RelativePath": "api/v1/admin/pricing/fare-rules/history",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "service_class",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "SimulateFare",
+    "RelativePath": "api/v1/admin/pricing/simulate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.SimulateRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "GetSurge",
+    "RelativePath": "api/v1/admin/pricing/surge",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "UpdateSurge",
+    "RelativePath": "api/v1/admin/pricing/surge/{zoneId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "zoneId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.SurgeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "RealtimeAuth",
+    "RelativePath": "api/v1/admin/realtime/auth",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "GetRealtimeConfig",
+    "RelativePath": "api/v1/admin/realtime/config",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "GetReconciliation",
+    "RelativePath": "api/v1/admin/reconciliation",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "GetVariances",
+    "RelativePath": "api/v1/admin/reconciliation/{gateway}/variances",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "gateway",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "ImportStatement",
+    "RelativePath": "api/v1/admin/reconciliation/import-statement",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "file",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "ReplayMissed",
+    "RelativePath": "api/v1/admin/reconciliation/replay-missed",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.ReplayMissedRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "GetReferrals",
+    "RelativePath": "api/v1/admin/referrals",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "UpdateReferralConfig",
+    "RelativePath": "api/v1/admin/referrals/config",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.UpdateReferralConfigRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "GetReports",
+    "RelativePath": "api/v1/admin/reports",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "RunReport",
+    "RelativePath": "api/v1/admin/reports/{key}/run",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "format",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "ScheduleReport",
+    "RelativePath": "api/v1/admin/reports/schedules",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.ScheduleReportRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.RidersAdminController",
+    "Method": "GetRiders",
+    "RelativePath": "api/v1/admin/riders",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "zone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "min_trips",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "has_wallet_balance",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "q",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.RidersAdminController",
+    "Method": "GetRider",
+    "RelativePath": "api/v1/admin/riders/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.RidersAdminController",
+    "Method": "DeleteRider",
+    "RelativePath": "api/v1/admin/riders/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.RidersAdminController",
+    "Method": "UpdateRider",
+    "RelativePath": "api/v1/admin/riders/{id}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.UpdateRiderRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.RidersAdminController",
+    "Method": "BlockRider",
+    "RelativePath": "api/v1/admin/riders/{id}/block",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.BlockRiderRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.RidersAdminController",
+    "Method": "GetRiderDevices",
+    "RelativePath": "api/v1/admin/riders/{id}/devices",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.RidersAdminController",
+    "Method": "FlagRider",
+    "RelativePath": "api/v1/admin/riders/{id}/flag",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.FlagRiderRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.RidersAdminController",
+    "Method": "LogoutAllSessions",
+    "RelativePath": "api/v1/admin/riders/{id}/logout-all",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.RidersAdminController",
+    "Method": "SendPasswordResetLink",
+    "RelativePath": "api/v1/admin/riders/{id}/password/reset-link",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.RidersAdminController",
+    "Method": "RevokeSessions",
+    "RelativePath": "api/v1/admin/riders/{id}/sessions/revoke",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.RidersAdminController",
+    "Method": "SuspendRider",
+    "RelativePath": "api/v1/admin/riders/{id}/suspend",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.SuspendRiderRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.RidersAdminController",
+    "Method": "GetRiderTrips",
+    "RelativePath": "api/v1/admin/riders/{id}/trips",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.RidersAdminController",
+    "Method": "UnblockRider",
+    "RelativePath": "api/v1/admin/riders/{id}/unblock",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.ReasonOnlyRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "GetRoles",
+    "RelativePath": "api/v1/admin/roles",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "UpsertRole",
+    "RelativePath": "api/v1/admin/roles/{key}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.UpdateRoleRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.SafetyAdminController",
+    "Method": "GetIncidents",
+    "RelativePath": "api/v1/admin/safety/incidents",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "type",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "source",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "zone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.SafetyAdminController",
+    "Method": "GetIncident",
+    "RelativePath": "api/v1/admin/safety/incidents/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.SafetyAdminController",
+    "Method": "AcknowledgeIncident",
+    "RelativePath": "api/v1/admin/safety/incidents/{id}/acknowledge",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.SafetyAdminController",
+    "Method": "EscalateIncident",
+    "RelativePath": "api/v1/admin/safety/incidents/{id}/escalate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.EscalateIncidentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.SafetyAdminController",
+    "Method": "ResolveIncident",
+    "RelativePath": "api/v1/admin/safety/incidents/{id}/resolve",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.ResolveIncidentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.SafetyAdminController",
+    "Method": "GetMetrics",
+    "RelativePath": "api/v1/admin/safety/metrics",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "GetStaff",
+    "RelativePath": "api/v1/admin/staff",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "role",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "market",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "twofa",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "q",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "GetStaffMember",
+    "RelativePath": "api/v1/admin/staff/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "UpdateStaff",
+    "RelativePath": "api/v1/admin/staff/{id}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.UpdateStaffRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "DeleteStaff",
+    "RelativePath": "api/v1/admin/staff/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "Reset2Fa",
+    "RelativePath": "api/v1/admin/staff/{id}/2fa/reset",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.ReasonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "BlockStaff",
+    "RelativePath": "api/v1/admin/staff/{id}/block",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.ReasonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "SendPasswordResetLink",
+    "RelativePath": "api/v1/admin/staff/{id}/password/reset-link",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "SetPassword",
+    "RelativePath": "api/v1/admin/staff/{id}/password/set",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.SetPasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "SetStaffPermissions",
+    "RelativePath": "api/v1/admin/staff/{id}/permissions",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.SetPermissionsRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "ReinstateStaff",
+    "RelativePath": "api/v1/admin/staff/{id}/reinstate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.ReasonRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "SetStaffRole",
+    "RelativePath": "api/v1/admin/staff/{id}/role",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.SetRoleRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "RevokeSessions",
+    "RelativePath": "api/v1/admin/staff/{id}/sessions/revoke",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "SuspendStaff",
+    "RelativePath": "api/v1/admin/staff/{id}/suspend",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.SuspendRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.StaffAdminController",
+    "Method": "InviteStaff",
+    "RelativePath": "api/v1/admin/staff/invite",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.InviteStaffRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "GetCannedReplies",
+    "RelativePath": "api/v1/admin/support/canned-replies",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "GetSupportMetrics",
+    "RelativePath": "api/v1/admin/support/metrics",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "GetTickets",
+    "RelativePath": "api/v1/admin/support/tickets",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "category",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "priority",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "assignee",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "audience",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "past_sla",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "GetTicket",
+    "RelativePath": "api/v1/admin/support/tickets/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "UpdateTicket",
+    "RelativePath": "api/v1/admin/support/tickets/{id}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.UpdateTicketRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "AssignTicket",
+    "RelativePath": "api/v1/admin/support/tickets/{id}/assign",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.AssignTicketRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "ReplyToTicket",
+    "RelativePath": "api/v1/admin/support/tickets/{id}/reply",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.TicketReplyRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.GrowthAdminController",
+    "Method": "ResolveTicketWith",
+    "RelativePath": "api/v1/admin/support/tickets/{id}/resolve-with",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.ResolveWithRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.TripsAdminController",
+    "Method": "GetTrips",
+    "RelativePath": "api/v1/admin/trips",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "vertical",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "payment_method",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "pay_status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "zone",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "driver_id",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "rider_id",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "min_fare",
+        "Type": "System.Nullable\u00601[[System.Int64, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "q",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.TripsAdminController",
+    "Method": "GetTrip",
+    "RelativePath": "api/v1/admin/trips/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.TripsAdminController",
+    "Method": "AdjustFare",
+    "RelativePath": "api/v1/admin/trips/{id}/adjust-fare",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.AdjustFareRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.TripsAdminController",
+    "Method": "RefundTrip",
+    "RelativePath": "api/v1/admin/trips/{id}/refund",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.RefundTripRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "Idempotency-Key",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.TripsAdminController",
+    "Method": "ReopenTrip",
+    "RelativePath": "api/v1/admin/trips/{id}/reopen",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.TripsAdminController",
+    "Method": "GetTripRoute",
+    "RelativePath": "api/v1/admin/trips/{id}/route",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.TripsAdminController",
+    "Method": "ExportTrips",
+    "RelativePath": "api/v1/admin/trips/export",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "vertical",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "GetWallets",
+    "RelativePath": "api/v1/admin/wallets",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "kind",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "min_balance",
+        "Type": "System.Nullable\u00601[[System.Int64, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "frozen",
+        "Type": "System.Nullable\u00601[[System.Boolean, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "q",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "AdjustWallet",
+    "RelativePath": "api/v1/admin/wallets/{id}/adjust",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.WalletAdjustRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "Idempotency-Key",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "FreezeWallet",
+    "RelativePath": "api/v1/admin/wallets/{id}/freeze",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.ReasonOnlyRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "GetWalletLedger",
+    "RelativePath": "api/v1/admin/wallets/{id}/ledger",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "GetWalletAdjustments",
+    "RelativePath": "api/v1/admin/wallets/adjustments",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "actor",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.FinanceAdminController",
+    "Method": "GetWalletTotals",
+    "RelativePath": "api/v1/admin/wallets/totals",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "GetZones",
+    "RelativePath": "api/v1/admin/zones",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "CreateZone",
+    "RelativePath": "api/v1/admin/zones",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.CreateZoneRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "UpdateZone",
+    "RelativePath": "api/v1/admin/zones/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Api.Controllers.V1.Admin.UpdateZoneRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.Admin.PlatformAdminController",
+    "Method": "GetZonesGeoJson",
+    "RelativePath": "api/v1/admin/zones/geojson",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "DeleteBiometric",
+    "RelativePath": "api/v1/auth/biometric",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "X-Device-Id",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "EnrollBiometric",
+    "RelativePath": "api/v1/auth/biometric/enroll",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Auth.Dtos.EnrollBiometricRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "X-Device-Id",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "BiometricLogin",
+    "RelativePath": "api/v1/auth/biometric/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Auth.Dtos.BiometricLoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "CheckAvailability",
+    "RelativePath": "api/v1/auth/check-availability",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Auth.Dtos.CheckAvailabilityRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/v1/auth/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Auth.Dtos.LoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "Logout",
+    "RelativePath": "api/v1/auth/logout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "X-Device-Id",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "RequestOtp",
+    "RelativePath": "api/v1/auth/otp/request",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Auth.Dtos.RequestOtpRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "ResendOtp",
+    "RelativePath": "api/v1/auth/otp/resend",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Auth.Dtos.ResendOtpRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "VerifyOtp",
+    "RelativePath": "api/v1/auth/otp/verify",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Auth.Dtos.VerifyOtpRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "ChangePassword",
+    "RelativePath": "api/v1/auth/password/change",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Auth.Dtos.ChangePasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "ForgotPassword",
+    "RelativePath": "api/v1/auth/password/forgot",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Auth.Dtos.ForgotPasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "ResetPassword",
+    "RelativePath": "api/v1/auth/password/reset",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Auth.Dtos.ResetPasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "VerifyPasswordCode",
+    "RelativePath": "api/v1/auth/password/verify-code",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Auth.Dtos.VerifyResetCodeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "Refresh",
+    "RelativePath": "api/v1/auth/refresh",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Auth.Dtos.RefreshTokenRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "Register",
+    "RelativePath": "api/v1/auth/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Idempotency-Key",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Auth.Dtos.RegisterRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "GetSessions",
+    "RelativePath": "api/v1/auth/sessions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "X-Device-Id",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "DeleteSession",
+    "RelativePath": "api/v1/auth/sessions/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "RevokeOtherSessions",
+    "RelativePath": "api/v1/auth/sessions/revoke-others",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "X-Device-Id",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.AuthController",
+    "Method": "SocialAuth",
+    "RelativePath": "api/v1/auth/social",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Auth.Dtos.SocialLoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ConfigController",
+    "Method": "GetBanners",
+    "RelativePath": "api/v1/banners",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "placement",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ChatController",
+    "Method": "MaskCall",
+    "RelativePath": "api/v1/calls/mask",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Api.Controllers.V1.ChatController\u002BMaskCallRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.CoRideController",
+    "Method": "CreateBooking",
+    "RelativePath": "api/v1/co-ride/bookings",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.CoRide.Dtos.BookSeatsRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "Idempotency-Key",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.CoRideController",
+    "Method": "GetBookings",
+    "RelativePath": "api/v1/co-ride/bookings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "state",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.CoRideController",
+    "Method": "GetBooking",
+    "RelativePath": "api/v1/co-ride/bookings/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.CoRideController",
+    "Method": "CancelBooking",
+    "RelativePath": "api/v1/co-ride/bookings/{id}/cancel",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.CoRide.Dtos.CancelCoRideRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.CoRideController",
+    "Method": "RateBooking",
+    "RelativePath": "api/v1/co-ride/bookings/{id}/rate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.CoRide.Dtos.RateCoRideRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.CoRideController",
+    "Method": "GetListings",
+    "RelativePath": "api/v1/co-ride/listings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "FromLat",
+        "Type": "System.Double",
+        "IsRequired": false
+      },
+      {
+        "Name": "FromLng",
+        "Type": "System.Double",
+        "IsRequired": false
+      },
+      {
+        "Name": "ToLat",
+        "Type": "System.Double",
+        "IsRequired": false
+      },
+      {
+        "Name": "ToLng",
+        "Type": "System.Double",
+        "IsRequired": false
+      },
+      {
+        "Name": "RadiusM",
+        "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "DepartureFrom",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "DepartureTo",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "Seats",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "Sort",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "EcoOnly",
+        "Type": "System.Boolean",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.CoRideController",
+    "Method": "GetListing",
+    "RelativePath": "api/v1/co-ride/listings/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.CoRideController",
+    "Method": "CreateRequest",
+    "RelativePath": "api/v1/co-ride/requests",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.CoRide.Dtos.CreateMatchRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.CoRideController",
+    "Method": "GetRequests",
+    "RelativePath": "api/v1/co-ride/requests",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.CoRideController",
+    "Method": "DeleteRequest",
+    "RelativePath": "api/v1/co-ride/requests/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ConfigController",
+    "Method": "GetConfig",
+    "RelativePath": "api/v1/config",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ConfigController",
+    "Method": "VersionCheck",
+    "RelativePath": "api/v1/config/version-check",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "platform",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "version",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ChatController",
+    "Method": "GetConversations",
+    "RelativePath": "api/v1/conversations",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ChatController",
+    "Method": "GetMessages",
+    "RelativePath": "api/v1/conversations/{id}/messages",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "before",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ChatController",
+    "Method": "SendMessage",
+    "RelativePath": "api/v1/conversations/{id}/messages",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Chat.Dtos.SendMessageRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ChatController",
+    "Method": "MarkConversationRead",
+    "RelativePath": "api/v1/conversations/{id}/read",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ChatController",
+    "Method": "GetOrCreateTripConversation",
+    "RelativePath": "api/v1/conversations/trip/{tripId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tripId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PromosController",
+    "Method": "GetCoupons",
+    "RelativePath": "api/v1/coupons",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PromosController",
+    "Method": "ValidateCoupon",
+    "RelativePath": "api/v1/coupons/validate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Promotions.Dtos.ValidateCouponRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DevicesController",
+    "Method": "RegisterDevice",
+    "RelativePath": "api/v1/devices",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Api.Controllers.V1.DevicesController\u002BRegisterDeviceBody",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DevicesController",
+    "Method": "UnregisterDevice",
+    "RelativePath": "api/v1/devices/{deviceId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "deviceId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DevicesController",
+    "Method": "SubmitDiagnostics",
+    "RelativePath": "api/v1/devices/{deviceId}/diagnostics",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "deviceId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Api.Controllers.V1.DevicesController\u002BSubmitDiagnosticsBody",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetBadges",
+    "RelativePath": "api/v1/driver/badges",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetBanks",
+    "RelativePath": "api/v1/driver/banks",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetCashSettlement",
+    "RelativePath": "api/v1/driver/cash-settlement",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "PayCashSettlement",
+    "RelativePath": "api/v1/driver/cash-settlement/pay",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.PayCashSettlementRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "BoardCoRidePassenger",
+    "RelativePath": "api/v1/driver/co-ride/bookings/{id}/board",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "CreateCoRideListing",
+    "RelativePath": "api/v1/driver/co-ride/listings",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.CoRide.Dtos.PublishListingRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetCoRideListings",
+    "RelativePath": "api/v1/driver/co-ride/listings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "UpdateCoRideListing",
+    "RelativePath": "api/v1/driver/co-ride/listings/{id}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.CoRide.Dtos.EditListingRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "DeleteCoRideListing",
+    "RelativePath": "api/v1/driver/co-ride/listings/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.CoRide.Dtos.DeleteListingRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetCoRideManifest",
+    "RelativePath": "api/v1/driver/co-ride/listings/{id}/manifest",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetDemand",
+    "RelativePath": "api/v1/driver/demand",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetDocuments",
+    "RelativePath": "api/v1/driver/documents",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "UploadDocument",
+    "RelativePath": "api/v1/driver/documents",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.UploadDocumentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetEarnings",
+    "RelativePath": "api/v1/driver/earnings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "period",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetEarningsSeries",
+    "RelativePath": "api/v1/driver/earnings/series",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "granularity",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "days",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetEarningsTrips",
+    "RelativePath": "api/v1/driver/earnings/trips",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetHome",
+    "RelativePath": "api/v1/driver/home",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetIncentives",
+    "RelativePath": "api/v1/driver/incentives",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetPeakHours",
+    "RelativePath": "api/v1/driver/insights/peak-hours",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetJobs",
+    "RelativePath": "api/v1/driver/jobs",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "vertical",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetJob",
+    "RelativePath": "api/v1/driver/jobs/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "AcceptJob",
+    "RelativePath": "api/v1/driver/jobs/{id}/accept",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "ArrivedAtDropoff",
+    "RelativePath": "api/v1/driver/jobs/{id}/arrived-dropoff",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "ArrivedAtPickup",
+    "RelativePath": "api/v1/driver/jobs/{id}/arrived-pickup",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "CancelJob",
+    "RelativePath": "api/v1/driver/jobs/{id}/cancel",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Api.Controllers.V1.DriverController\u002BCancelJobRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "CompleteJob",
+    "RelativePath": "api/v1/driver/jobs/{id}/complete",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "DeclineJob",
+    "RelativePath": "api/v1/driver/jobs/{id}/decline",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Api.Controllers.V1.DriverController\u002BDeclineJobRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "EnRoute",
+    "RelativePath": "api/v1/driver/jobs/{id}/en-route",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "RateCustomer",
+    "RelativePath": "api/v1/driver/jobs/{id}/rate-customer",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Api.Controllers.V1.DriverController\u002BRateCustomerRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "StartJob",
+    "RelativePath": "api/v1/driver/jobs/{id}/start",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Api.Controllers.V1.DriverController\u002BStartJobRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "StartWaiting",
+    "RelativePath": "api/v1/driver/jobs/{id}/waiting",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetActiveJob",
+    "RelativePath": "api/v1/driver/jobs/active",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetJobOffer",
+    "RelativePath": "api/v1/driver/jobs/offer",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetKyc",
+    "RelativePath": "api/v1/driver/kyc",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "UpdateLocation",
+    "RelativePath": "api/v1/driver/location",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.UpdateLocationRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetOnboarding",
+    "RelativePath": "api/v1/driver/onboarding",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "SubmitGuarantor",
+    "RelativePath": "api/v1/driver/onboarding/guarantor",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.SubmitGuarantorRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "SubmitIdentity",
+    "RelativePath": "api/v1/driver/onboarding/identity",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.SubmitIdentityRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "SubmitInsurance",
+    "RelativePath": "api/v1/driver/onboarding/insurance",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.SubmitInsuranceRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "SubmitLicense",
+    "RelativePath": "api/v1/driver/onboarding/license",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.SubmitLicenseRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "SubmitPayout",
+    "RelativePath": "api/v1/driver/onboarding/payout",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.SubmitPayoutRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "SubmitPersonal",
+    "RelativePath": "api/v1/driver/onboarding/personal",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.SubmitPersonalRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "SubmitSelfie",
+    "RelativePath": "api/v1/driver/onboarding/selfie",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.SubmitSelfieRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "SubmitOnboarding",
+    "RelativePath": "api/v1/driver/onboarding/submit",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "SubmitVehicle",
+    "RelativePath": "api/v1/driver/onboarding/vehicle",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.SubmitVehicleRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "ReportFailedDelivery",
+    "RelativePath": "api/v1/driver/packages/{id}/failed-delivery",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Api.Controllers.V1.DriverController\u002BFailedDeliveryRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "UploadDeliveryProof",
+    "RelativePath": "api/v1/driver/packages/{id}/proof",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Api.Controllers.V1.DriverController\u002BUploadProofRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetPayoutMethods",
+    "RelativePath": "api/v1/driver/payout-methods",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "AddPayoutMethod",
+    "RelativePath": "api/v1/driver/payout-methods",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.AddPayoutMethodRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "ResolvePayoutAccount",
+    "RelativePath": "api/v1/driver/payout/resolve-account",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.ResolveAccountRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetPerformance",
+    "RelativePath": "api/v1/driver/performance",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "period",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetPreferences",
+    "RelativePath": "api/v1/driver/preferences",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "UpdatePreferences",
+    "RelativePath": "api/v1/driver/preferences",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.UpdateDriverPreferencesRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetRatings",
+    "RelativePath": "api/v1/driver/ratings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "SetStatus",
+    "RelativePath": "api/v1/driver/status",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.SetStatusRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetStatus",
+    "RelativePath": "api/v1/driver/status",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetVehicles",
+    "RelativePath": "api/v1/driver/vehicles",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "AddVehicle",
+    "RelativePath": "api/v1/driver/vehicles",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.AddVehicleRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "UpdateVehicle",
+    "RelativePath": "api/v1/driver/vehicles/{id}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.UpdateVehicleRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetWallet",
+    "RelativePath": "api/v1/driver/wallet",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "DisputeWallet",
+    "RelativePath": "api/v1/driver/wallet/dispute",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.DisputeWalletRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "GetWalletTransactions",
+    "RelativePath": "api/v1/driver/wallet/transactions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.DriverController",
+    "Method": "WithdrawWallet",
+    "RelativePath": "api/v1/driver/wallet/withdraw",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Driver.Dtos.WithdrawEarningsRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "Idempotency-Key",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.QuotesController",
+    "Method": "GetFareRules",
+    "RelativePath": "api/v1/fare-rules",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.GeoController",
+    "Method": "Autocomplete",
+    "RelativePath": "api/v1/geo/autocomplete",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "q",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "lat",
+        "Type": "System.Double",
+        "IsRequired": false
+      },
+      {
+        "Name": "lng",
+        "Type": "System.Double",
+        "IsRequired": false
+      },
+      {
+        "Name": "session_token",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "country",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.GeoController",
+    "Method": "GetEta",
+    "RelativePath": "api/v1/geo/eta",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "origin_lat",
+        "Type": "System.Double",
+        "IsRequired": false
+      },
+      {
+        "Name": "origin_lng",
+        "Type": "System.Double",
+        "IsRequired": false
+      },
+      {
+        "Name": "destinations",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.GeoController",
+    "Method": "Geocode",
+    "RelativePath": "api/v1/geo/geocode",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "address",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.GeoController",
+    "Method": "GetNearbyDrivers",
+    "RelativePath": "api/v1/geo/nearby-drivers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "lat",
+        "Type": "System.Double",
+        "IsRequired": false
+      },
+      {
+        "Name": "lng",
+        "Type": "System.Double",
+        "IsRequired": false
+      },
+      {
+        "Name": "radius_m",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "vertical",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.GeoController",
+    "Method": "GetPlace",
+    "RelativePath": "api/v1/geo/place/{placeId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "placeId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.GeoController",
+    "Method": "ReverseGeocode",
+    "RelativePath": "api/v1/geo/reverse-geocode",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "lat",
+        "Type": "System.Double",
+        "IsRequired": false
+      },
+      {
+        "Name": "lng",
+        "Type": "System.Double",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.GeoController",
+    "Method": "GetRoute",
+    "RelativePath": "api/v1/geo/route",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "origin_lat",
+        "Type": "System.Double",
+        "IsRequired": false
+      },
+      {
+        "Name": "origin_lng",
+        "Type": "System.Double",
+        "IsRequired": false
+      },
+      {
+        "Name": "dest_lat",
+        "Type": "System.Double",
+        "IsRequired": false
+      },
+      {
+        "Name": "dest_lng",
+        "Type": "System.Double",
+        "IsRequired": false
+      },
+      {
+        "Name": "waypoints",
+        "Type": "System.String[]",
+        "IsRequired": false
+      },
+      {
+        "Name": "mode",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ConfigController",
+    "Method": "GetLanguages",
+    "RelativePath": "api/v1/languages",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ProfileController",
+    "Method": "GetProfile",
+    "RelativePath": "api/v1/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ProfileController",
+    "Method": "UpdateProfile",
+    "RelativePath": "api/v1/me",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Profile.Dtos.UpdateProfileRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ProfileController",
+    "Method": "CloseAccount",
+    "RelativePath": "api/v1/me/close-account",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Profile.Dtos.CloseAccountRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ProfileController",
+    "Method": "VerifyEmail",
+    "RelativePath": "api/v1/me/email/verify",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Profile.Dtos.VerifyEmailRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ProfileController",
+    "Method": "SendEmailVerification",
+    "RelativePath": "api/v1/me/email/verify/send",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ProfileController",
+    "Method": "GetEmergencyContacts",
+    "RelativePath": "api/v1/me/emergency-contacts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ProfileController",
+    "Method": "AddEmergencyContact",
+    "RelativePath": "api/v1/me/emergency-contacts",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Profile.Dtos.AddEmergencyContactRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ProfileController",
+    "Method": "DeleteEmergencyContact",
+    "RelativePath": "api/v1/me/emergency-contacts/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ProfileController",
+    "Method": "ExportData",
+    "RelativePath": "api/v1/me/export",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ProfileController",
+    "Method": "ChangePhone",
+    "RelativePath": "api/v1/me/phone/change",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Profile.Dtos.ChangePhoneRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ProfileController",
+    "Method": "VerifyPhone",
+    "RelativePath": "api/v1/me/phone/verify",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Profile.Dtos.VerifyPhoneRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ProfileController",
+    "Method": "UploadPhoto",
+    "RelativePath": "api/v1/me/photo",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "photo",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ProfileController",
+    "Method": "GetPreferences",
+    "RelativePath": "api/v1/me/preferences",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ProfileController",
+    "Method": "UpdatePreferences",
+    "RelativePath": "api/v1/me/preferences",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "req",
+        "Type": "Izigo.Application.Features.Profile.Dtos.UpdatePreferencesRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ProfileController",
+    "Method": "GetReferral",
+    "RelativePath": "api/v1/me/referral",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ProfileController",
+    "Method": "GetStats",
+    "RelativePath": "api/v1/me/stats",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.NotificationsController",
+    "Method": "GetNotifications",
+    "RelativePath": "api/v1/notifications",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "group",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.NotificationsController",
+    "Method": "DeleteNotification",
+    "RelativePath": "api/v1/notifications/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.NotificationsController",
+    "Method": "MarkAsRead",
+    "RelativePath": "api/v1/notifications/{id}/read",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.NotificationsController",
+    "Method": "MarkAllAsRead",
+    "RelativePath": "api/v1/notifications/read-all",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.NotificationsController",
+    "Method": "GetUnreadCount",
+    "RelativePath": "api/v1/notifications/unread-count",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ConfigController",
+    "Method": "GetOnboardingSlides",
+    "RelativePath": "api/v1/onboarding-slides",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "audience",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PackagesController",
+    "Method": "CreatePackage",
+    "RelativePath": "api/v1/packages",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Packages.Dtos.CreatePackageRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "Idempotency-Key",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PackagesController",
+    "Method": "GetPackages",
+    "RelativePath": "api/v1/packages",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PackagesController",
+    "Method": "GetPackage",
+    "RelativePath": "api/v1/packages/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PackagesController",
+    "Method": "CancelPackage",
+    "RelativePath": "api/v1/packages/{id}/cancel",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Packages.Dtos.CancelPackageRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PackagesController",
+    "Method": "RatePackage",
+    "RelativePath": "api/v1/packages/{id}/rate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Packages.Dtos.RatePackageRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PackagesController",
+    "Method": "TrackPackage",
+    "RelativePath": "api/v1/packages/track/{trackingId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "trackingId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ConfigController",
+    "Method": "GetPage",
+    "RelativePath": "api/v1/pages/{slug}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "slug",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PaymentsController",
+    "Method": "GetPaymentMethods",
+    "RelativePath": "api/v1/payment-methods",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PaymentsController",
+    "Method": "AddPaymentMethod",
+    "RelativePath": "api/v1/payment-methods",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Payments.Dtos.AddPaymentMethodRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PaymentsController",
+    "Method": "DeletePaymentMethod",
+    "RelativePath": "api/v1/payment-methods/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PaymentsController",
+    "Method": "SetDefaultPaymentMethod",
+    "RelativePath": "api/v1/payment-methods/{id}/default",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PaymentsController",
+    "Method": "GetPayments",
+    "RelativePath": "api/v1/payments",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "purpose",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PaymentsController",
+    "Method": "GetPayment",
+    "RelativePath": "api/v1/payments/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PaymentsController",
+    "Method": "CancelPayment",
+    "RelativePath": "api/v1/payments/{id}/cancel",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PaymentsController",
+    "Method": "CreatePaymentIntent",
+    "RelativePath": "api/v1/payments/intents",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Payments.Dtos.CreatePaymentIntentRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "Idempotency-Key",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PlacesController",
+    "Method": "GetPlaces",
+    "RelativePath": "api/v1/places",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PlacesController",
+    "Method": "CreatePlace",
+    "RelativePath": "api/v1/places",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Places.Dtos.UpsertPlaceRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PlacesController",
+    "Method": "UpdatePlace",
+    "RelativePath": "api/v1/places/{id}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Places.Dtos.UpsertPlaceRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PlacesController",
+    "Method": "DeletePlace",
+    "RelativePath": "api/v1/places/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PlacesController",
+    "Method": "GetRecentPlaces",
+    "RelativePath": "api/v1/places/recent",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "limit",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.QuotesController",
+    "Method": "CreateQuote",
+    "RelativePath": "api/v1/quotes",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Quotes.Dtos.CreateQuoteRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.QuotesController",
+    "Method": "GetQuote",
+    "RelativePath": "api/v1/quotes/{quoteId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "quoteId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RealtimeController",
+    "Method": "Auth",
+    "RelativePath": "api/v1/realtime/auth",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RealtimeController",
+    "Method": "GetConfig",
+    "RelativePath": "api/v1/realtime/config",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PromosController",
+    "Method": "RedeemReferral",
+    "RelativePath": "api/v1/referrals/redeem",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Promotions.Dtos.RedeemReferralRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RidesController",
+    "Method": "CreateRide",
+    "RelativePath": "api/v1/rides",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Rides.Dtos.CreateRideRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "Idempotency-Key",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RidesController",
+    "Method": "GetRides",
+    "RelativePath": "api/v1/rides",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "vertical",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "category",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RidesController",
+    "Method": "GetRide",
+    "RelativePath": "api/v1/rides/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RidesController",
+    "Method": "CancelRide",
+    "RelativePath": "api/v1/rides/{id}/cancel",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Rides.Dtos.CancelRideRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RidesController",
+    "Method": "UpdateDestination",
+    "RelativePath": "api/v1/rides/{id}/destination",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Rides.Dtos.ChangeDestinationRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RidesController",
+    "Method": "GetDriverLocation",
+    "RelativePath": "api/v1/rides/{id}/driver-location",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RidesController",
+    "Method": "ReportLostItem",
+    "RelativePath": "api/v1/rides/{id}/lost-item",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Rides.Dtos.ReportLostItemRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RidesController",
+    "Method": "AddNote",
+    "RelativePath": "api/v1/rides/{id}/note",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Rides.Dtos.AddNoteRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RidesController",
+    "Method": "UpdatePaymentMethod",
+    "RelativePath": "api/v1/rides/{id}/payment-method",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Rides.Dtos.ChangePaymentMethodRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RidesController",
+    "Method": "RateRide",
+    "RelativePath": "api/v1/rides/{id}/rate",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Rides.Dtos.RateRideRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RidesController",
+    "Method": "GetReceipt",
+    "RelativePath": "api/v1/rides/{id}/receipt",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RidesController",
+    "Method": "TipDriver",
+    "RelativePath": "api/v1/rides/{id}/tip",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Rides.Dtos.TipRideRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RidesController",
+    "Method": "GetActiveRide",
+    "RelativePath": "api/v1/rides/active",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RidesController",
+    "Method": "GetCancellationReasons",
+    "RelativePath": "api/v1/rides/cancellation-reasons",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "audience",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "lang",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RidesController",
+    "Method": "GetScheduledRides",
+    "RelativePath": "api/v1/rides/scheduled",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.RidesController",
+    "Method": "DeleteScheduledRide",
+    "RelativePath": "api/v1/rides/scheduled/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.SafetyController",
+    "Method": "SafetyCheckin",
+    "RelativePath": "api/v1/safety/checkin",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Safety.Dtos.SafetyCheckinRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.SafetyController",
+    "Method": "TriggerSos",
+    "RelativePath": "api/v1/safety/sos",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Safety.Dtos.TriggerSosRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.SafetyController",
+    "Method": "ResolveSos",
+    "RelativePath": "api/v1/safety/sos/{id}/resolve",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ConfigController",
+    "Method": "GetServiceClasses",
+    "RelativePath": "api/v1/service-classes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.SupportController",
+    "Method": "GetCategories",
+    "RelativePath": "api/v1/support/categories",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.SupportController",
+    "Method": "GetChannels",
+    "RelativePath": "api/v1/support/channels",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.SupportController",
+    "Method": "GetFaqs",
+    "RelativePath": "api/v1/support/faqs",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "audience",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.SupportController",
+    "Method": "CreateTicket",
+    "RelativePath": "api/v1/support/tickets",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Support.Dtos.CreateTicketRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.SupportController",
+    "Method": "GetTickets",
+    "RelativePath": "api/v1/support/tickets",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "status",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.SupportController",
+    "Method": "GetTicket",
+    "RelativePath": "api/v1/support/tickets/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.SupportController",
+    "Method": "CloseTicket",
+    "RelativePath": "api/v1/support/tickets/{id}/close",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.SupportController",
+    "Method": "ReplyToTicket",
+    "RelativePath": "api/v1/support/tickets/{id}/reply",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Support.Dtos.ReplyTicketRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.SafetyController",
+    "Method": "ReportTrip",
+    "RelativePath": "api/v1/trips/{id}/report",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Safety.Dtos.ReportTripRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.SafetyController",
+    "Method": "ShareTrip",
+    "RelativePath": "api/v1/trips/{id}/share",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.SafetyController",
+    "Method": "GetSharedTrip",
+    "RelativePath": "api/v1/trips/shared/{token}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "token",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.WalletController",
+    "Method": "GetWallet",
+    "RelativePath": "api/v1/wallet",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.WalletController",
+    "Method": "GetLimits",
+    "RelativePath": "api/v1/wallet/limits",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.WalletController",
+    "Method": "GetSummary",
+    "RelativePath": "api/v1/wallet/summary",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "period",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.WalletController",
+    "Method": "TopUp",
+    "RelativePath": "api/v1/wallet/topup",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Wallets.Dtos.TopUpRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "Idempotency-Key",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.WalletController",
+    "Method": "GetTransactions",
+    "RelativePath": "api/v1/wallet/transactions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "type",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "from",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "to",
+        "Type": "System.Nullable\u00601[[System.DateTime, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "per_page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.WalletController",
+    "Method": "Transfer",
+    "RelativePath": "api/v1/wallet/transfer",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Wallets.Dtos.TransferRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "Idempotency-Key",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.WalletController",
+    "Method": "LookupTransferRecipient",
+    "RelativePath": "api/v1/wallet/transfer/lookup",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Wallets.Dtos.TransferLookupRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.WalletController",
+    "Method": "Withdraw",
+    "RelativePath": "api/v1/wallet/withdraw",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "body",
+        "Type": "Izigo.Application.Features.Wallets.Dtos.WithdrawRequest",
+        "IsRequired": true
+      },
+      {
+        "Name": "Idempotency-Key",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.PaymentsController",
+    "Method": "HandleWebhook",
+    "RelativePath": "api/v1/webhooks/{gateway}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "gateway",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Izigo.Api.Controllers.V1.ConfigController",
+    "Method": "GetZones",
+    "RelativePath": "api/v1/zones",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]
