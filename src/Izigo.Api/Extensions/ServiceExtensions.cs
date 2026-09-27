@@ -49,13 +49,17 @@ public static class ServiceExtensions
         })
         .AddJwtBearer("AppBearer", opts =>
         {
+            // Keep JWT claim names as issued ("role", "phone", …). Inbound remapping
+            // breaks RequireClaim("role") and other short-name policy checks.
+            opts.MapInboundClaims = false;
             opts.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true, ValidateAudience = true,
                 ValidateLifetime = true, ValidateIssuerSigningKey = true,
                 ValidIssuer = issuer, ValidAudience = appAudience,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
-                ClockSkew = clockSkew
+                ClockSkew = clockSkew,
+                RoleClaimType = "role",
             };
             // SignalR WebSocket connections pass the JWT as ?access_token= since
             // browsers cannot set Authorization headers on WebSocket upgrade requests.
@@ -102,10 +106,10 @@ public static class ServiceExtensions
                  .RequireClaim("is_staff", "true"))
             .AddPolicy("RiderPolicy", p =>
                 p.AddAuthenticationSchemes("AppBearer").RequireAuthenticatedUser()
-                 .RequireClaim("role", "rider"))
+                 .RequireRole("rider"))
             .AddPolicy("DriverPolicy", p =>
                 p.AddAuthenticationSchemes("AppBearer").RequireAuthenticatedUser()
-                 .RequireClaim("role", "driver"));
+                 .RequireRole("driver"));
 
         return services;
     }
