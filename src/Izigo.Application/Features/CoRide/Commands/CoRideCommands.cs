@@ -1,6 +1,7 @@
 using Izigo.Application.Common.Interfaces;
 using Izigo.Application.Common.Settings;
 using Izigo.Application.Features.CoRide.Dtos;
+using Izigo.Application.Features.CoRide.Helpers;
 using Izigo.Application.Features.CoRide.Queries;
 using Izigo.Domain.Common;
 using Izigo.Domain.Entities;
@@ -82,7 +83,7 @@ public class WithdrawRequestHandler(IApplicationDbContext db)
 
 public record BookSeatsCommand(string RiderId, BookSeatsRequest Request, string? IdempotencyKey) : IRequest<CoRideBookingDto>;
 
-public class BookSeatsHandler(IApplicationDbContext db)
+public class BookSeatsHandler(IApplicationDbContext db, IRealtimeService realtime, IPushService push)
     : IRequestHandler<BookSeatsCommand, CoRideBookingDto>
 {
     public async Task<CoRideBookingDto> Handle(BookSeatsCommand cmd, CancellationToken ct)
@@ -140,12 +141,29 @@ public class BookSeatsHandler(IApplicationDbContext db)
             listing.Status = "full";
 
         db.CoRideBookings.Add(booking);
+
+        var matchedRequest = await db.CoRideRequests
+            .FirstOrDefaultAsync(r => r.RiderId == cmd.RiderId &&
+                                      r.Status == CoRideRequestStatus.Searching, ct);
+        if (matchedRequest != null)
+        {
+            matchedRequest.Status           = CoRideRequestStatus.Matched;
+            matchedRequest.MatchedListingId = listing.Id;
+            matchedRequest.MatchedAt          = DateTime.UtcNow;
+        }
+
         await db.SaveChangesAsync(ct);
 
         var dp = await db.DriverProfiles
             .Include(d => d.User)
             .Include(d => d.Vehicles.Where(v => v.IsActive))
             .FirstOrDefaultAsync(d => d.UserId == listing.DriverId, ct);
+
+        var listingDto = SearchListingsHandler.MapListing(listing, dp);
+        await CoRideNotify.PublishBookingUpdatedAsync(realtime, push, db, booking, listing, ct);
+
+        if (matchedRequest != null)
+            await CoRideNotify.PublishRequestMatchedAsync(realtime, push, db, matchedRequest, listingDto, ct);
 
         return new CoRideBookingDto(
             Id: booking.Id,
@@ -167,7 +185,7 @@ public class BookSeatsHandler(IApplicationDbContext db)
 
 public record CancelBookingCommand(string RiderId, string BookingId, string? Reason) : IRequest;
 
-public class CancelBookingHandler(IApplicationDbContext db)
+public class CancelBookingHandler(IApplicationDbContext db, IRealtimeService realtime, IPushService push)
     : IRequestHandler<CancelBookingCommand>
 {
     public async Task Handle(CancelBookingCommand cmd, CancellationToken ct)
@@ -190,6 +208,8 @@ public class CancelBookingHandler(IApplicationDbContext db)
             booking.Listing.Status = "open";
 
         await db.SaveChangesAsync(ct);
+        await CoRideNotify.PublishBookingUpdatedAsync(
+            realtime, push, db, booking, booking.Listing, ct);
     }
 }
 
@@ -300,13 +320,14 @@ public class EditListingHandler(IApplicationDbContext db)
 
 public record DeleteListingCommand(string DriverId, string ListingId, string? Reason) : IRequest;
 
-public class DeleteListingHandler(IApplicationDbContext db)
+public class DeleteListingHandler(IApplicationDbContext db, IRealtimeService realtime, IPushService push)
     : IRequestHandler<DeleteListingCommand>
 {
     public async Task Handle(DeleteListingCommand cmd, CancellationToken ct)
     {
         var listing = await db.CoRideListings
-            .Include(l => l.Bookings.Where(b => b.Status == CoRideBookingStatus.Upcoming))
+            .Include(l => l.Bookings.Where(b => b.Status != CoRideBookingStatus.Cancelled &&
+                                                 b.Status != CoRideBookingStatus.Completed))
             .FirstOrDefaultAsync(l => l.Id == cmd.ListingId && l.DriverId == cmd.DriverId, ct)
             ?? throw new KeyNotFoundException("Listing not found.");
 
@@ -318,9 +339,14 @@ public class DeleteListingHandler(IApplicationDbContext db)
 
         // Cancel all pending bookings
         foreach (var b in listing.Bookings)
+        {
             b.Status = CoRideBookingStatus.Cancelled;
+            b.CancellationReason = cmd.Reason;
+        }
 
         await db.SaveChangesAsync(ct);
+        await CoRideNotify.NotifyListingBookingsAsync(
+            realtime, push, db, listing, onlyStatus: CoRideBookingStatus.Cancelled, ct);
     }
 }
 
@@ -328,7 +354,7 @@ public class DeleteListingHandler(IApplicationDbContext db)
 
 public record BoardPassengerCommand(string DriverId, string BookingId) : IRequest;
 
-public class BoardPassengerHandler(IApplicationDbContext db)
+public class BoardPassengerHandler(IApplicationDbContext db, IRealtimeService realtime, IPushService push)
     : IRequestHandler<BoardPassengerCommand>
 {
     public async Task Handle(BoardPassengerCommand cmd, CancellationToken ct)
@@ -348,5 +374,72 @@ public class BoardPassengerHandler(IApplicationDbContext db)
 
         booking.Status = CoRideBookingStatus.InRide;
         await db.SaveChangesAsync(ct);
+        await CoRideNotify.PublishBookingUpdatedAsync(
+            realtime, push, db, booking, booking.Listing, ct);
+    }
+}
+
+// ── POST /driver/co-ride/listings/{id}/start ──────────────────────────────────
+
+public record StartCoRideDepartureCommand(string DriverId, string ListingId) : IRequest;
+
+public class StartCoRideDepartureHandler(
+    IApplicationDbContext db, IRealtimeService realtime, IPushService push)
+    : IRequestHandler<StartCoRideDepartureCommand>
+{
+    public async Task Handle(StartCoRideDepartureCommand cmd, CancellationToken ct)
+    {
+        var listing = await db.CoRideListings
+            .Include(l => l.Bookings)
+            .FirstOrDefaultAsync(l => l.Id == cmd.ListingId && l.DriverId == cmd.DriverId, ct)
+            ?? throw new KeyNotFoundException("Listing not found.");
+
+        if (listing.Status is "cancelled" or "completed")
+            throw new InvalidOperationException("CONFLICT: Listing is not active.");
+
+        foreach (var booking in listing.Bookings.Where(b =>
+                     b.Status is CoRideBookingStatus.Upcoming or CoRideBookingStatus.DriverArriving))
+            booking.Status = CoRideBookingStatus.DriverArriving;
+
+        await db.SaveChangesAsync(ct);
+        await CoRideNotify.NotifyListingBookingsAsync(
+            realtime, push, db, listing, CoRideBookingStatus.DriverArriving, ct);
+    }
+}
+
+// ── POST /driver/co-ride/listings/{id}/complete ───────────────────────────────
+
+public record CompleteCoRideListingCommand(string DriverId, string ListingId) : IRequest;
+
+public class CompleteCoRideListingHandler(
+    IApplicationDbContext db, IRealtimeService realtime, IPushService push)
+    : IRequestHandler<CompleteCoRideListingCommand>
+{
+    public async Task Handle(CompleteCoRideListingCommand cmd, CancellationToken ct)
+    {
+        var listing = await db.CoRideListings
+            .Include(l => l.Bookings)
+            .FirstOrDefaultAsync(l => l.Id == cmd.ListingId && l.DriverId == cmd.DriverId, ct)
+            ?? throw new KeyNotFoundException("Listing not found.");
+
+        if (listing.Status is "cancelled" or "completed")
+            throw new InvalidOperationException("CONFLICT: Listing is already finalised.");
+
+        foreach (var booking in listing.Bookings.Where(b =>
+                     b.Status is CoRideBookingStatus.InRide or
+                                  CoRideBookingStatus.DriverArriving or
+                                  CoRideBookingStatus.Upcoming))
+        {
+            if (booking.Status == CoRideBookingStatus.Upcoming)
+                continue; // no-show — leave as upcoming for ops review
+
+            booking.Status = CoRideBookingStatus.Completed;
+        }
+
+        listing.Status = "completed";
+        await db.SaveChangesAsync(ct);
+
+        foreach (var booking in listing.Bookings.Where(b => b.Status == CoRideBookingStatus.Completed))
+            await CoRideNotify.PublishBookingUpdatedAsync(realtime, push, db, booking, listing, ct);
     }
 }
