@@ -1,5 +1,6 @@
 using Izigo.Application.Common.Interfaces;
 using Izigo.Application.Features.Packages.Dtos;
+using Izigo.Application.Features.Packages.Helpers;
 using Izigo.Application.Features.Packages.Queries;
 using Izigo.Application.Features.Quotes.Dtos;
 using Izigo.Application.Features.Rides.Helpers;
@@ -15,7 +16,11 @@ namespace Izigo.Application.Features.Packages.Commands;
 public record CreatePackageCommand(string SenderId, CreatePackageRequest Request, string? IdempotencyKey)
     : IRequest<PackageDto>;
 
-public class CreatePackageHandler(IApplicationDbContext db, IIdempotencyService idempotency)
+public class CreatePackageHandler(
+    IApplicationDbContext db,
+    IIdempotencyService idempotency,
+    IJobDispatcher jobDispatcher,
+    IRealtimeService realtime)
     : IRequestHandler<CreatePackageCommand, PackageDto>
 {
     private static readonly System.Text.Json.JsonSerializerOptions _jsonOpts = new()
@@ -98,8 +103,54 @@ public class CreatePackageHandler(IApplicationDbContext db, IIdempotencyService 
             Market          = "ci",
         };
 
+        // Dispatch reuses the Trip job engine — linked to this package via QuoteId.
+        var trip = new Trip
+        {
+            Code            = pkg.TrackingId,
+            Vertical        = Vertical.Package,
+            ServiceClass    = serviceClass,
+            RiderId         = cmd.SenderId,
+            QuoteId         = quote.Id,
+            Market          = pkg.Market,
+            JobState        = JobState.Broadcasting,
+            PickupLat       = quote.PickupLat,
+            PickupLng       = quote.PickupLng,
+            PickupLabel     = quote.PickupLabel,
+            DropoffLat      = quote.DropoffLat,
+            DropoffLng      = quote.DropoffLng,
+            DropoffLabel    = quote.DropoffLabel,
+            EncodedPolyline = quote.EncodedPolyline,
+            DistanceM       = quote.DistanceM,
+            DurationS       = quote.DurationS,
+            FareGross       = option.Fare.Total - option.Fare.ServiceFee + option.Fare.Discount,
+            FareBase        = option.Fare.Base,
+            FareDistance    = option.Fare.Distance,
+            FareTime        = option.Fare.Time,
+            FareServiceFee  = option.Fare.ServiceFee,
+            FareDiscount    = option.Fare.Discount,
+            Currency        = quote.Currency,
+            PaymentMethod   = payMethod,
+            NoteToDriver    = req.Description ?? req.Instructions,
+        };
+
         db.Packages.Add(pkg);
+        db.Trips.Add(trip);
+        db.TripStateHistories.Add(new TripStateHistory
+        {
+            TripId     = trip.Id,
+            State      = JobState.Broadcasting,
+            OccurredAt = DateTime.UtcNow,
+            Actor      = "system",
+        });
+
         await db.SaveChangesAsync(ct);
+
+        var dispatchJob = new BackgroundJob { Type = $"dispatch:{trip.Id}", Status = "queued" };
+        db.BackgroundJobs.Add(dispatchJob);
+        await db.SaveChangesAsync(ct);
+        jobDispatcher.Enqueue(dispatchJob.Id, dispatchJob.Type);
+
+        await PackageTripSync.PublishStatusAsync(realtime, db, pkg, ct);
 
         var result = await PackageMapper.BuildAsync(pkg, db, ct);
 
@@ -115,7 +166,7 @@ public class CreatePackageHandler(IApplicationDbContext db, IIdempotencyService 
 
 public record CancelPackageCommand(string SenderId, string PackageId, string? Reason) : IRequest;
 
-public class CancelPackageHandler(IApplicationDbContext db)
+public class CancelPackageHandler(IApplicationDbContext db, IRealtimeService realtime)
     : IRequestHandler<CancelPackageCommand>
 {
     public async Task Handle(CancelPackageCommand cmd, CancellationToken ct)
@@ -133,7 +184,17 @@ public class CancelPackageHandler(IApplicationDbContext db)
 
         pkg.Status = PackageStatus.Cancelled;
         pkg.CancelledAt = DateTime.UtcNow;
+
+        var trip = await db.Trips.FirstOrDefaultAsync(t => t.QuoteId == pkg.QuoteId, ct);
+        if (trip != null && !RideProjector.IsTerminal(trip.JobState))
+        {
+            trip.JobState    = JobState.CancelledByRider;
+            trip.CancelledAt = DateTime.UtcNow;
+            trip.CancellationReasonCode = cmd.Reason;
+        }
+
         await db.SaveChangesAsync(ct);
+        await PackageTripSync.PublishStatusAsync(realtime, db, pkg, ct);
     }
 }
 
@@ -176,14 +237,14 @@ public class RatePackageHandler(IApplicationDbContext db)
 public record UploadProofCommand(string CourierId, string PackageId, string? ProofCode, string? PhotoUrl)
     : IRequest<ProofOfDeliveryDto>;
 
-public class UploadProofHandler(IApplicationDbContext db)
+public class UploadProofHandler(IApplicationDbContext db, IRealtimeService realtime)
     : IRequestHandler<UploadProofCommand, ProofOfDeliveryDto>
 {
     public async Task<ProofOfDeliveryDto> Handle(UploadProofCommand cmd, CancellationToken ct)
     {
-        var pkg = await db.Packages
-            .FirstOrDefaultAsync(p => p.Id == cmd.PackageId && p.CourierId == cmd.CourierId, ct)
-            ?? throw new KeyNotFoundException("Package not found.");
+        var pkg = await PackageTripSync.FindByIdOrTripAsync(db, cmd.PackageId, ct);
+        if (pkg == null || pkg.CourierId != cmd.CourierId)
+            throw new KeyNotFoundException("Package not found.");
 
         if (pkg.Status == PackageStatus.Delivered)
             return new ProofOfDeliveryDto(pkg.ProofCode!, pkg.ProofPhotoUrl);
@@ -202,6 +263,7 @@ public class UploadProofHandler(IApplicationDbContext db)
         }
 
         await db.SaveChangesAsync(ct);
+        await PackageTripSync.PublishStatusAsync(realtime, db, pkg, ct);
         return new ProofOfDeliveryDto(pkg.ProofCode!, pkg.ProofPhotoUrl);
     }
 }

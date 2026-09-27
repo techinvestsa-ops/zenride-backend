@@ -149,7 +149,21 @@ public class UpdateDriverPreferencesHandler(IApplicationDbContext db)
         var req = cmd.Request;
         var updates = new Dictionary<string, string>();
 
-        if (req.Verticals           != null) updates["driver:verticals"]             = string.Join(",", req.Verticals);
+        if (req.Verticals           != null)
+        {
+            updates["driver:verticals"] = string.Join(",", req.Verticals);
+
+            var dp = await db.DriverProfiles.FirstOrDefaultAsync(d => d.UserId == cmd.DriverId, ct);
+            if (dp != null)
+            {
+                dp.VerticalsAllowed = req.Verticals
+                    .Select(ParseDriverVertical)
+                    .Where(v => v != null)
+                    .Select(v => v!.Value)
+                    .Distinct()
+                    .ToList();
+            }
+        }
         if (req.MaxPickupDistanceKm != null) updates["driver:max_pickup_km"]         = req.MaxPickupDistanceKm.Value.ToString();
         if (req.AutoAccept          != null) updates["driver:auto_accept"]           = req.AutoAccept.Value.ToString().ToLower();
         if (req.AcceptCash          != null) updates["driver:accept_cash"]           = req.AcceptCash.Value.ToString().ToLower();
@@ -181,4 +195,13 @@ public class UpdateDriverPreferencesHandler(IApplicationDbContext db)
         return await new GetDriverPreferencesHandler(db)
             .Handle(new GetDriverPreferencesQuery(cmd.DriverId), ct);
     }
+
+    private static Vertical? ParseDriverVertical(string raw) => raw.ToLowerInvariant() switch
+    {
+        "ride"                  => Vertical.Ride,
+        "coride" or "co_ride"   => Vertical.CoRide,
+        "package" or "delivery" => Vertical.Package,
+        _                       => Enum.TryParse<Vertical>(raw.Replace("_", ""), true, out var vert)
+                                   ? vert : null,
+    };
 }

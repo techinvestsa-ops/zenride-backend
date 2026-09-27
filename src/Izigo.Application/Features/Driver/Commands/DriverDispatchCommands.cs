@@ -39,6 +39,26 @@ public class SetDriverStatusHandler(IApplicationDbContext db)
         }
 
         dp.IsOnline = cmd.Request.Online;
+
+        if (cmd.Request.Vertical != null)
+        {
+            var vertical = ParseDriverVertical(cmd.Request.Vertical);
+            if (vertical != null)
+            {
+                if (dp.VerticalsAllowed.Contains(vertical.Value))
+                {
+                    if (dp.VerticalsAllowed.Count > 1)
+                        dp.VerticalsAllowed.Remove(vertical.Value);
+                }
+                else
+                {
+                    dp.VerticalsAllowed.Add(vertical.Value);
+                }
+
+                await SyncVerticalPreferencesAsync(db, cmd.DriverId, dp.VerticalsAllowed, ct);
+            }
+        }
+
         await db.SaveChangesAsync(ct);
 
         var cashSettlement = dp.DriverWallet?.PendingCashSettlement ?? 0;
@@ -50,6 +70,43 @@ public class SetDriverStatusHandler(IApplicationDbContext db)
             VerticalsAllowed: dp.VerticalsAllowed.Select(v => v.ToString().ToLower()).ToArray(),
             PendingCashSettlement: cashSettlement,
             CashCapBlocked: cashSettlement >= Cap);
+    }
+
+    private static Vertical? ParseDriverVertical(string raw) => raw.ToLowerInvariant() switch
+    {
+        "ride"                    => Vertical.Ride,
+        "coride" or "co_ride"     => Vertical.CoRide,
+        "package" or "delivery"   => Vertical.Package,
+        _                         => Enum.TryParse<Vertical>(raw.Replace("_", ""), true, out var vert)
+                                      ? vert : null,
+    };
+
+    private static async Task SyncVerticalPreferencesAsync(
+        IApplicationDbContext db,
+        string driverId,
+        List<Vertical> verticals,
+        CancellationToken ct)
+    {
+        var value = string.Join(",", verticals.Select(v => v switch
+        {
+            Vertical.Ride    => "ride",
+            Vertical.CoRide  => "co_ride",
+            Vertical.Package => "package",
+            _                => v.ToString().ToLower(),
+        }));
+
+        var pref = await db.UserPreferences
+            .FirstOrDefaultAsync(p => p.UserId == driverId && p.Key == "driver:verticals", ct);
+
+        if (pref != null)
+            pref.Value = value;
+        else
+            db.UserPreferences.Add(new UserPreference
+            {
+                UserId = driverId,
+                Key    = "driver:verticals",
+                Value  = value,
+            });
     }
 }
 

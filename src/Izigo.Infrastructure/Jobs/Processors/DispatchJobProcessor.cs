@@ -1,5 +1,6 @@
 using Hangfire;
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Features.Packages.Helpers;
 using Izigo.Application.Features.Realtime.Dtos;
 using Izigo.Domain.Enums;
 using Izigo.Infrastructure.Persistence;
@@ -104,8 +105,8 @@ public class DispatchJobProcessor(
             .Distinct()
             .ToListAsync(ct);
 
-        // Drivers currently on an active trip
-        var busyIds = await db.Trips
+        // Drivers currently on an active trip or package delivery
+        var busyTripIds = await db.Trips
             .Where(t => t.DriverId != null &&
                        (t.JobState == JobState.Offered        ||
                         t.JobState == JobState.Accepted        ||
@@ -116,6 +117,16 @@ public class DispatchJobProcessor(
                         t.JobState == JobState.ArrivedAtDropoff))
             .Select(t => t.DriverId!)
             .ToListAsync(ct);
+
+        var busyPackageIds = await db.Packages
+            .Where(p => p.CourierId != null &&
+                        (p.Status == PackageStatus.Matched    ||
+                         p.Status == PackageStatus.PickedUp   ||
+                         p.Status == PackageStatus.InTransit))
+            .Select(p => p.CourierId!)
+            .ToListAsync(ct);
+
+        var busyIds = busyTripIds.Concat(busyPackageIds).Distinct().ToList();
 
         // Bounding-box search: online, KYC approved, onboarding done, fresh location
         var candidates = await db.DriverProfiles
@@ -187,7 +198,7 @@ public class DispatchJobProcessor(
 
         var offerPayload = new JobOfferedEvent(
             TripId:            trip.Id,
-            Vertical:          trip.Vertical.ToString(),
+            Vertical:          trip.Vertical.ToString().ToLower(),
             State:             "offered",
             ExpiresInS:        timeoutSec,
             OfferedAt:         DateTime.UtcNow,
@@ -218,15 +229,18 @@ public class DispatchJobProcessor(
             .FirstOrDefaultAsync(ct);
 
         if (fcmToken != null)
+        {
+            var isPackage = trip.Vertical == Vertical.Package;
             await push.SendAsync(
                 fcmToken,
-                title:       "New ride request",
+                title:       isPackage ? "New delivery request" : "New ride request",
                 body:        $"{distKm:F1} km · {earnings} {trip.Currency}",
                 type:        "job.offered",
                 entityId:    trip.Id,
                 deepLink:    $"izigo://job/{trip.Id}",
                 highPriority: true,
                 ct:          ct);
+        }
 
         // Schedule expiry — if no response within timeout, re-broadcast to next driver
         client.Schedule<DispatchJobProcessor>(
@@ -249,8 +263,19 @@ public class DispatchJobProcessor(
         await db.SaveChangesAsync(ct);
 
         if (trip.RiderId != null)
-            await realtime.PublishToUserAsync(trip.RiderId, "ride.no_drivers_found",
-                new NoDriversFoundEvent(trip.Id, RetryAllowed: true), ct);
+        {
+            if (trip.Vertical == Vertical.Package)
+            {
+                var pkg = await PackageTripSync.FindByTripAsync(db, trip, ct);
+                if (pkg != null)
+                    await PackageTripSync.PublishStatusAsync(realtime, db, pkg, ct);
+            }
+            else
+            {
+                await realtime.PublishToUserAsync(trip.RiderId, "ride.no_drivers_found",
+                    new NoDriversFoundEvent(trip.Id, RetryAllowed: true), ct);
+            }
+        }
     }
 
     private async Task RequeueAsync(string tripId, CancellationToken ct)
