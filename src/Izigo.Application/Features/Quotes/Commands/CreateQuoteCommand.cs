@@ -36,23 +36,33 @@ public class CreateQuoteHandler(
             new GeoPoint(dropoff.Lat, dropoff.Lng),
             null, "driving", ct);
 
-        // Fall back to straight-line if geo stub returns null
+        // Fall back to straight-line if geo stub returns null.
+        // DurationS on the route is the free-flow drive. DurationInTrafficS is set
+        // only when live traffic makes it longer.
         var distanceM = route?.DistanceM ?? EstimateStraightLine(pickup.Lat, pickup.Lng, dropoff.Lat, dropoff.Lng);
-        var durationS  = route?.DurationS ?? (int)(distanceM / cfg.FallbackSpeedMs);
-        var polyline   = route?.EncodedPolyline;
+        var freeFlowS = route?.DurationS ?? (int)(distanceM / cfg.FallbackSpeedMs);
+        var trafficS  = route?.DurationInTrafficS ?? freeFlowS;
+        var durationS = Math.Max(freeFlowS, trafficS);
+        var polyline  = route?.EncodedPolyline;
 
-        // Load active fare rules for this market
+        var config = await db.PlatformConfigs.FirstOrDefaultAsync(ct);
+        var market = string.IsNullOrWhiteSpace(config?.Market) ? "ci" : config!.Market;
+        var currency = string.IsNullOrWhiteSpace(config?.Currency) ? "XOF" : config!.Currency;
+        var paymentMethods = DefaultPaymentMethods;
+
         var fareRules = await db.FareRules
-            .Where(r => r.IsActive)
+            .Where(r => r.IsActive && (r.Market == market || r.Market == ""))
             .ToListAsync(ct);
 
-        // Load surge for the pickup zone (if any)
+        var now = DateTime.UtcNow;
+        var coupons = await db.Coupons
+            .Where(c => c.IsActive && (c.Market == market || c.Market == ""))
+            .ToListAsync(ct);
+        var riderHasCompletedTrip = await db.Trips.AnyAsync(
+            t => t.RiderId == req.UserId && t.JobState == JobState.Completed, ct);
+
         decimal surgeMultiplier = 1.0m;
         string? surgeReason = null;
-
-        // Load payment methods from config
-        var config = await db.PlatformConfigs.FirstOrDefaultAsync(ct);
-        var paymentMethods = DefaultPaymentMethods;
 
         // Determine which service classes to quote
         ServiceClass[] classes = vertical switch
@@ -64,13 +74,23 @@ public class CreateQuoteHandler(
         };
 
         // Build options — one per service class
+        string? appliedCode = null;
         var options = classes.Select(sc =>
         {
-            var rule = fareRules.FirstOrDefault(r => r.ServiceClass == sc)
+            var rule = fareRules
+                           .Where(r => r.ServiceClass == sc)
+                           .OrderByDescending(r => r.Version)
+                           .FirstOrDefault()
                        ?? FareCalculator.DefaultRule(sc);
-            var fare = FareCalculator.Calculate(rule, distanceM, durationS, surgeMultiplier,
-                serviceFeeRate: cfg.ServiceFeeRate);
-            var etaMin  = EstimatePickupEta(sc);
+            var preview = FareCalculator.Calculate(rule, distanceM, freeFlowS, trafficS, surgeMultiplier);
+            var promo = PromoPricing.Best(
+                preview.ListTotal, coupons, riderHasCompletedTrip,
+                req.Request.PromoCode, req.Request.Vertical.ToLowerInvariant(), now);
+            var fare = promo.Discount == 0
+                ? preview
+                : FareCalculator.Calculate(rule, distanceM, freeFlowS, trafficS, surgeMultiplier, promo.Discount);
+            if (promo.Code is not null) appliedCode = promo.Code;
+            var etaMin = EstimatePickupEta(sc);
             var durationMin = (int)Math.Ceiling(durationS / 60.0);
 
             return new QuoteOptionDto(
@@ -81,8 +101,9 @@ public class CreateQuoteHandler(
                 EtaPickupMin: etaMin,
                 DurationMin: durationMin,
                 Available: true,
-                Fare: new QuoteFareDto(fare.Total, fare.Base, fare.Distance,
-                    fare.Time, fare.ServiceFee, fare.Discount));
+                Fare: new QuoteFareDto(
+                    fare.Total, fare.Base, fare.Distance, fare.Time, fare.ServiceFee, fare.Discount,
+                    fare.ListTotal, fare.Traffic, promo.Title));
         }).ToArray();
 
         // Persist the quote so trips can be created from quote_id
@@ -104,8 +125,8 @@ public class CreateQuoteHandler(
             SurgeActive = surgeMultiplier > 1.0m,
             SurgeMultiplier = surgeMultiplier,
             SurgeReason = surgeReason,
-            PromoCode = req.Request.PromoCode,
-            Currency = "XOF",
+            PromoCode = appliedCode ?? req.Request.PromoCode,
+            Currency = currency,
             ExpiresAt = DateTime.UtcNow.AddMinutes(cfg.ExpiryMinutes)
         };
         db.Quotes.Add(quote);

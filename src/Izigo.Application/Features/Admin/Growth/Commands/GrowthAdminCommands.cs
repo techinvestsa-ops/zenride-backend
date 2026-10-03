@@ -17,7 +17,8 @@ public record CreateCouponCommand(
     string[] Verticals, string[] Zones,
     bool FirstTripOnly, int PerUserLimit, int TotalCap,
     DateTime? StartsAt, DateTime? ExpiresAt,
-    string Market, string StaffId, string StaffName) : IRequest<GrowthResult>;
+    string Market, string StaffId, string StaffName,
+    bool AutoApply = false) : IRequest<GrowthResult>;
 
 public class CreateCouponHandler(IApplicationDbContext db, IAuditService audit)
     : IRequestHandler<CreateCouponCommand, GrowthResult>
@@ -41,6 +42,7 @@ public class CreateCouponHandler(IApplicationDbContext db, IAuditService audit)
             VerticalsJson = JsonSerializer.Serialize(cmd.Verticals),
             ZonesJson     = JsonSerializer.Serialize(cmd.Zones),
             FirstTripOnly = cmd.FirstTripOnly,
+            AutoApply     = cmd.AutoApply,
             PerUserLimit  = cmd.PerUserLimit,
             TotalCap      = cmd.TotalCap,
             StartsAt      = cmd.StartsAt,

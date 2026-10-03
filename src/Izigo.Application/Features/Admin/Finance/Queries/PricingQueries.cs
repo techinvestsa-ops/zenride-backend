@@ -10,7 +10,8 @@ namespace Izigo.Application.Features.Admin.Finance.Queries;
 
 public record FareRuleDto(string Id, string ServiceClass, long Base, long PerKm, long PerMin,
     long Minimum, long WaitingPerMin, long CancellationFee, bool IsActive,
-    int Version, DateTime EffectiveFrom, string? UpdatedByStaffId, string Market);
+    int Version, DateTime EffectiveFrom, string? UpdatedByStaffId, string Market,
+    int TrafficDelayMin = 15, decimal TrafficPercent = 8m);
 
 public record CommissionConfigDto(decimal CommissionRate, decimal BonusRate, string BonusLabel,
     long CashSettlementCap, string VerticalOverridesJson, int Version,
@@ -21,6 +22,23 @@ public record SurgeZoneDto(string ZoneId, string ZoneName, decimal Multiplier,
 
 public record SimulateResultDto(int TripsAnalysed, long CurrentRevenue, long ProjectedRevenue,
     long Delta, decimal DeltaPct, string Currency);
+
+public record MarketCurrencyDto(string Currency, string Symbol, string Market);
+
+public record GetMarketCurrencyQuery(string Market) : IRequest<MarketCurrencyDto>;
+
+public class GetMarketCurrencyHandler(IApplicationDbContext db)
+    : IRequestHandler<GetMarketCurrencyQuery, MarketCurrencyDto>
+{
+    public async Task<MarketCurrencyDto> Handle(GetMarketCurrencyQuery req, CancellationToken ct)
+    {
+        var config = await db.PlatformConfigs.FirstOrDefaultAsync(c => c.Market == req.Market, ct);
+        return new MarketCurrencyDto(
+            config?.Currency ?? "XOF",
+            config?.CurrencySymbol ?? "F CFA",
+            req.Market);
+    }
+}
 
 // ── GET /admin/pricing/fare-rules ────────────────────────────────────────────
 
@@ -35,7 +53,8 @@ public class GetFareRulesHandler(IApplicationDbContext db)
             .Where(r => r.Market == req.Market && r.IsActive)
             .Select(r => new FareRuleDto(r.Id, r.ServiceClass.ToString(),
                 r.Base, r.PerKm, r.PerMin, r.Minimum, r.WaitingPerMin, r.CancellationFee,
-                r.IsActive, r.Version, r.EffectiveFrom, r.UpdatedByStaffId, r.Market))
+                r.IsActive, r.Version, r.EffectiveFrom, r.UpdatedByStaffId, r.Market,
+                r.TrafficDelayMin, r.TrafficPercent))
             .ToListAsync(ct);
 
         return AdminApiResponse.Ok(rules);
@@ -61,7 +80,8 @@ public class GetFareRuleHistoryHandler(IApplicationDbContext db)
             .OrderByDescending(r => r.Version)
             .Select(r => new FareRuleDto(r.Id, r.ServiceClass.ToString(),
                 r.Base, r.PerKm, r.PerMin, r.Minimum, r.WaitingPerMin, r.CancellationFee,
-                r.IsActive, r.Version, r.EffectiveFrom, r.UpdatedByStaffId, r.Market))
+                r.IsActive, r.Version, r.EffectiveFrom, r.UpdatedByStaffId, r.Market,
+                r.TrafficDelayMin, r.TrafficPercent))
             .ToListAsync(ct);
 
         return AdminApiResponse.Ok(history);
