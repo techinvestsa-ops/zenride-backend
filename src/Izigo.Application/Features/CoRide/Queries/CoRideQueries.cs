@@ -29,6 +29,15 @@ public class SearchListingsHandler(IApplicationDbContext db)
                         (double)l.FromLng >= r.FromLng - degApprox &&
                         (double)l.FromLng <= r.FromLng + degApprox);
 
+        var hasDestination = Math.Abs(r.ToLat - r.FromLat) > degApprox ||
+                             Math.Abs(r.ToLng - r.FromLng) > degApprox;
+        if (hasDestination)
+            query = query.Where(l =>
+                (double)l.ToLat >= r.ToLat - degApprox &&
+                (double)l.ToLat <= r.ToLat + degApprox &&
+                (double)l.ToLng >= r.ToLng - degApprox &&
+                (double)l.ToLng <= r.ToLng + degApprox);
+
         if (r.DepartureFrom.HasValue) query = query.Where(l => l.DepartureAt >= r.DepartureFrom.Value);
         if (r.DepartureTo.HasValue)   query = query.Where(l => l.DepartureAt <= r.DepartureTo.Value);
         if (r.EcoOnly)                query = query.Where(l => l.IsEco);
@@ -85,7 +94,8 @@ public class SearchListingsHandler(IApplicationDbContext db)
             ServiceFee: l.ServiceFee,
             Currency: l.Currency,
             RouteOverlapPct: 0,    // calculated by route comparison algorithm — 0 until implemented
-            FromRequestId: null);
+            FromRequestId: null,
+            Status: l.Status);
     }
 }
 
