@@ -23,7 +23,7 @@ public class SearchListingsHandler(IApplicationDbContext db)
         var query = db.CoRideListings
             .Where(l => l.Status == "open" &&
                         l.DepartureAt > now &&
-                        l.SeatsLeft >= r.Seats &&
+                        l.SeatsTotal - l.SeatsTaken >= r.Seats &&
                         (double)l.FromLat >= r.FromLat - degApprox &&
                         (double)l.FromLat <= r.FromLat + degApprox &&
                         (double)l.FromLng >= r.FromLng - degApprox &&
