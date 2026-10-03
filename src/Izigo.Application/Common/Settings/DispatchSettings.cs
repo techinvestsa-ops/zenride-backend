@@ -4,6 +4,7 @@ public class DispatchSettings
 {
     public int    OfferTimeoutSeconds   { get; set; } = 15;
     public int    SearchRadiusM         { get; set; } = 3000;
+    public int    BatchWindowSeconds    { get; set; } = 2;
     public string Strategy              { get; set; } = "broadcast";
     public int    MaxConcurrentOffers   { get; set; } = 3;
     public int    LocationPingOnTripS   { get; set; } = 5;
