@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using Izigo.Application.Common.Exceptions;
 using Izigo.Application.Common.Models;
 
 namespace Izigo.Api.Middleware;
@@ -30,6 +31,8 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
             InvalidOperationException e when e.Message.StartsWith("CONFLICT:") =>
                 (HttpStatusCode.Conflict, "CONFLICT", e.Message[9..]),
             ArgumentException e => (HttpStatusCode.UnprocessableEntity, "VALIDATION_ERROR", e.Message),
+            MapsUnavailableException e => (HttpStatusCode.ServiceUnavailable, "MAPS_UNAVAILABLE", e.Message),
+            SmsUnavailableException e => (HttpStatusCode.ServiceUnavailable, "SMS_UNAVAILABLE", e.Message),
             _ => (HttpStatusCode.InternalServerError, "SERVER_ERROR", "An unexpected error occurred.")
         };
 

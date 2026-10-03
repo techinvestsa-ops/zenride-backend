@@ -41,7 +41,9 @@ public record DriverLocationEvent(
     double Lat,
     double Lng,
     double? Heading,
-    int? EtaMin
+    int? EtaMin,
+    int? DistanceM = null,
+    string? Leg = null   // "pickup" before the rider/parcel is on board, "dropoff" after
 );
 
 // ride.no_drivers_found  → private-rider.{user_id}

@@ -37,7 +37,7 @@ public class PackageHandlerTests
     public async Task CancelPackage_NotFound_ThrowsKeyNotFound()
     {
         using var db = DbContextFactory.Create();
-        var handler = new CancelPackageHandler(db);
+        var handler = new CancelPackageHandler(db, FakeServices.Realtime());
 
         var act = () => handler.Handle(
             new CancelPackageCommand("sender1", "nonexistent-pkg", null), CancellationToken.None);
@@ -57,7 +57,7 @@ public class PackageHandlerTests
         db.Packages.Add(pkg);
         await db.SaveChangesAsync();
 
-        var handler = new CancelPackageHandler(db);
+        var handler = new CancelPackageHandler(db, FakeServices.Realtime());
         var act = () => handler.Handle(
             new CancelPackageCommand(senderId, pkg.Id, null), CancellationToken.None);
 
@@ -73,7 +73,7 @@ public class PackageHandlerTests
         db.Packages.Add(pkg);
         await db.SaveChangesAsync();
 
-        var handler = new CancelPackageHandler(db);
+        var handler = new CancelPackageHandler(db, FakeServices.Realtime());
         var act = () => handler.Handle(
             new CancelPackageCommand(senderId, pkg.Id, null), CancellationToken.None);
 
@@ -91,7 +91,7 @@ public class PackageHandlerTests
         db.Packages.Add(pkg);
         await db.SaveChangesAsync();
 
-        var handler = new CancelPackageHandler(db);
+        var handler = new CancelPackageHandler(db, FakeServices.Realtime());
         await handler.Handle(
             new CancelPackageCommand(senderId, pkg.Id, "changed mind"), CancellationToken.None);
 
@@ -179,7 +179,7 @@ public class PackageHandlerTests
     public async Task UploadProof_NotFound_ThrowsKeyNotFound()
     {
         using var db = DbContextFactory.Create();
-        var handler = new UploadProofHandler(db);
+        var handler = new UploadProofHandler(db, FakeServices.Realtime());
 
         var act = () => handler.Handle(
             new UploadProofCommand("courier1", "nonexistent", null, null), CancellationToken.None);
@@ -197,7 +197,7 @@ public class PackageHandlerTests
         db.Packages.Add(pkg);
         await db.SaveChangesAsync();
 
-        var handler = new UploadProofHandler(db);
+        var handler = new UploadProofHandler(db, FakeServices.Realtime());
         var result = await handler.Handle(
             new UploadProofCommand(courierId, pkg.Id, null, null), CancellationToken.None);
 
@@ -213,7 +213,7 @@ public class PackageHandlerTests
         db.Packages.Add(pkg);
         await db.SaveChangesAsync();
 
-        var handler = new UploadProofHandler(db);
+        var handler = new UploadProofHandler(db, FakeServices.Realtime());
         var result = await handler.Handle(
             new UploadProofCommand(courierId, pkg.Id, "XYZ789", "https://photo.url"),
             CancellationToken.None);

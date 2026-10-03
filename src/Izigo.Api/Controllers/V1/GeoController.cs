@@ -25,7 +25,10 @@ public class GeoController : BaseController
             return Unprocessable("VALIDATION_ERROR", "q is required.");
 
         var result = await Mediator.Send(
-            new AutocompleteQuery(q, lat, lng, sessionToken, country), ct);
+            new AutocompleteQuery(
+                q, lat, lng, sessionToken,
+                string.IsNullOrWhiteSpace(country) ? "ci" : country),
+            ct);
         return Ok(result);
     }
 

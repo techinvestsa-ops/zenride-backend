@@ -1,6 +1,7 @@
 using Izigo.Application.Common.Interfaces;
 using Izigo.Application.Features.Driver.Dtos;
 using Izigo.Application.Features.Driver.Queries;
+using Izigo.Application.Features.Packages.Helpers;
 using Izigo.Application.Features.Realtime.Dtos;
 using Izigo.Application.Features.Rides.Helpers;
 using Izigo.Domain.Enums;
@@ -38,31 +39,48 @@ public class AcceptJobHandler(IApplicationDbContext db, IRealtimeService realtim
             ActorId    = cmd.DriverId,
         });
 
+        var linkedPackage = trip.Vertical == Vertical.Package
+            ? await PackageTripSync.FindByTripAsync(db, trip, ct)
+            : null;
+        if (linkedPackage != null)
+            PackageTripSync.ApplyTripState(linkedPackage, trip);
+
         await db.SaveChangesAsync(ct);
 
         if (trip.RiderId != null)
         {
-            var driver       = await db.Users.FindAsync([cmd.DriverId], ct);
-            var activeVehicle = await db.Vehicles
-                                   .FirstOrDefaultAsync(v => v.DriverId == cmd.DriverId && v.IsActive, ct);
+            if (linkedPackage != null)
+            {
+                await PackageTripSync.PublishStatusAsync(realtime, db, linkedPackage, ct);
+                await JobNotify.PushRiderAsync(db, push, trip.RiderId,
+                    title: "Courier assigned",
+                    body:  "A courier is on the way to pick up your package",
+                    tripId: trip.Id, ct);
+            }
+            else
+            {
+                var driver       = await db.Users.FindAsync([cmd.DriverId], ct);
+                var activeVehicle = await db.Vehicles
+                                       .FirstOrDefaultAsync(v => v.DriverId == cmd.DriverId && v.IsActive, ct);
 
-            await realtime.PublishToUserAsync(trip.RiderId, "ride.status_changed",
-                new RideStatusChangedEvent(
-                    RideId:     trip.Id,
-                    Status:     "driver_assigned",
-                    Driver:     driver == null ? null : new RideStatusDriverInfo(
-                        Name:        driver.FullName,
-                        Plate:       activeVehicle?.Plate,
-                        PhoneMasked: JobNotify.MaskPhone(driver.Phone)),
-                    Eta:        null,
-                    StartOtp:   null,
-                    ChangedAt:  DateTime.UtcNow), ct);
+                await realtime.PublishToUserAsync(trip.RiderId, "ride.status_changed",
+                    new RideStatusChangedEvent(
+                        RideId:     trip.Id,
+                        Status:     "driver_assigned",
+                        Driver:     driver == null ? null : new RideStatusDriverInfo(
+                            Name:        driver.FullName,
+                            Plate:       activeVehicle?.Plate,
+                            PhoneMasked: JobNotify.MaskPhone(driver.Phone)),
+                        Eta:        null,
+                        StartOtp:   null,
+                        ChangedAt:  DateTime.UtcNow), ct);
 
-            var driverName = driver?.FirstName ?? "Your driver";
-            await JobNotify.PushRiderAsync(db, push, trip.RiderId,
-                title: "Driver assigned",
-                body:  $"{driverName} is on the way",
-                tripId: trip.Id, ct);
+                var driverName = driver?.FirstName ?? "Your driver";
+                await JobNotify.PushRiderAsync(db, push, trip.RiderId,
+                    title: "Driver assigned",
+                    body:  $"{driverName} is on the way",
+                    tripId: trip.Id, ct);
+            }
         }
 
         return await JobDetailMapper.BuildAsync(trip, db, ct);
@@ -198,17 +216,28 @@ public class StartJobHandler(IApplicationDbContext db, IRealtimeService realtime
             OccurredAt = DateTime.UtcNow, Actor = "driver", ActorId = cmd.DriverId,
         });
 
+        var linkedPackage = trip.Vertical == Vertical.Package
+            ? await PackageTripSync.FindByTripAsync(db, trip, ct)
+            : null;
+        if (linkedPackage != null)
+            PackageTripSync.ApplyTripState(linkedPackage, trip);
+
         await db.SaveChangesAsync(ct);
 
         if (trip.RiderId != null)
         {
-            await realtime.PublishToUserAsync(trip.RiderId, "ride.status_changed",
-                new RideStatusChangedEvent(trip.Id, "in_progress", null, null, null, DateTime.UtcNow), ct);
+            if (linkedPackage != null)
+                await PackageTripSync.PublishStatusAsync(realtime, db, linkedPackage, ct);
+            else
+            {
+                await realtime.PublishToUserAsync(trip.RiderId, "ride.status_changed",
+                    new RideStatusChangedEvent(trip.Id, "in_progress", null, null, null, DateTime.UtcNow), ct);
 
-            await JobNotify.PushRiderAsync(db, push, trip.RiderId,
-                title: "Trip started",
-                body:  $"Enjoy your ride to {trip.DropoffLabel}",
-                tripId: trip.Id, ct);
+                await JobNotify.PushRiderAsync(db, push, trip.RiderId,
+                    title: "Trip started",
+                    body:  $"Enjoy your ride to {trip.DropoffLabel}",
+                    tripId: trip.Id, ct);
+            }
         }
 
         return await JobDetailMapper.BuildAsync(trip, db, ct);
@@ -411,17 +440,34 @@ public class CancelJobHandler(IApplicationDbContext db, IRealtimeService realtim
         if (dp != null)
             dp.CancellationRate = Math.Min(1m, dp.CancellationRate + 0.01m);
 
+        var linkedPackage = trip.Vertical == Vertical.Package
+            ? await PackageTripSync.FindByTripAsync(db, trip, ct)
+            : null;
+        if (linkedPackage != null)
+            PackageTripSync.ApplyTripState(linkedPackage, trip);
+
         await db.SaveChangesAsync(ct);
 
         if (trip.RiderId != null)
         {
-            await realtime.PublishToUserAsync(trip.RiderId, "ride.status_changed",
-                new RideStatusChangedEvent(trip.Id, "cancelled", null, null, null, DateTime.UtcNow), ct);
+            if (linkedPackage != null)
+            {
+                await PackageTripSync.PublishStatusAsync(realtime, db, linkedPackage, ct);
+                await JobNotify.PushRiderAsync(db, push, trip.RiderId,
+                    title: "Delivery cancelled",
+                    body:  "The courier cancelled — please try again",
+                    tripId: trip.Id, ct);
+            }
+            else
+            {
+                await realtime.PublishToUserAsync(trip.RiderId, "ride.status_changed",
+                    new RideStatusChangedEvent(trip.Id, "cancelled", null, null, null, DateTime.UtcNow), ct);
 
-            await JobNotify.PushRiderAsync(db, push, trip.RiderId,
-                title: "Driver cancelled",
-                body:  "We'll find you another driver",
-                tripId: trip.Id, ct);
+                await JobNotify.PushRiderAsync(db, push, trip.RiderId,
+                    title: "Driver cancelled",
+                    body:  "We'll find you another driver",
+                    tripId: trip.Id, ct);
+            }
         }
     }
 }
@@ -568,8 +614,21 @@ public class EnRouteHandler(IApplicationDbContext db, IRealtimeService realtime,
                 TripId = trip.Id, State = JobState.EnRouteToDropoff,
                 OccurredAt = DateTime.UtcNow, Actor = "driver", ActorId = cmd.DriverId,
             });
-            await db.SaveChangesAsync(ct);
-            // Rider is in the car — no notification needed
+
+            var linkedPackage = trip.Vertical == Vertical.Package
+                ? await PackageTripSync.FindByTripAsync(db, trip, ct)
+                : null;
+            if (linkedPackage != null)
+            {
+                PackageTripSync.ApplyTripState(linkedPackage, trip);
+                await db.SaveChangesAsync(ct);
+                await PackageTripSync.PublishStatusAsync(realtime, db, linkedPackage, ct);
+            }
+            else
+            {
+                await db.SaveChangesAsync(ct);
+            }
+            // Rider is in the car — no notification needed for rides
         }
         else
         {

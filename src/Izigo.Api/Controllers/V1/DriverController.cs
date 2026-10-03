@@ -430,6 +430,22 @@ public class DriverController : BaseController
         return NoContent();
     }
 
+    /// <summary>Marks a co-ride listing as departing — notifies booked riders.</summary>
+    [HttpPost("co-ride/listings/{id}/start")]
+    public async Task<IActionResult> StartCoRideListing(string id)
+    {
+        await Mediator.Send(new StartCoRideDepartureCommand(CurrentUserId, id));
+        return NoContent();
+    }
+
+    /// <summary>Completes a co-ride listing and finalises boarded passenger bookings.</summary>
+    [HttpPost("co-ride/listings/{id}/complete")]
+    public async Task<IActionResult> CompleteCoRideListing(string id)
+    {
+        await Mediator.Send(new CompleteCoRideListingCommand(CurrentUserId, id));
+        return NoContent();
+    }
+
     // ── Incentives ────────────────────────────────────────────────────────────
 
     /// <summary>Returns active incentive programs and the driver's progress toward them.</summary>

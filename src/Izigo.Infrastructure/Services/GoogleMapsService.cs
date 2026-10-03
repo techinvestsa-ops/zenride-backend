@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using Izigo.Application.Common.Exceptions;
 using Izigo.Application.Common.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -34,7 +35,9 @@ public class GoogleMapsService(
         string? sessionToken, string? country,
         CancellationToken ct = default)
     {
-        if (!HasKey()) return [];
+        if (!HasKey())
+            throw new MapsUnavailableException(
+                "Google Maps API key is not configured on the server (GoogleMaps:ApiKey).");
 
         var url = new StringBuilder($"{MapsBase}/place/autocomplete/json")
             .Append($"?input={Uri.EscapeDataString(q)}")
@@ -54,10 +57,19 @@ public class GoogleMapsService(
             if (doc is null) return [];
 
             var status = doc.RootElement.GetProperty("status").GetString();
-            if (status is not ("OK" or "ZERO_RESULTS"))
+            if (status == "ZERO_RESULTS") return [];
+            if (status != "OK")
             {
-                logger.LogWarning("[Maps] Autocomplete status={Status}", status);
-                return [];
+                var detail = doc.RootElement.TryGetProperty("error_message", out var err)
+                    ? err.GetString()
+                    : null;
+                logger.LogWarning(
+                    "[Maps] Autocomplete status={Status} detail={Detail} q={Q}",
+                    status, detail, q);
+                throw new MapsUnavailableException(
+                    detail is { Length: > 0 }
+                        ? $"Google Places autocomplete failed ({status}): {detail}"
+                        : $"Google Places autocomplete failed ({status}).");
             }
 
             return [.. doc.RootElement.GetProperty("predictions").EnumerateArray()
@@ -77,10 +89,14 @@ public class GoogleMapsService(
                     return new GeoAutocompleteResult(placeId, primary, secondary ?? "", distM);
                 })];
         }
+        catch (MapsUnavailableException)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
             logger.LogError(ex, "[Maps] Autocomplete failed q={Q}", q);
-            return [];
+            throw new MapsUnavailableException("Google Places autocomplete is temporarily unavailable.");
         }
     }
 

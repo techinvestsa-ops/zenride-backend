@@ -18,7 +18,7 @@ public class GetActiveJobHandler(IApplicationDbContext db)
     {
         var trip = await db.Trips
             .FirstOrDefaultAsync(t => t.DriverId == req.DriverId &&
-                                      !RideProjector.IsTerminal(t.JobState), ct);
+                                      !RideProjector.TerminalStates.Contains(t.JobState), ct);
 
         return trip == null ? null : await JobDetailMapper.BuildAsync(trip, db, ct);
     }

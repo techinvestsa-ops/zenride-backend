@@ -21,7 +21,8 @@ public class GetActiveRideHandler(IApplicationDbContext db, IOptions<AppSettings
         var trip = await db.Trips
             .FirstOrDefaultAsync(t =>
                 t.RiderId == req.UserId &&
-                !RideProjector.IsTerminal(t.JobState), ct);
+                t.Vertical == Vertical.Ride &&
+                !RideProjector.TerminalStates.Contains(t.JobState), ct);
 
         return trip == null ? null : await RideDetailMapper.BuildAsync(trip, db, ct,
             appOptions.Value.ShareBaseUrl, quoteOptions.Value.DefaultCancellationFee);
