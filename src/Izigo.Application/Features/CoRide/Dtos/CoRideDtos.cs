@@ -16,7 +16,8 @@ public record CoRideListingDto(
     long ServiceFee,
     string Currency,
     int RouteOverlapPct,
-    string? FromRequestId
+    string? FromRequestId,
+    string Status = "open"
 );
 
 public record CoRideDriverDto(

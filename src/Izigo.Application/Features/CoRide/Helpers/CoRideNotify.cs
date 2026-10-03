@@ -46,6 +46,38 @@ internal static class CoRideNotify
         }
     }
 
+    public static async Task NotifyDriverOfBookingAsync(
+        IRealtimeService realtime,
+        IPushService push,
+        IApplicationDbContext db,
+        CoRideBooking booking,
+        CoRideListing listing,
+        CancellationToken ct)
+    {
+        var cancelled = booking.Status == CoRideBookingStatus.Cancelled;
+        await realtime.PublishToDriverAsync(listing.DriverId, "coride.booking_received", new
+        {
+            booking_id   = booking.Id,
+            listing_id   = listing.Id,
+            status       = booking.Status.ToString().ToLower(),
+            seats        = booking.Seats,
+            seats_left   = listing.SeatsLeft,
+            departure_at = listing.DepartureAt,
+        }, ct);
+
+        var token = await LatestFcmTokenAsync(db, listing.DriverId, ct);
+        if (token != null)
+            await push.SendAsync(
+                token,
+                title: cancelled ? "Co-ride booking cancelled" : "New co-ride booking",
+                body:  $"{booking.Seats} seat(s) {(cancelled ? "released" : "booked")} · " +
+                       $"{listing.FromLabel} → {listing.ToLabel} at {listing.DepartureAt:HH:mm}",
+                type: "coride.booking_received",
+                entityId: listing.Id,
+                deepLink: $"izigo://co-ride/listing/{listing.Id}",
+                ct: ct);
+    }
+
     public static async Task PublishRequestMatchedAsync(
         IRealtimeService realtime,
         IPushService push,

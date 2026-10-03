@@ -165,6 +165,7 @@ public class BookSeatsHandler(IApplicationDbContext db, IRealtimeService realtim
 
         var listingDto = SearchListingsHandler.MapListing(listing, dp);
         await CoRideNotify.PublishBookingUpdatedAsync(realtime, push, db, booking, listing, ct);
+        await CoRideNotify.NotifyDriverOfBookingAsync(realtime, push, db, booking, listing, ct);
 
         if (matchedRequest != null)
             await CoRideNotify.PublishRequestMatchedAsync(realtime, push, db, matchedRequest, listingDto, ct);
@@ -214,6 +215,8 @@ public class CancelBookingHandler(IApplicationDbContext db, IRealtimeService rea
         await db.SaveChangesAsync(ct);
         await CoRideNotify.PublishBookingUpdatedAsync(
             realtime, push, db, booking, booking.Listing, ct);
+        await CoRideNotify.NotifyDriverOfBookingAsync(
+            realtime, push, db, booking, booking.Listing, ct);
     }
 }
 
@@ -246,9 +249,16 @@ public class RateCoRideHandler(IApplicationDbContext db)
 public record PublishListingCommand(string DriverId, PublishListingRequest Request)
     : IRequest<CoRideListingDto>;
 
-public class PublishListingHandler(IApplicationDbContext db, IOptions<AppSettings> appOptions)
+public class PublishListingHandler(
+    IApplicationDbContext db,
+    IOptions<AppSettings> appOptions,
+    IRealtimeService realtime,
+    IPushService push)
     : IRequestHandler<PublishListingCommand, CoRideListingDto>
 {
+    private const double MatchRadiusDeg = 5000 / 111_000.0;
+    private static readonly TimeSpan MatchSlack = TimeSpan.FromMinutes(30);
+
     public async Task<CoRideListingDto> Handle(PublishListingCommand cmd, CancellationToken ct)
     {
         var req    = cmd.Request;
@@ -285,7 +295,36 @@ public class PublishListingHandler(IApplicationDbContext db, IOptions<AppSetting
         db.CoRideListings.Add(listing);
         await db.SaveChangesAsync(ct);
 
-        return SearchListingsHandler.MapListing(listing, dp);
+        var dto = SearchListingsHandler.MapListing(listing, dp);
+        await NotifyWaitingRidersAsync(listing, dto, ct);
+        return dto;
+    }
+
+    private async Task NotifyWaitingRidersAsync(
+        CoRideListing listing, CoRideListingDto dto, CancellationToken ct)
+    {
+        var r = (decimal)MatchRadiusDeg;
+        var earliest = listing.DepartureAt - MatchSlack;
+        var latest   = listing.DepartureAt + MatchSlack;
+        var now      = DateTime.UtcNow;
+
+        var requests = await db.CoRideRequests
+            .Where(q => q.Status == CoRideRequestStatus.Searching
+                     && q.ExpiresAt > now
+                     && q.RiderId != listing.DriverId
+                     && q.SeatsNeeded <= listing.SeatsTotal
+                     && q.DepartureWindowFrom <= latest
+                     && q.DepartureWindowTo >= earliest
+                     && q.PickupLat  >= listing.FromLat - r && q.PickupLat  <= listing.FromLat + r
+                     && q.PickupLng  >= listing.FromLng - r && q.PickupLng  <= listing.FromLng + r
+                     && q.DropoffLat >= listing.ToLat - r   && q.DropoffLat <= listing.ToLat + r
+                     && q.DropoffLng >= listing.ToLng - r   && q.DropoffLng <= listing.ToLng + r)
+            .OrderBy(q => q.CreatedAt)
+            .Take(50)
+            .ToListAsync(ct);
+
+        foreach (var request in requests)
+            await CoRideNotify.PublishRequestMatchedAsync(realtime, push, db, request, dto, ct);
     }
 }
 
@@ -405,6 +444,7 @@ public class StartCoRideDepartureHandler(
                      b.Status is CoRideBookingStatus.Upcoming or CoRideBookingStatus.DriverArriving))
             booking.Status = CoRideBookingStatus.DriverArriving;
 
+        listing.Status = "departed";
         await db.SaveChangesAsync(ct);
         await CoRideNotify.NotifyListingBookingsAsync(
             realtime, push, db, listing, CoRideBookingStatus.DriverArriving, ct);
