@@ -45,7 +45,7 @@ public class RegisterDeviceHandler(IApplicationDbContext db)
         }
         else
         {
-            existing.FcmToken   = req.FcmToken;
+            existing.FcmToken   = string.IsNullOrEmpty(req.FcmToken) ? existing.FcmToken : req.FcmToken;
             existing.Platform   = req.Platform;
             existing.AppVersion = req.AppVersion ?? existing.AppVersion;
             existing.OsVersion  = req.OsVersion  ?? existing.OsVersion;
