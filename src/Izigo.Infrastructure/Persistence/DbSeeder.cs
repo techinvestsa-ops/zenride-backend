@@ -39,6 +39,7 @@ public static class DbSeeder
         await SeedPlatformConfigAsync(db, logger);
         await SeedSuperAdminAsync(db, config, hasher, logger);
         await SeedFareRulesAsync(db, logger);
+        await ApplyGuineaFaresAsync(db, logger);
         await SeedDispatchConfigsAsync(db, logger);
         await SeedCommissionConfigsAsync(db, logger);
         await SeedFeatureFlagsAsync(db, logger);
@@ -56,11 +57,11 @@ public static class DbSeeder
             var cfg = new PlatformConfig
             {
                 Market               = market,
-                Currency             = market == "ci" ? "XOF" : "NGN",
-                CurrencySymbol       = market == "ci" ? "F CFA" : "₦",
-                Country              = market == "ci" ? "CI" : "NG",
-                DefaultMapCenterLat  = market == "ci" ? 5.3599m  : 6.4541m,
-                DefaultMapCenterLng  = market == "ci" ? -3.9970m : 3.3947m,
+                Currency             = market == "ci" ? "GNF" : "NGN",
+                CurrencySymbol       = market == "ci" ? "GNF" : "₦",
+                Country              = market == "ci" ? "GN" : "NG",
+                DefaultMapCenterLat  = market == "ci" ? 9.6412m  : 6.4541m,
+                DefaultMapCenterLng  = market == "ci" ? -13.5784m : 3.3947m,
                 SupportPhone         = "",
                 SosPhone             = "",
                 ReferralEnabled      = true,
@@ -114,92 +115,96 @@ public static class DbSeeder
             """);
     }
 
-    // ── Fare Rules (CI market only) ───────────────────────────────────────────
-    // NG rules are seeded separately once CreateQuoteHandler filters by market (TODO 2.3).
+    // Prices are in Guinean francs and sit under a private taxi in Conakry
+    // (about 8,000 GNF per km, and 30,000–70,000 GNF for a short hop).
 
     private static async Task SeedFareRulesAsync(ApplicationDbContext db, ILogger logger)
     {
         if (await db.FareRules.AnyAsync(r => r.Market == "ci"))
             return;
 
-        var rules = new[]
-        {
-            // ZenCar — standard 4-seat sedan for Abidjan
-            new FareRule
-            {
-                ServiceClass    = ServiceClass.ZenCar,
-                Base            = 500,    // XOF — flag-fall
-                PerKm           = 250,    // XOF / km
-                PerMin          = 15,     // XOF / min
-                Minimum         = 1200,   // XOF — minimum fare
-                WaitingPerMin   = 20,     // XOF / min while waiting at pickup
-                CancellationFee = 500,    // XOF — charged if rider cancels after arrival
-                IsActive        = true,
-                Version         = 1,
-                Market          = "ci"
-            },
-            // ZenBike — motorbike, faster for short hops
-            new FareRule
-            {
-                ServiceClass    = ServiceClass.ZenBike,
-                Base            = 300,
-                PerKm           = 180,
-                PerMin          = 10,
-                Minimum         = 800,
-                WaitingPerMin   = 15,
-                CancellationFee = 300,
-                IsActive        = true,
-                Version         = 1,
-                Market          = "ci"
-            },
-            // ZenCoRide — shared ride, cheaper per-seat rate
-            new FareRule
-            {
-                ServiceClass    = ServiceClass.ZenCoRide,
-                Base            = 250,
-                PerKm           = 190,
-                PerMin          = 10,
-                Minimum         = 600,
-                WaitingPerMin   = 10,
-                CancellationFee = 200,
-                IsActive        = true,
-                Version         = 1,
-                Market          = "ci"
-            },
-            // PackageSmall — parcels up to ~5 kg
-            new FareRule
-            {
-                ServiceClass    = ServiceClass.PackageSmall,
-                Base            = 400,
-                PerKm           = 200,
-                PerMin          = 12,
-                Minimum         = 900,
-                WaitingPerMin   = 0,     // no waiting fee for deliveries
-                CancellationFee = 0,     // no cancellation fee for packages
-                IsActive        = true,
-                Version         = 1,
-                Market          = "ci"
-            },
-            // PackageLarge — bulky items, van or large bike
-            new FareRule
-            {
-                ServiceClass    = ServiceClass.PackageLarge,
-                Base            = 600,
-                PerKm           = 280,
-                PerMin          = 12,
-                Minimum         = 1500,
-                WaitingPerMin   = 0,
-                CancellationFee = 0,
-                IsActive        = true,
-                Version         = 1,
-                Market          = "ci"
-            }
-        };
+        foreach (var rate in GuineaRates)
+            db.FareRules.Add(NewGuineaRule(rate, version: 1));
 
-        db.FareRules.AddRange(rules);
         await db.SaveChangesAsync();
-        logger.LogInformation("[Seed] Created {Count} FareRules for market=ci", rules.Length);
+        logger.LogInformation("[Seed] Created Guinea fare rules for market=ci");
     }
+
+    /// <summary>
+    /// Replaces the old CFA-sized rates once. After that, admin edits stick
+    /// because a car rate of 3,000 GNF per km is left alone.
+    /// </summary>
+    private static async Task ApplyGuineaFaresAsync(ApplicationDbContext db, ILogger logger)
+    {
+        var car = await db.FareRules
+            .Where(r => r.Market == "ci" && r.IsActive && r.ServiceClass == ServiceClass.ZenCar)
+            .OrderByDescending(r => r.Version)
+            .FirstOrDefaultAsync();
+        if (car is not null && car.PerKm >= 1_000)
+            return;
+
+        var config = await db.PlatformConfigs.FirstOrDefaultAsync(c => c.Market == "ci");
+        if (config is not null)
+        {
+            config.Currency = "GNF";
+            config.CurrencySymbol = "GNF";
+            config.Country = "GN";
+            config.DefaultMapCenterLat = 9.6412m;
+            config.DefaultMapCenterLng = -13.5784m;
+        }
+
+        var active = await db.FareRules.Where(r => r.Market == "ci" && r.IsActive).ToListAsync();
+        foreach (var rate in GuineaRates)
+        {
+            var current = active.FirstOrDefault(r => r.ServiceClass == rate.ServiceClass);
+            if (current is null)
+            {
+                db.FareRules.Add(NewGuineaRule(rate, version: 1));
+                continue;
+            }
+
+            current.Base = rate.Base;
+            current.PerKm = rate.PerKm;
+            current.PerMin = 0;
+            current.Minimum = rate.Minimum;
+            current.WaitingPerMin = rate.WaitingPerMin;
+            current.CancellationFee = rate.CancellationFee;
+            current.TrafficDelayMin = 15;
+            current.TrafficPercent = 8m;
+        }
+
+        await db.SaveChangesAsync();
+        logger.LogInformation("[Seed] Set Conakry fares in GNF, under local taxi rates");
+    }
+
+    private static FareRule NewGuineaRule(GuineaRate rate, int version) => new()
+    {
+        ServiceClass = rate.ServiceClass,
+        Base = rate.Base,
+        PerKm = rate.PerKm,
+        PerMin = 0,
+        Minimum = rate.Minimum,
+        WaitingPerMin = rate.WaitingPerMin,
+        CancellationFee = rate.CancellationFee,
+        TrafficDelayMin = 15,
+        TrafficPercent = 8m,
+        IsActive = true,
+        Version = version,
+        Market = "ci"
+    };
+
+    private readonly record struct GuineaRate(
+        ServiceClass ServiceClass, long Base, long PerKm, long Minimum,
+        long WaitingPerMin, long CancellationFee);
+
+    private static readonly GuineaRate[] GuineaRates =
+    [
+        new(ServiceClass.ZenCar,        2_000, 3_000, 7_000, 200, 2_000),
+        new(ServiceClass.ZenBike,       1_000, 1_800, 4_000, 100, 1_000),
+        new(ServiceClass.ZenCoRide,       500,   800, 2_000,  50,   500),
+        new(ServiceClass.PackageSmall,  1_500, 2_200, 5_000,   0,     0),
+        new(ServiceClass.PackageLarge,  2_500, 3_200, 8_000,   0,     0),
+    ];
 
     // ── Dispatch Config ───────────────────────────────────────────────────────
 

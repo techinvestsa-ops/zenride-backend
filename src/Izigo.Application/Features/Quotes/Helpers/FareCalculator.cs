@@ -65,31 +65,31 @@ public static class FareCalculator
         ServiceClass = sc,
         Base = sc switch
         {
-            ServiceClass.ZenCar     => 500,
-            ServiceClass.ZenBike    => 300,
-            ServiceClass.ZenCoRide  => 250,
-            ServiceClass.PackageSmall => 400,
-            ServiceClass.PackageLarge => 600,
-            _ => 400
+            ServiceClass.ZenCar     => 2_000,
+            ServiceClass.ZenBike    => 1_000,
+            ServiceClass.ZenCoRide  => 500,
+            ServiceClass.PackageSmall => 1_500,
+            ServiceClass.PackageLarge => 2_500,
+            _ => 1_500
         },
         PerKm = sc switch
         {
-            ServiceClass.ZenCar     => 250,
-            ServiceClass.ZenBike    => 180,
-            ServiceClass.ZenCoRide  => 190,
-            ServiceClass.PackageSmall => 200,
-            ServiceClass.PackageLarge => 280,
-            _ => 200
+            ServiceClass.ZenCar     => 3_000,
+            ServiceClass.ZenBike    => 1_800,
+            ServiceClass.ZenCoRide  => 800,
+            ServiceClass.PackageSmall => 2_200,
+            ServiceClass.PackageLarge => 3_200,
+            _ => 2_200
         },
         PerMin = 0,
         Minimum = sc switch
         {
-            ServiceClass.ZenCar     => 1200,
-            ServiceClass.ZenBike    => 800,
-            ServiceClass.ZenCoRide  => 600,
-            ServiceClass.PackageSmall => 900,
-            ServiceClass.PackageLarge => 1500,
-            _ => 1000
+            ServiceClass.ZenCar     => 7_000,
+            ServiceClass.ZenBike    => 4_000,
+            ServiceClass.ZenCoRide  => 2_000,
+            ServiceClass.PackageSmall => 5_000,
+            ServiceClass.PackageLarge => 8_000,
+            _ => 5_000
         },
         WaitingPerMin = 20,
         CancellationFee = sc is ServiceClass.ZenCar ? 500 : 300,
