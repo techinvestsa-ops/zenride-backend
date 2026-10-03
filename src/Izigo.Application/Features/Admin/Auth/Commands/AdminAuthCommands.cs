@@ -78,6 +78,9 @@ public class AdminLoginHandler(
         if (staff is null || !hasher.Verify(cmd.Password, staff.PasswordHash))
             return new(null, null, "INVALID_CREDENTIALS");
 
+        if (staff.Status == StaffStatus.Pending)
+            return new(null, null, "INVITE_PENDING");
+
         if (staff.Status == StaffStatus.Blocked)
             return new(null, null, "ACCOUNT_BLOCKED");
 
@@ -527,6 +530,7 @@ public class AcceptInviteHandler(
                 Name    = invite.Email, // will be updated on first profile edit
                 RoleKey = invite.RoleKey,
                 Markets = markets,
+                Status  = StaffStatus.Pending,
                 MustChangePassword = false
             };
             db.Staff.Add(staff);
@@ -534,6 +538,7 @@ public class AcceptInviteHandler(
 
         staff.PasswordHash       = hasher.Hash(cmd.Password);
         staff.MustChangePassword = false;
+        staff.Status             = StaffStatus.Active;
         invite.IsUsed            = true;
 
         await audit.RecordAsync(staff.Id, staff.Name, AuditAction.InviteAccept, "Staff", staff.Id, ct: ct);

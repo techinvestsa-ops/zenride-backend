@@ -93,7 +93,7 @@ public enum OnboardingStepKey
 public enum OnboardingStepStatus { Empty, Submitted, Approved, Rejected }
 
 // Admin
-public enum StaffStatus { Active, Suspended, Blocked }
+public enum StaffStatus { Active, Suspended, Blocked, Pending }
 
 public enum Market { CI, NG }
 

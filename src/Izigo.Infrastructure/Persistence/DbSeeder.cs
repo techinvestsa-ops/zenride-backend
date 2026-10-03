@@ -38,11 +38,36 @@ public static class DbSeeder
 
         await SeedPlatformConfigAsync(db, logger);
         await SeedSuperAdminAsync(db, config, hasher, logger);
+        await MarkOpenInvitesPendingAsync(db, logger);
         await SeedFareRulesAsync(db, logger);
         await ApplyGuineaFaresAsync(db, logger);
         await SeedDispatchConfigsAsync(db, logger);
         await SeedCommissionConfigsAsync(db, logger);
         await SeedFeatureFlagsAsync(db, logger);
+    }
+
+    /// <summary>
+    /// Invited admins stay pending until they accept. Older rows were created active by mistake.
+    /// </summary>
+    private static async Task MarkOpenInvitesPendingAsync(ApplicationDbContext db, ILogger logger)
+    {
+        var openEmails = await db.StaffInvites
+            .Where(i => !i.IsUsed)
+            .Select(i => i.Email)
+            .Distinct()
+            .ToListAsync();
+        if (openEmails.Count == 0) return;
+
+        var waiting = await db.Staff
+            .Where(s => openEmails.Contains(s.Email) && s.Status == StaffStatus.Active)
+            .ToListAsync();
+        if (waiting.Count == 0) return;
+
+        foreach (var person in waiting)
+            person.Status = StaffStatus.Pending;
+
+        await db.SaveChangesAsync();
+        logger.LogInformation("[Seed] Marked {Count} unaccepted admin invite(s) as pending", waiting.Count);
     }
 
     // ── PlatformConfig ────────────────────────────────────────────────────────
