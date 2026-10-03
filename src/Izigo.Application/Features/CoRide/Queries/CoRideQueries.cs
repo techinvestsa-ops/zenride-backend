@@ -184,7 +184,8 @@ public class GetMyBookingsHandler(IApplicationDbContext db)
                 Total: b.Total,
                 Currency: b.Currency,
                 Status: b.Status.ToString().ToLower(),
-                PaymentMethod: b.PaymentMethod.ToString().ToLower());
+                PaymentMethod: b.PaymentMethod.ToString().ToLower(),
+                BookedAt: b.CreatedAt);
         }).ToList();
     }
 }
@@ -220,7 +221,8 @@ public class GetBookingHandler(IApplicationDbContext db)
             Total: booking.Total,
             Currency: booking.Currency,
             Status: booking.Status.ToString().ToLower(),
-            PaymentMethod: booking.PaymentMethod.ToString().ToLower());
+            PaymentMethod: booking.PaymentMethod.ToString().ToLower(),
+            BookedAt: booking.CreatedAt);
     }
 }
 

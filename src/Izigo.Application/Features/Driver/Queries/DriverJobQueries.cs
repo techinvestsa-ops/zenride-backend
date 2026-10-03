@@ -98,6 +98,19 @@ internal static class JobDetailMapper
         var state = trip.JobState;
         var isFinal = RideProjector.IsTerminal(state);
 
+        JobDeliveryDto? delivery = null;
+        if (trip.Vertical == Vertical.Package && !string.IsNullOrEmpty(trip.QuoteId))
+        {
+            var pkg = await db.Packages
+                .FirstOrDefaultAsync(p => p.QuoteId == trip.QuoteId, ct);
+            if (pkg != null)
+                delivery = new JobDeliveryDto(
+                    pkg.RecipientName,
+                    PhoneMasker.Mask(pkg.RecipientPhone),
+                    pkg.ProofCode,
+                    pkg.ProofPhotoUrl);
+        }
+
         return new JobDetailDto(
             TripId: trip.Id,
             Code: trip.Code,
@@ -136,7 +149,8 @@ internal static class JobDetailMapper
                 CanArrive:   state == JobState.Accepted || state == JobState.EnRouteToPickup,
                 CanStart:    state == JobState.ArrivedAtPickup,
                 CanComplete: state == JobState.ArrivedAtDropoff,
-                CanCancel:   !isFinal && state != JobState.PickedUp));
+                CanCancel:   !isFinal && state != JobState.PickedUp),
+            Delivery: delivery);
     }
 }
 
