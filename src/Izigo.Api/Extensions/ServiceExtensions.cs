@@ -217,6 +217,8 @@ public static class ServiceExtensions
         services.AddScoped<IIdempotencyService, IdempotencyService>();
         services.AddScoped<IGeoService, GoogleMapsService>();
         services.AddScoped<IPaymentGateway, PaymentGatewayService>();
+        services.AddSingleton<AdminStaffPresenceTracker>();
+        services.AddSingleton<AdminStaffPresenceService>();
         services.AddSingleton<IRealtimeService, SignalRRealtimeService>();
         services.AddSingleton<IPushService, FcmPushService>();
         services.AddScoped<IEmailService, SmtpEmailService>();
