@@ -98,6 +98,7 @@ jobs:
               "Cors__Origins__0=http://localhost:3000" \
               "Cors__Origins__1=https://admin-dashboard-tisa.azurewebsites.net" \
               "Cors__Origins__2=https://admin.zenride.app" \
+              "Email__BaseUrl=https://admin-dashboard-tisa.azurewebsites.net" \
             --output none
 
       - name: Deploy to Azure App Service
