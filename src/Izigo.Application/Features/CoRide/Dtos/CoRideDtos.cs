@@ -47,7 +47,14 @@ public record CoRideBookingDto(
     string Currency,
     string Status,
     string PaymentMethod,
-    DateTime BookedAt
+    DateTime BookedAt,
+    string? BoardingCode = null,
+    DateTime? BoardedAt = null,
+    double? BoardLat = null,
+    double? BoardLng = null,
+    DateTime? AlightedAt = null,
+    double? AlightLat = null,
+    double? AlightLng = null
 );
 
 // ── Match request ─────────────────────────────────────────────────────────────
@@ -110,6 +117,8 @@ public record EditListingRequest(DateTime? DepartureAt);
 
 public record DeleteListingRequest(string? Reason);
 
+public record BoardPassengerRequest(string Code);
+
 // ── Driver manifest ───────────────────────────────────────────────────────────
 
 public record PassengerManifestDto(
@@ -117,5 +126,6 @@ public record PassengerManifestDto(
     string PassengerName,
     string[] SeatLabels,
     string PaymentStatus,
-    bool IsBoarded
+    bool IsBoarded,
+    string Status
 );

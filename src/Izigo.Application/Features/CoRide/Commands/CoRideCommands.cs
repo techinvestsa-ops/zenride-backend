@@ -125,9 +125,16 @@ public class BookSeatsHandler(IApplicationDbContext db, IRealtimeService realtim
         if (payMethod == PaymentMethod.Wallet)
             await RiderWalletPayments.EnsureCanPayAsync(db, cmd.RiderId, total, ct);
 
+        var takenCodes = await db.CoRideBookings
+            .Where(b => b.ListingId == listing.Id && b.BoardingCode != null)
+            .Select(b => b.BoardingCode!)
+            .ToListAsync(ct);
+        var boardingCode = CoRidePresence.NewBoardingCode(takenCodes);
+
         var booking = new CoRideBooking
         {
             ListingId      = listing.Id,
+            BoardingCode   = boardingCode,
             RiderId        = cmd.RiderId,
             Seats          = req.Seats,
             SeatLabelsJson = System.Text.Json.JsonSerializer.Serialize(seatLabels),
@@ -183,7 +190,14 @@ public class BookSeatsHandler(IApplicationDbContext db, IRealtimeService realtim
             Currency: booking.Currency,
             Status: booking.Status.ToString().ToLower(),
             BookedAt: booking.CreatedAt,
-            PaymentMethod: booking.PaymentMethod.ToString().ToLower());
+            PaymentMethod: booking.PaymentMethod.ToString().ToLower(),
+            BoardingCode: booking.BoardingCode,
+            BoardedAt: booking.BoardedAt,
+            BoardLat: (double?)booking.BoardLat,
+            BoardLng: (double?)booking.BoardLng,
+            AlightedAt: booking.AlightedAt,
+            AlightLat: (double?)booking.AlightLat,
+            AlightLng: (double?)booking.AlightLng);
     }
 }
 
@@ -396,7 +410,7 @@ public class DeleteListingHandler(IApplicationDbContext db, IRealtimeService rea
 
 // ── POST /driver/co-ride/bookings/{id}/board ──────────────────────────────────
 
-public record BoardPassengerCommand(string DriverId, string BookingId) : IRequest;
+public record BoardPassengerCommand(string DriverId, string BookingId, string Code) : IRequest;
 
 public class BoardPassengerHandler(IApplicationDbContext db, IRealtimeService realtime, IPushService push)
     : IRequestHandler<BoardPassengerCommand>
@@ -416,8 +430,42 @@ public class BoardPassengerHandler(IApplicationDbContext db, IRealtimeService re
             booking.Status != CoRideBookingStatus.DriverArriving)
             throw new InvalidOperationException("CONFLICT: Passenger cannot be boarded in current state.");
 
+        var code = cmd.Code.Trim();
+        if (booking.BoardingCode != null && code != booking.BoardingCode)
+            throw new ArgumentException("VALIDATION_ERROR: Boarding code does not match.");
+
+        var fix = await CoRidePresence.RequireFixAsync(db, cmd.DriverId, ct);
         booking.Status = CoRideBookingStatus.InRide;
+        booking.BoardedAt = DateTime.UtcNow;
+        booking.BoardLat = fix.Lat;
+        booking.BoardLng = fix.Lng;
         await db.SaveChangesAsync(ct);
+        await CoRideNotify.PublishBookingUpdatedAsync(
+            realtime, push, db, booking, booking.Listing, ct);
+    }
+}
+
+public record AlightPassengerCommand(string DriverId, string BookingId) : IRequest;
+
+public class AlightPassengerHandler(IApplicationDbContext db, IRealtimeService realtime, IPushService push)
+    : IRequestHandler<AlightPassengerCommand>
+{
+    public async Task Handle(AlightPassengerCommand cmd, CancellationToken ct)
+    {
+        var booking = await db.CoRideBookings
+            .Include(b => b.Listing)
+            .FirstOrDefaultAsync(b => b.Id == cmd.BookingId &&
+                                      b.Listing.DriverId == cmd.DriverId, ct)
+            ?? throw new KeyNotFoundException("Booking not found.");
+
+        if (booking.Status == CoRideBookingStatus.Completed)
+            return;
+
+        if (booking.Status != CoRideBookingStatus.InRide)
+            throw new InvalidOperationException("CONFLICT: Only a boarded passenger can be dropped off.");
+
+        var fix = await CoRidePresence.RequireFixAsync(db, cmd.DriverId, ct);
+        await CoRidePresence.AlightAsync(db, booking, booking.Listing, fix, ct);
         await CoRideNotify.PublishBookingUpdatedAsync(
             realtime, push, db, booking, booking.Listing, ct);
     }
@@ -470,20 +518,9 @@ public class CompleteCoRideListingHandler(
         if (listing.Status is "cancelled" or "completed")
             throw new InvalidOperationException("CONFLICT: Listing is already finalised.");
 
-        foreach (var booking in listing.Bookings.Where(b =>
-                     b.Status is CoRideBookingStatus.InRide or
-                                  CoRideBookingStatus.DriverArriving or
-                                  CoRideBookingStatus.Upcoming))
-        {
-            if (booking.Status == CoRideBookingStatus.Upcoming)
-                continue; // no-show — leave as upcoming for ops review
-
-            booking.Status = CoRideBookingStatus.Completed;
-
-            if (booking.PaymentMethod == PaymentMethod.Wallet)
-                await RiderWalletPayments.DebitAsync(db, booking.RiderId, booking.Total,
-                    $"Co-ride to {listing.ToLabel}", listing.Id, booking.Id, ct);
-        }
+        var fix = await CoRidePresence.LatestFixAsync(db, cmd.DriverId, ct);
+        foreach (var booking in listing.Bookings.Where(b => b.Status == CoRideBookingStatus.InRide))
+            await CoRidePresence.AlightAsync(db, booking, listing, fix, ct);
 
         listing.Status = "completed";
         await db.SaveChangesAsync(ct);
