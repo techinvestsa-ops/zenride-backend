@@ -273,6 +273,7 @@ public record PublishListingCommand(string DriverId, PublishListingRequest Reque
 
 public class PublishListingHandler(
     IApplicationDbContext db,
+    IGeoService geo,
     IOptions<AppSettings> appOptions,
     IRealtimeService realtime,
     IPushService push)
@@ -288,6 +289,9 @@ public class PublishListingHandler(
 
         if (req.DepartureAt <= DateTime.UtcNow.AddMinutes(minMin))
             throw new ArgumentException($"VALIDATION_ERROR: Departure must be at least {minMin} minutes from now.");
+
+        var split = await CoRideFare.QuoteAsync(
+            db, geo, req.FromLat, req.FromLng, req.ToLat, req.ToLng, req.SeatsTotal, ct);
 
         var dp = await db.DriverProfiles
             .Include(d => d.User)
@@ -306,9 +310,10 @@ public class PublishListingHandler(
             ToLabel      = req.ToLabel,
             DepartureAt  = req.DepartureAt,
             SeatsTotal   = req.SeatsTotal,
-            PricePerSeat = req.PricePerSeat,
-            ServiceFee   = (long)(req.PricePerSeat * 0.10m),  // 10% platform fee
-            Currency     = "XOF",
+            TripFare     = split.TripFare,
+            PricePerSeat = split.PricePerSeat,
+            ServiceFee   = (long)(split.PricePerSeat * 0.10m),
+            Currency     = split.Currency,
             IsEco        = req.IsEco,
             IsRecurring  = req.IsRecurring ?? false,
             Status       = "open",

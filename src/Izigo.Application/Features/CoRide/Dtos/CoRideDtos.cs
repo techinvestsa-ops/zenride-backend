@@ -13,6 +13,7 @@ public record CoRideListingDto(
     int SeatsTaken,
     int SeatsLeft,
     long PricePerSeat,
+    long TripFare,
     long ServiceFee,
     string Currency,
     int RouteOverlapPct,
@@ -108,9 +109,9 @@ public record PublishListingRequest(
     double ToLat, double ToLng, string ToLabel,
     DateTime DepartureAt,
     int SeatsTotal,
-    long PricePerSeat,
     bool IsEco,
-    bool? IsRecurring
+    bool? IsRecurring,
+    long PricePerSeat = 0
 );
 
 public record EditListingRequest(DateTime? DepartureAt);

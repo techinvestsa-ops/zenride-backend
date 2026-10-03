@@ -91,6 +91,7 @@ public class SearchListingsHandler(IApplicationDbContext db)
             SeatsTaken: l.SeatsTaken,
             SeatsLeft: l.SeatsLeft,
             PricePerSeat: l.PricePerSeat,
+            TripFare: l.TripFare > 0 ? l.TripFare : l.PricePerSeat * l.SeatsTotal,
             ServiceFee: l.ServiceFee,
             Currency: l.Currency,
             RouteOverlapPct: 0,    // calculated by route comparison algorithm — 0 until implemented
