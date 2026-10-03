@@ -65,7 +65,11 @@ public class VerifyOtpHandler(
 
             if (role == UserRole.Driver)
             {
-                var profile = new DriverProfile { UserId = user.Id };
+                var profile = new DriverProfile
+                {
+                    UserId = user.Id,
+                    VerticalsAllowed = [Vertical.Ride, Vertical.CoRide, Vertical.Package],
+                };
                 db.DriverProfiles.Add(profile);
                 db.DriverOnboardings.Add(new DriverOnboarding { DriverId = profile.Id });
                 db.DriverWallets.Add(new DriverWallet { DriverId = user.Id });

@@ -57,7 +57,7 @@ public class DriverOnboardingTests
             CancellationToken.None);
 
         result.Should().NotBeNull();
-        var onb = db.DriverOnboardings.First(o => o.DriverId == driverId);
+        var onb = db.DriverOnboardings.First(o => o.DriverId == dp.Id);
         onb.PersonalStatus.Should().Be(OnboardingStepStatus.Submitted);
     }
 
@@ -70,7 +70,7 @@ public class DriverOnboardingTests
         var driverId = Guid.NewGuid().ToString();
         var dp = BuildDriverProfile(driverId);
         db.DriverProfiles.Add(dp);
-        db.DriverOnboardings.Add(BuildFullOnboarding(driverId));
+        db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id));
         await db.SaveChangesAsync();
 
         var handler = new SubmitVehicleHandler(db);
@@ -89,7 +89,7 @@ public class DriverOnboardingTests
         var driverId = Guid.NewGuid().ToString();
         var dp = BuildDriverProfile(driverId);
         db.DriverProfiles.Add(dp);
-        db.DriverOnboardings.Add(BuildFullOnboarding(driverId));
+        db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id));
         await db.SaveChangesAsync();
 
         var handler = new SubmitVehicleHandler(db);
@@ -99,7 +99,7 @@ public class DriverOnboardingTests
             CancellationToken.None);
 
         result.Should().NotBeNull();
-        var onb = db.DriverOnboardings.First(o => o.DriverId == driverId);
+        var onb = db.DriverOnboardings.First(o => o.DriverId == dp.Id);
         onb.VehicleStatus.Should().Be(OnboardingStepStatus.Submitted);
         db.Vehicles.Should().HaveCount(1);
         db.Vehicles.First().PendingReview.Should().BeTrue();
@@ -112,7 +112,7 @@ public class DriverOnboardingTests
         var driverId = Guid.NewGuid().ToString();
         var dp = BuildDriverProfile(driverId);
         db.DriverProfiles.Add(dp);
-        db.DriverOnboardings.Add(BuildFullOnboarding(driverId));
+        db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id));
         db.Vehicles.Add(new VehicleEntity
         {
             DriverId = driverId, Make = "Honda", Model = "Civic", Year = 2018,
@@ -141,7 +141,7 @@ public class DriverOnboardingTests
         var driverId = Guid.NewGuid().ToString();
         var dp = BuildDriverProfile(driverId);
         db.DriverProfiles.Add(dp);
-        db.DriverOnboardings.Add(BuildFullOnboarding(driverId));
+        db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id));
         await db.SaveChangesAsync();
 
         var handler = new SubmitPayoutHandler(db);
@@ -151,7 +151,7 @@ public class DriverOnboardingTests
             CancellationToken.None);
 
         result.Should().NotBeNull();
-        var onb = db.DriverOnboardings.First(o => o.DriverId == driverId);
+        var onb = db.DriverOnboardings.First(o => o.DriverId == dp.Id);
         onb.PayoutStatus.Should().Be(OnboardingStepStatus.Submitted);
         db.PayoutMethods.Should().HaveCount(1);
         db.PayoutMethods.First().IsDefault.Should().BeTrue();
@@ -164,7 +164,7 @@ public class DriverOnboardingTests
         var driverId = Guid.NewGuid().ToString();
         var dp = BuildDriverProfile(driverId);
         db.DriverProfiles.Add(dp);
-        db.DriverOnboardings.Add(BuildFullOnboarding(driverId));
+        db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id));
         db.PayoutMethods.Add(new PayoutMethodEntity
         {
             DriverId = driverId, Method = "bank_transfer",
@@ -192,7 +192,7 @@ public class DriverOnboardingTests
         var dp = BuildDriverProfile(driverId);
         db.DriverProfiles.Add(dp);
         // PersonalStatus left as Empty
-        db.DriverOnboardings.Add(BuildFullOnboarding(driverId, OnboardingStepStatus.Empty));
+        db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id, OnboardingStepStatus.Empty));
         await db.SaveChangesAsync();
 
         var handler = new SubmitOnboardingHandler(db);
@@ -209,7 +209,7 @@ public class DriverOnboardingTests
         var driverId = Guid.NewGuid().ToString();
         var dp = BuildDriverProfile(driverId);
         db.DriverProfiles.Add(dp);
-        var onb = BuildFullOnboarding(driverId);
+        var onb = BuildFullOnboarding(dp.Id);
         onb.SubmittedAt = DateTime.UtcNow.AddHours(-1);
         db.DriverOnboardings.Add(onb);
         await db.SaveChangesAsync();
@@ -228,7 +228,7 @@ public class DriverOnboardingTests
         var driverId = Guid.NewGuid().ToString();
         var dp = BuildDriverProfile(driverId);
         db.DriverProfiles.Add(dp);
-        db.DriverOnboardings.Add(BuildFullOnboarding(driverId));
+        db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id));
         await db.SaveChangesAsync();
 
         var handler = new SubmitOnboardingHandler(db);

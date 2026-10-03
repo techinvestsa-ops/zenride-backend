@@ -40,6 +40,12 @@ public class SetDriverStatusHandler(IApplicationDbContext db)
 
         dp.IsOnline = cmd.Request.Online;
 
+        if (dp.IsOnline && dp.VerticalsAllowed.Count == 0)
+        {
+            dp.VerticalsAllowed = [Vertical.Ride, Vertical.CoRide, Vertical.Package];
+            await SyncVerticalPreferencesAsync(db, cmd.DriverId, dp.VerticalsAllowed, ct);
+        }
+
         if (cmd.Request.Vertical != null)
         {
             var vertical = ParseDriverVertical(cmd.Request.Vertical);
