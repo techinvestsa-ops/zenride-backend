@@ -89,6 +89,17 @@ jobs:
               "Fcm__ServiceAccountJson=$(echo "$FCM_SERVICE_ACCOUNT_JSON" | tr -d '\n')" \
             --output none
 
+      - name: Allow the admin console to call the API
+        run: |
+          az webapp config appsettings set \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --name ${{ env.APP_NAME }} \
+            --settings \
+              "Cors__Origins__0=http://localhost:3000" \
+              "Cors__Origins__1=https://admin-dashboard-tisa.azurewebsites.net" \
+              "Cors__Origins__2=https://admin.zenride.app" \
+            --output none
+
       - name: Deploy to Azure App Service
         uses: nick-fields/retry@v3
         with:
