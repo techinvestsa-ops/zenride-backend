@@ -35,10 +35,15 @@ public static class RideProjector
         _                           => "searching"
     };
 
-    public static bool IsTerminal(JobState state) => state is
-        JobState.Completed or JobState.CancelledByRider or JobState.CancelledByDriver or
-        JobState.CancelledByAdmin or JobState.Expired or JobState.RejectedByDriver or
-        JobState.Returned or JobState.Disputed;
+    /// Use with <c>!TerminalStates.Contains(t.JobState)</c> inside EF queries; <see cref="IsTerminal"/> can't be translated to SQL.
+    public static readonly JobState[] TerminalStates =
+    [
+        JobState.Completed, JobState.CancelledByRider, JobState.CancelledByDriver,
+        JobState.CancelledByAdmin, JobState.Expired, JobState.RejectedByDriver,
+        JobState.Returned, JobState.Disputed
+    ];
+
+    public static bool IsTerminal(JobState state) => TerminalStates.Contains(state);
 
     public static bool IsActive(JobState state) => !IsTerminal(state);
 }

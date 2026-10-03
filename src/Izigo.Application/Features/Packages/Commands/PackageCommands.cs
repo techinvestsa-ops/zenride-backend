@@ -1,3 +1,4 @@
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Common.Interfaces;
 using Izigo.Application.Features.Packages.Dtos;
 using Izigo.Application.Features.Packages.Helpers;
@@ -75,6 +76,9 @@ public class CreatePackageHandler(
             string.Equals(o.ClassCode, classCodeStr, StringComparison.OrdinalIgnoreCase))
             ?? throw new ArgumentException($"VALIDATION_ERROR: class_code '{req.ClassCode}' not in this quote.");
 
+        if (payMethod == PaymentMethod.Wallet && !req.RecipientPays)
+            await RiderWalletPayments.EnsureCanPayAsync(db, cmd.SenderId, option.Fare.Total, ct);
+
         quote.IsUsed = true;
 
         var pkg = new Package
@@ -129,7 +133,8 @@ public class CreatePackageHandler(
             FareServiceFee  = option.Fare.ServiceFee,
             FareDiscount    = option.Fare.Discount,
             Currency        = quote.Currency,
-            PaymentMethod   = payMethod,
+            // Recipient-paid deliveries are settled in cash at dropoff, never from the sender's wallet.
+            PaymentMethod   = req.RecipientPays ? PaymentMethod.Cash : payMethod,
             NoteToDriver    = req.Description ?? req.Instructions,
         };
 

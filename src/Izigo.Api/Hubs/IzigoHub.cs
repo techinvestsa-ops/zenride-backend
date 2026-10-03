@@ -1,5 +1,7 @@
+using Izigo.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Izigo.Api.Hubs;
 
@@ -15,7 +17,7 @@ namespace Izigo.Api.Hubs;
 /// ?access_token=&lt;jwt&gt; query param (required for WebSocket upgrade).
 /// </summary>
 [Authorize(Policy = "AppPolicy")]
-public class IzigoHub : Hub
+public class IzigoHub(IApplicationDbContext db) : Hub
 {
     public override async Task OnConnectedAsync()
     {
@@ -32,8 +34,16 @@ public class IzigoHub : Hub
     }
 
     /// <summary>Join the shared trip room to receive driver location and chat events.</summary>
-    public Task JoinTripRoom(string tripId)
-        => Groups.AddToGroupAsync(Context.ConnectionId, $"trip-{tripId}");
+    public async Task JoinTripRoom(string tripId)
+    {
+        var userId = Context.UserIdentifier;
+        var isParticipant = userId is not null && await db.Trips
+            .AnyAsync(t => t.Id == tripId && (t.RiderId == userId || t.DriverId == userId));
+        if (!isParticipant)
+            throw new HubException("Not a participant of this trip.");
+
+        await Groups.AddToGroupAsync(Context.ConnectionId, $"trip-{tripId}");
+    }
 
     /// <summary>Leave the trip room when the ride ends or the screen is closed.</summary>
     public Task LeaveTripRoom(string tripId)

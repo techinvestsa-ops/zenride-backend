@@ -1,3 +1,4 @@
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Common.Interfaces;
 using Izigo.Application.Common.Settings;
 using Izigo.Application.Features.CoRide.Dtos;
@@ -120,6 +121,9 @@ public class BookSeatsHandler(IApplicationDbContext db, IRealtimeService realtim
             .ToArray();
 
         var total = (listing.PricePerSeat * req.Seats) + listing.ServiceFee - promoDiscount;
+
+        if (payMethod == PaymentMethod.Wallet)
+            await RiderWalletPayments.EnsureCanPayAsync(db, cmd.RiderId, total, ct);
 
         var booking = new CoRideBooking
         {
@@ -434,6 +438,10 @@ public class CompleteCoRideListingHandler(
                 continue; // no-show — leave as upcoming for ops review
 
             booking.Status = CoRideBookingStatus.Completed;
+
+            if (booking.PaymentMethod == PaymentMethod.Wallet)
+                await RiderWalletPayments.DebitAsync(db, booking.RiderId, booking.Total,
+                    $"Co-ride to {listing.ToLabel}", listing.Id, booking.Id, ct);
         }
 
         listing.Status = "completed";

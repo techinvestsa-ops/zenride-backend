@@ -147,8 +147,54 @@ public class UpdateLocationHandler(IApplicationDbContext db, IRealtimeService re
 
         // driver.location → presence-trip.{trip_id}  (spec: throttle ~3–5 s on-trip)
         // The active job_id is passed in the batch so we know which trip room to notify.
-        if (!string.IsNullOrEmpty(req.JobId))
-            await realtime.PublishToTripAsync(req.JobId, "driver.location",
-                new DriverLocationEvent(req.JobId, req.Lat, req.Lng, req.Heading, EtaMin: null), ct);
+        if (string.IsNullOrEmpty(req.JobId)) return;
+
+        var trip = await db.Trips
+            .Where(t => t.Id == req.JobId && t.DriverId == cmd.DriverId)
+            .Select(t => new { t.JobState, t.PickupLat, t.PickupLng, t.DropoffLat, t.DropoffLng })
+            .FirstOrDefaultAsync(ct);
+
+        int? etaMin = null, distanceM = null;
+        string? leg = null;
+        if (trip != null)
+        {
+            var toDropoff = trip.JobState is JobState.PickedUp or JobState.EnRouteToDropoff or JobState.ArrivedAtDropoff;
+            leg = toDropoff ? "dropoff" : "pickup";
+            var (lat, lng) = toDropoff
+                ? ((double)trip.DropoffLat, (double)trip.DropoffLng)
+                : ((double)trip.PickupLat, (double)trip.PickupLng);
+            distanceM = (int)LiveEta.RoadDistanceM(req.Lat, req.Lng, lat, lng);
+            etaMin = LiveEta.Minutes(distanceM.Value, req.Speed);
+        }
+
+        await realtime.PublishToTripAsync(req.JobId, "driver.location",
+            new DriverLocationEvent(req.JobId, req.Lat, req.Lng, req.Heading, etaMin, distanceM, leg), ct);
+    }
+}
+
+/// Cheap per-heartbeat ETA so riders see live times without a Maps call every few seconds.
+internal static class LiveEta
+{
+    // Straight-line distance understates city driving; 1.3 is a common urban detour factor.
+    private const double RoadFactor = 1.3;
+    private const double CitySpeedMs = 8.3;   // ≈ 30 km/h
+    private const double MinSpeedMs  = 3.0;
+
+    public static double RoadDistanceM(double lat1, double lng1, double lat2, double lng2)
+    {
+        const double r = 6_371_000;
+        var dLat = (lat2 - lat1) * Math.PI / 180;
+        var dLng = (lng2 - lng1) * Math.PI / 180;
+        var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                Math.Cos(lat1 * Math.PI / 180) * Math.Cos(lat2 * Math.PI / 180) *
+                Math.Sin(dLng / 2) * Math.Sin(dLng / 2);
+        return 2 * r * Math.Asin(Math.Sqrt(a)) * RoadFactor;
+    }
+
+    public static int Minutes(int distanceM, double? speedMs)
+    {
+        // Blend live speed with the city average so a red light doesn't spike the ETA.
+        var speed = speedMs is > MinSpeedMs ? (speedMs.Value + CitySpeedMs) / 2 : CitySpeedMs;
+        return Math.Max(1, (int)Math.Ceiling(distanceM / speed / 60));
     }
 }

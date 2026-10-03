@@ -1,6 +1,9 @@
 using Izigo.Application.Common;
+using Izigo.Application.Common.Exceptions;
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Settings;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Izigo.Infrastructure.Services;
 
@@ -10,6 +13,7 @@ namespace Izigo.Infrastructure.Services;
 public class OtpService(
     ISmsService sms,
     IEmailService email,
+    IOptions<OtpSettings> otpOptions,
     ILogger<OtpService> logger) : IOtpService
 {
     private static readonly Random Rng = new();
@@ -19,10 +23,25 @@ public class OtpService(
     {
         var code = Rng.Next(100_000, 999_999).ToString();
 
-        if (identifier.Contains('@'))
-            await SendByEmailAsync(identifier, code, ct);
-        else
-            await SendBySmsAsync(identifier, purpose, code, ct);
+        try
+        {
+            if (identifier.Contains('@'))
+                await SendByEmailAsync(identifier, code, ct);
+            else
+                await SendBySmsAsync(identifier, purpose, code, ct);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            if (otpOptions.Value.ExposeDevCode)
+            {
+                logger.LogWarning(ex, "[OTP] Delivery failed to={Identifier}; continuing because ExposeDevCode is on", identifier);
+                return code;
+            }
+
+            logger.LogError(ex, "[OTP] Delivery failed to={Identifier}", identifier);
+            throw new SmsUnavailableException(
+                "We couldn't send your verification code right now. Please try again in a moment.", ex);
+        }
 
         return code;
     }

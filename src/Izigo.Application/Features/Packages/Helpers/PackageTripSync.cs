@@ -10,7 +10,7 @@ namespace Izigo.Application.Features.Packages.Helpers;
 /// Packages are tracked in the Packages table; dispatch reuses the Trip job engine
 /// linked by shared QuoteId. These helpers keep both in sync.
 /// </summary>
-internal static class PackageTripSync
+public static class PackageTripSync
 {
     public static Task<Package?> FindByTripAsync(
         IApplicationDbContext db, Trip trip, CancellationToken ct)

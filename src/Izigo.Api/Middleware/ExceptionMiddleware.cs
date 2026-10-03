@@ -32,6 +32,7 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
                 (HttpStatusCode.Conflict, "CONFLICT", e.Message[9..]),
             ArgumentException e => (HttpStatusCode.UnprocessableEntity, "VALIDATION_ERROR", e.Message),
             MapsUnavailableException e => (HttpStatusCode.ServiceUnavailable, "MAPS_UNAVAILABLE", e.Message),
+            SmsUnavailableException e => (HttpStatusCode.ServiceUnavailable, "SMS_UNAVAILABLE", e.Message),
             _ => (HttpStatusCode.InternalServerError, "SERVER_ERROR", "An unexpected error occurred.")
         };
 

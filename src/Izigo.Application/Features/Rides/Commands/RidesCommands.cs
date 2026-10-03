@@ -1,3 +1,4 @@
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Common.Interfaces;
 using Izigo.Application.Common.Settings;
 using Izigo.Application.Features.Quotes.Dtos;
@@ -76,6 +77,9 @@ public class CreateRideHandler(IApplicationDbContext db, IIdempotencyService ide
         var option = options.FirstOrDefault(o =>
             string.Equals(o.ClassCode, classCodeStr, StringComparison.OrdinalIgnoreCase))
             ?? throw new ArgumentException($"VALIDATION_ERROR: class_code '{req.ClassCode}' not in this quote.");
+
+        if (paymentMethod == PaymentMethod.Wallet)
+            await RiderWalletPayments.EnsureCanPayAsync(db, cmd.RiderId, option.Fare.Total, ct);
 
         // Mark quote used
         quote.IsUsed = true;
