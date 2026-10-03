@@ -193,7 +193,7 @@ public class GetReceiptHandler(IApplicationDbContext db)
                 trip.FareGross + trip.FareWaiting + trip.FareServiceFee - trip.FareDiscount,
                 trip.FareBase, trip.FareDistance, trip.FareTime,
                 trip.FareServiceFee, trip.FareDiscount,
-                trip.FareTip, trip.Currency, true),
+                trip.FareTip, trip.Currency, true, trip.FareWaiting),
             PdfUrl: null);
     }
 }

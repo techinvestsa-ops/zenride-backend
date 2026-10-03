@@ -40,6 +40,11 @@ public static class RideDetailMapper
 
         var isFinal = RideProjector.IsTerminal(trip.JobState);
         var status   = RideProjector.ToRiderStatus(trip.JobState);
+        var fareRule = await db.FareRules
+            .Where(r => r.IsActive && r.ServiceClass == trip.ServiceClass && r.Market == trip.Market)
+            .OrderByDescending(r => r.Version)
+            .FirstOrDefaultAsync(ct);
+        var waiting = new RideWaitingDto(fareRule?.WaitGraceMin ?? 10, fareRule?.WaitingPerMin ?? 0);
 
         var actions = new RideActionsDto(
             CanCancel: !isFinal &&
@@ -68,7 +73,7 @@ public static class RideDetailMapper
                 trip.FareGross + trip.FareWaiting + trip.FareServiceFee - trip.FareDiscount,
                 trip.FareBase, trip.FareDistance, trip.FareTime,
                 trip.FareServiceFee, trip.FareDiscount,
-                trip.FareTip, trip.Currency, isFinal),
+                trip.FareTip, trip.Currency, isFinal, trip.FareWaiting),
             Payment: new RidePaymentDto(
                 trip.PaymentMethod.ToString().ToLower(), "authorized"),
             Timestamps: new RideTimestampsDto(
@@ -77,6 +82,7 @@ public static class RideDetailMapper
             Actions: actions,
             ShareUrl: trip.ShareToken != null
                 ? $"{shareBaseUrl.TrimEnd('/')}/{trip.ShareToken}"
-                : null);
+                : null,
+            Waiting: waiting);
     }
 }
