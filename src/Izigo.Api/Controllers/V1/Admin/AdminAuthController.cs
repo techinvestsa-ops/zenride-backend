@@ -26,7 +26,14 @@ public class AdminAuthController : AdminBaseController
         if (result.ErrorCode is not null)
         {
             var status = result.ErrorCode == "ACCOUNT_BLOCKED" ? 403 : 401;
-            return StatusCode(status, new { success = false, error = new { code = result.ErrorCode } });
+            var message = result.ErrorCode switch
+            {
+                "INVITE_PENDING" => "This invite has not been accepted yet.",
+                "ACCOUNT_BLOCKED" => "This account is blocked.",
+                "ACCOUNT_SUSPENDED" => "This account is suspended.",
+                _ => "Invalid email or password."
+            };
+            return StatusCode(status, new { success = false, error = new { code = result.ErrorCode, message } });
         }
 
         if (result.Challenge is not null)
