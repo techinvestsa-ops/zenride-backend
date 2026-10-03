@@ -135,22 +135,25 @@ public class GetKycQueueHandler(IApplicationDbContext db, IFileStorageService st
         var driverIds = onboardings.Select(o => o.DriverId).ToList();
 
         var drivers = await db.DriverProfiles
-            .Where(d => driverIds.Contains(d.Id))
-            .Select(d => new { d.Id, d.User.FirstName, d.User.LastName, d.User.Phone })
+            .Where(d => driverIds.Contains(d.Id) || driverIds.Contains(d.UserId))
+            .Select(d => new { d.Id, d.UserId, d.User.FirstName, d.User.LastName, d.User.Phone })
             .ToListAsync(ct);
         var driverMap = drivers.ToDictionary(d => d.Id);
+        foreach (var d in drivers) driverMap.TryAdd(d.UserId, d);
 
+        var ownerIds = drivers.SelectMany(d => new[] { d.Id, d.UserId }).Concat(driverIds).Distinct().ToList();
         var docs = await db.DriverDocuments
-            .Where(d => driverIds.Contains(d.DriverId))
+            .Where(d => ownerIds.Contains(d.DriverId))
             .Select(d => new KycDocData(d.Id, d.DriverId, d.Type, d.Status, d.FileUrl, d.ExpiresAt, d.RejectionReason))
             .ToListAsync(ct);
-        var docsByDriver = docs.GroupBy(d => d.DriverId).ToDictionary(g => g.Key, g => (IReadOnlyList<KycDocData>)g.ToList());
 
         var now   = DateTime.UtcNow;
         var items = onboardings.Select(o =>
         {
             driverMap.TryGetValue(o.DriverId, out var drv);
-            var driverDocs = docsByDriver.GetValueOrDefault(o.DriverId, []);
+            var driverDocs = docs
+                .Where(d => d.DriverId == o.DriverId || (drv != null && (d.DriverId == drv.Id || d.DriverId == drv.UserId)))
+                .ToList();
             var hoursWaiting = o.SubmittedAt.HasValue
                 ? (now - o.SubmittedAt.Value).TotalHours : 0;
 
@@ -176,8 +179,12 @@ public class GetKycDetailHandler(IApplicationDbContext db, IFileStorageService s
 {
     public async Task<KycDetailDto?> Handle(GetKycDetailQuery req, CancellationToken ct)
     {
+        var profile  = await KycDriverLookup.FindDriverAsync(db, req.DriverId, ct);
+        var ownerIds = KycDriverLookup.OwnerIds(profile, req.DriverId);
+
         var onboarding = await db.DriverOnboardings
-            .Where(o => o.DriverId == req.DriverId)
+            .Where(o => ownerIds.Contains(o.DriverId))
+            .OrderByDescending(o => o.SubmittedAt)
             .Select(o => new KycOnboardingData(
                 o.DriverId, o.SubmittedAt, o.AssignedReviewerStaffId,
                 o.PersonalStatus,   o.PersonalDataJson,   o.PersonalRejectionReason,
@@ -192,13 +199,13 @@ public class GetKycDetailHandler(IApplicationDbContext db, IFileStorageService s
 
         if (onboarding is null) return null;
 
-        var driver = await db.DriverProfiles
-            .Where(d => d.Id == req.DriverId)
-            .Select(d => new { d.Id, d.UserId, d.User.FirstName, d.User.LastName, d.User.Phone })
+        var driver = profile is null ? null : await db.Users
+            .Where(u => u.Id == profile.UserId)
+            .Select(u => new { profile.Id, UserId = u.Id, u.FirstName, u.LastName, u.Phone })
             .FirstOrDefaultAsync(ct);
 
         var docs = await db.DriverDocuments
-            .Where(d => d.DriverId == req.DriverId)
+            .Where(d => ownerIds.Contains(d.DriverId))
             .Select(d => new KycDocData(d.Id, d.DriverId, d.Type, d.Status, d.FileUrl, d.ExpiresAt, d.RejectionReason))
             .ToListAsync(ct);
 
@@ -210,11 +217,12 @@ public class GetKycDetailHandler(IApplicationDbContext db, IFileStorageService s
 
         // Automated checks
         var vehiclePlate = await db.Vehicles
-            .Where(v => v.DriverId == req.DriverId && v.IsActive)
+            .Where(v => ownerIds.Contains(v.DriverId))
+            .OrderByDescending(v => v.IsActive)
             .Select(v => v.Plate).FirstOrDefaultAsync(ct);
 
         var plateExists = vehiclePlate is not null && await db.Vehicles
-            .AnyAsync(v => v.Plate == vehiclePlate && v.DriverId != req.DriverId, ct);
+            .AnyAsync(v => v.Plate == vehiclePlate && !ownerIds.Contains(v.DriverId), ct);
 
         var duplicateDevice = driver is not null && await db.UserDevices
             .Where(d => d.UserId == driver.UserId)
@@ -248,8 +256,10 @@ public class GetKycDocumentUrlHandler(IApplicationDbContext db, IFileStorageServ
 {
     public async Task<SignedDocumentUrlDto?> Handle(GetKycDocumentUrlQuery req, CancellationToken ct)
     {
+        var profile  = await KycDriverLookup.FindDriverAsync(db, req.DriverId, ct);
+        var ownerIds = KycDriverLookup.OwnerIds(profile, req.DriverId);
         var doc = await db.DriverDocuments
-            .Where(d => d.Id == req.DocId && d.DriverId == req.DriverId)
+            .Where(d => d.Id == req.DocId && ownerIds.Contains(d.DriverId))
             .Select(d => new { d.Id, d.FileUrl })
             .FirstOrDefaultAsync(ct);
 

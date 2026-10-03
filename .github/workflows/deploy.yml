@@ -19,6 +19,8 @@ jobs:
       GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
       SMS_API_USER: ${{ secrets.SMS_API_USER }}
       SMS_API_KEY: ${{ secrets.SMS_API_KEY }}
+      FCM_PROJECT_ID: ${{ secrets.FCM_PROJECT_ID }}
+      FCM_SERVICE_ACCOUNT_JSON: ${{ secrets.FCM_SERVICE_ACCOUNT_JSON }}
     steps:
       - uses: actions/checkout@v4
 
@@ -74,6 +76,17 @@ jobs:
             --resource-group ${{ env.RESOURCE_GROUP }} \
             --name ${{ env.APP_NAME }} \
             --settings "Otp__ExposeDevCode=true" \
+            --output none
+
+      - name: Configure Firebase Cloud Messaging
+        if: ${{ env.FCM_PROJECT_ID != '' && env.FCM_SERVICE_ACCOUNT_JSON != '' }}
+        run: |
+          az webapp config appsettings set \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --name ${{ env.APP_NAME }} \
+            --settings \
+              "Fcm__ProjectId=$FCM_PROJECT_ID" \
+              "Fcm__ServiceAccountJson=$(echo "$FCM_SERVICE_ACCOUNT_JSON" | tr -d '\n')" \
             --output none
 
       - name: Deploy to Azure App Service

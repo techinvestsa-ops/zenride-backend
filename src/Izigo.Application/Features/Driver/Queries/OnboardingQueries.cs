@@ -129,15 +129,22 @@ public class ResolveAccountHandler : IRequestHandler<ResolveAccountQuery, Resolv
 
 internal static class OnboardingHelper
 {
+    // DriverOnboardings.DriverId is a FK to DriverProfiles.Id, while driver endpoints pass the user id.
     public static async Task<Domain.Entities.DriverOnboarding> GetOrCreateAsync(
         string driverId, IApplicationDbContext db, CancellationToken ct)
     {
+        var profileId = await db.DriverProfiles
+            .Where(d => d.UserId == driverId || d.Id == driverId)
+            .Select(d => d.Id)
+            .FirstOrDefaultAsync(ct)
+            ?? throw new KeyNotFoundException("Driver profile not found.");
+
         var onb = await db.DriverOnboardings
-            .FirstOrDefaultAsync(o => o.DriverId == driverId, ct);
+            .FirstOrDefaultAsync(o => o.DriverId == profileId, ct);
 
         if (onb != null) return onb;
 
-        onb = new Domain.Entities.DriverOnboarding { DriverId = driverId };
+        onb = new Domain.Entities.DriverOnboarding { DriverId = profileId };
         db.DriverOnboardings.Add(onb);
         await db.SaveChangesAsync(ct);
         return onb;
