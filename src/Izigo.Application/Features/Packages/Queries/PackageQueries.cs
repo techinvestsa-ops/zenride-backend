@@ -120,10 +120,11 @@ internal static class PackageMapper
         var isFinal = pkg.Status is PackageStatus.Delivered or
                       PackageStatus.Cancelled or PackageStatus.Returned;
 
-        var tripId = string.IsNullOrEmpty(pkg.QuoteId)
+        var tripTimes = string.IsNullOrEmpty(pkg.QuoteId)
             ? null
             : await db.Trips.Where(t => t.QuoteId == pkg.QuoteId)
-                .Select(t => t.Id).FirstOrDefaultAsync(ct);
+                .Select(t => new { t.Id, t.ArrivedAt, t.StartedAt })
+                .FirstOrDefaultAsync(ct);
 
         return new PackageDto(
             PackageId: pkg.Id,
@@ -151,6 +152,8 @@ internal static class PackageMapper
             PickedUpAt: pkg.PickedUpAt,
             DeliveredAt: pkg.DeliveredAt,
             CancelledAt: pkg.CancelledAt,
-            TripId: tripId);
+            TripId: tripTimes?.Id,
+            ArrivedAt: tripTimes?.ArrivedAt,
+            StartedAt: tripTimes?.StartedAt);
     }
 }

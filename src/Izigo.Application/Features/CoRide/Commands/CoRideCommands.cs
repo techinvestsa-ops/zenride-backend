@@ -182,6 +182,7 @@ public class BookSeatsHandler(IApplicationDbContext db, IRealtimeService realtim
             Total: booking.Total,
             Currency: booking.Currency,
             Status: booking.Status.ToString().ToLower(),
+            BookedAt: booking.CreatedAt,
             PaymentMethod: booking.PaymentMethod.ToString().ToLower());
     }
 }

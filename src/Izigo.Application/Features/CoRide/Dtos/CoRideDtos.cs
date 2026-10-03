@@ -46,7 +46,8 @@ public record CoRideBookingDto(
     long Total,
     string Currency,
     string Status,
-    string PaymentMethod
+    string PaymentMethod,
+    DateTime BookedAt
 );
 
 // ── Match request ─────────────────────────────────────────────────────────────
