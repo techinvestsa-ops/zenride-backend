@@ -1,5 +1,6 @@
 using Izigo.Application.Common.Interfaces;
 using Izigo.Application.Features.Driver.Dtos;
+using Izigo.Application.Features.Driver.Helpers;
 using Izigo.Application.Features.Driver.Queries;
 using Izigo.Domain.Entities;
 using Izigo.Domain.Enums;
@@ -13,7 +14,7 @@ namespace Izigo.Application.Features.Driver.Commands;
 public record SubmitPersonalCommand(string DriverId, SubmitPersonalRequest Request)
     : IRequest<OnboardingStatusDto>;
 
-public class SubmitPersonalHandler(IApplicationDbContext db)
+public class SubmitPersonalHandler(IApplicationDbContext db, IRealtimeService realtime)
     : IRequestHandler<SubmitPersonalCommand, OnboardingStatusDto>
 {
     public async Task<OnboardingStatusDto> Handle(SubmitPersonalCommand cmd, CancellationToken ct)
@@ -35,6 +36,7 @@ public class SubmitPersonalHandler(IApplicationDbContext db)
         onb.PersonalStatus   = OnboardingStepStatus.Submitted;
 
         await db.SaveChangesAsync(ct);
+        await KycNotify.AfterDriverStepSavedAsync(db, realtime, cmd.DriverId, onb, "personal", ct);
         return await OnboardingShared.BuildStatusAsync(cmd.DriverId, onb, db, ct);
     }
 }
@@ -44,7 +46,7 @@ public class SubmitPersonalHandler(IApplicationDbContext db)
 public record SubmitIdentityCommand(string DriverId, SubmitIdentityRequest Request)
     : IRequest<OnboardingStatusDto>;
 
-public class SubmitIdentityHandler(IApplicationDbContext db)
+public class SubmitIdentityHandler(IApplicationDbContext db, IRealtimeService realtime)
     : IRequestHandler<SubmitIdentityCommand, OnboardingStatusDto>
 {
     public async Task<OnboardingStatusDto> Handle(SubmitIdentityCommand cmd, CancellationToken ct)
@@ -59,6 +61,7 @@ public class SubmitIdentityHandler(IApplicationDbContext db)
         onb.IdentityStatus   = OnboardingStepStatus.Submitted;
 
         await db.SaveChangesAsync(ct);
+        await KycNotify.AfterDriverStepSavedAsync(db, realtime, cmd.DriverId, onb, "identity", ct);
         return await OnboardingShared.BuildStatusAsync(cmd.DriverId, onb, db, ct);
     }
 }
@@ -68,7 +71,7 @@ public class SubmitIdentityHandler(IApplicationDbContext db)
 public record SubmitLicenseCommand(string DriverId, SubmitLicenseRequest Request)
     : IRequest<OnboardingStatusDto>;
 
-public class SubmitLicenseHandler(IApplicationDbContext db)
+public class SubmitLicenseHandler(IApplicationDbContext db, IRealtimeService realtime)
     : IRequestHandler<SubmitLicenseCommand, OnboardingStatusDto>
 {
     public async Task<OnboardingStatusDto> Handle(SubmitLicenseCommand cmd, CancellationToken ct)
@@ -83,6 +86,7 @@ public class SubmitLicenseHandler(IApplicationDbContext db)
         onb.LicenseStatus   = OnboardingStepStatus.Submitted;
 
         await db.SaveChangesAsync(ct);
+        await KycNotify.AfterDriverStepSavedAsync(db, realtime, cmd.DriverId, onb, "license", ct);
         return await OnboardingShared.BuildStatusAsync(cmd.DriverId, onb, db, ct);
     }
 }
@@ -92,7 +96,7 @@ public class SubmitLicenseHandler(IApplicationDbContext db)
 public record SubmitVehicleCommand(string DriverId, SubmitVehicleRequest Request)
     : IRequest<OnboardingStatusDto>;
 
-public class SubmitVehicleHandler(IApplicationDbContext db)
+public class SubmitVehicleHandler(IApplicationDbContext db, IRealtimeService realtime)
     : IRequestHandler<SubmitVehicleCommand, OnboardingStatusDto>
 {
     public async Task<OnboardingStatusDto> Handle(SubmitVehicleCommand cmd, CancellationToken ct)
@@ -139,6 +143,7 @@ public class SubmitVehicleHandler(IApplicationDbContext db)
         onb.VehicleStatus   = OnboardingStepStatus.Submitted;
 
         await db.SaveChangesAsync(ct);
+        await KycNotify.AfterDriverStepSavedAsync(db, realtime, cmd.DriverId, onb, "vehicle", ct);
         return await OnboardingShared.BuildStatusAsync(cmd.DriverId, onb, db, ct);
     }
 }
@@ -148,7 +153,7 @@ public class SubmitVehicleHandler(IApplicationDbContext db)
 public record SubmitInsuranceCommand(string DriverId, SubmitInsuranceRequest Request)
     : IRequest<OnboardingStatusDto>;
 
-public class SubmitInsuranceHandler(IApplicationDbContext db)
+public class SubmitInsuranceHandler(IApplicationDbContext db, IRealtimeService realtime)
     : IRequestHandler<SubmitInsuranceCommand, OnboardingStatusDto>
 {
     public async Task<OnboardingStatusDto> Handle(SubmitInsuranceCommand cmd, CancellationToken ct)
@@ -163,6 +168,7 @@ public class SubmitInsuranceHandler(IApplicationDbContext db)
         onb.InsuranceStatus   = OnboardingStepStatus.Submitted;
 
         await db.SaveChangesAsync(ct);
+        await KycNotify.AfterDriverStepSavedAsync(db, realtime, cmd.DriverId, onb, "insurance", ct);
         return await OnboardingShared.BuildStatusAsync(cmd.DriverId, onb, db, ct);
     }
 }
@@ -172,7 +178,7 @@ public class SubmitInsuranceHandler(IApplicationDbContext db)
 public record SubmitGuarantorCommand(string DriverId, SubmitGuarantorRequest Request)
     : IRequest<OnboardingStatusDto>;
 
-public class SubmitGuarantorHandler(IApplicationDbContext db)
+public class SubmitGuarantorHandler(IApplicationDbContext db, IRealtimeService realtime)
     : IRequestHandler<SubmitGuarantorCommand, OnboardingStatusDto>
 {
     public async Task<OnboardingStatusDto> Handle(SubmitGuarantorCommand cmd, CancellationToken ct)
@@ -183,6 +189,7 @@ public class SubmitGuarantorHandler(IApplicationDbContext db)
         onb.GuarantorStatus   = OnboardingStepStatus.Submitted;
 
         await db.SaveChangesAsync(ct);
+        await KycNotify.AfterDriverStepSavedAsync(db, realtime, cmd.DriverId, onb, "guarantor", ct);
         return await OnboardingShared.BuildStatusAsync(cmd.DriverId, onb, db, ct);
     }
 }
@@ -192,7 +199,7 @@ public class SubmitGuarantorHandler(IApplicationDbContext db)
 public record SubmitPayoutCommand(string DriverId, SubmitPayoutRequest Request)
     : IRequest<OnboardingStatusDto>;
 
-public class SubmitPayoutHandler(IApplicationDbContext db)
+public class SubmitPayoutHandler(IApplicationDbContext db, IRealtimeService realtime)
     : IRequestHandler<SubmitPayoutCommand, OnboardingStatusDto>
 {
     public async Task<OnboardingStatusDto> Handle(SubmitPayoutCommand cmd, CancellationToken ct)
@@ -231,6 +238,7 @@ public class SubmitPayoutHandler(IApplicationDbContext db)
         onb.PayoutStatus   = OnboardingStepStatus.Submitted;
 
         await db.SaveChangesAsync(ct);
+        await KycNotify.AfterDriverStepSavedAsync(db, realtime, cmd.DriverId, onb, "payout", ct);
         return await OnboardingShared.BuildStatusAsync(cmd.DriverId, onb, db, ct);
     }
 }
@@ -240,7 +248,7 @@ public class SubmitPayoutHandler(IApplicationDbContext db)
 public record SubmitSelfieCommand(string DriverId, SubmitSelfieRequest Request)
     : IRequest<OnboardingStatusDto>;
 
-public class SubmitSelfieHandler(IApplicationDbContext db)
+public class SubmitSelfieHandler(IApplicationDbContext db, IRealtimeService realtime)
     : IRequestHandler<SubmitSelfieCommand, OnboardingStatusDto>
 {
     public async Task<OnboardingStatusDto> Handle(SubmitSelfieCommand cmd, CancellationToken ct)
@@ -251,6 +259,7 @@ public class SubmitSelfieHandler(IApplicationDbContext db)
 
         onb.SelfieStatus = OnboardingStepStatus.Submitted;
         await db.SaveChangesAsync(ct);
+        await KycNotify.AfterDriverStepSavedAsync(db, realtime, cmd.DriverId, onb, "selfie", ct);
         return await OnboardingShared.BuildStatusAsync(cmd.DriverId, onb, db, ct);
     }
 }
@@ -259,7 +268,7 @@ public class SubmitSelfieHandler(IApplicationDbContext db)
 
 public record SubmitOnboardingCommand(string DriverId) : IRequest<OnboardingStatusDto>;
 
-public class SubmitOnboardingHandler(IApplicationDbContext db)
+public class SubmitOnboardingHandler(IApplicationDbContext db, IRealtimeService realtime)
     : IRequestHandler<SubmitOnboardingCommand, OnboardingStatusDto>
 {
     public async Task<OnboardingStatusDto> Handle(SubmitOnboardingCommand cmd, CancellationToken ct)
@@ -283,6 +292,7 @@ public class SubmitOnboardingHandler(IApplicationDbContext db)
             dp.KycStatus = KycStatus.InReview;
 
         await db.SaveChangesAsync(ct);
+        await KycNotify.NotifyAdminNewApplicationAsync(db, realtime, cmd.DriverId, ct);
         return await OnboardingShared.BuildStatusAsync(cmd.DriverId, onb, db, ct);
     }
 }

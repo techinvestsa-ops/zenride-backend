@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Features.Driver.Helpers;
 using Izigo.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -104,7 +105,7 @@ public record RejectKycStepCommand(string DriverId, string Step, string Reason,
     string StaffId, string StaffName) : IRequest<KycCommandResult>;
 
 public class RejectKycStepHandler(IApplicationDbContext db, IAuditService audit,
-    IRealtimeService realtime) : IRequestHandler<RejectKycStepCommand, KycCommandResult>
+    IRealtimeService realtime, IPushService push) : IRequestHandler<RejectKycStepCommand, KycCommandResult>
 {
     public async Task<KycCommandResult> Handle(RejectKycStepCommand cmd, CancellationToken ct)
     {
@@ -126,9 +127,16 @@ public class RejectKycStepHandler(IApplicationDbContext db, IAuditService audit,
             after: new { Step = cmd.Step, Status = "Rejected", Reason = cmd.Reason }, ct: ct);
         await db.SaveChangesAsync(ct);
 
-        // Push kyc.status_changed so the driver app re-opens just that step
-        await realtime.PublishToDriverAsync(driver?.UserId ?? cmd.DriverId, "kyc.status_changed",
-            new { step = cmd.Step, status = "rejected", reason = cmd.Reason }, ct);
+        var userId = driver?.UserId ?? cmd.DriverId;
+        await KycNotify.NotifyDriverKycStatusAsync(
+            db, realtime, push, userId,
+            status: "rejected",
+            step: cmd.Step,
+            reason: cmd.Reason,
+            rejectedSteps: [cmd.Step],
+            pushTitle: "Document needs attention",
+            pushBody: cmd.Reason,
+            ct);
 
         return new(true, null);
     }
@@ -141,7 +149,7 @@ public record ApproveKycApplicationCommand(string DriverId, string StaffId, stri
     : IRequest<KycCommandResult>;
 
 public class ApproveKycApplicationHandler(IApplicationDbContext db, IAuditService audit,
-    IRealtimeService realtime) : IRequestHandler<ApproveKycApplicationCommand, KycCommandResult>
+    IRealtimeService realtime, IPushService push) : IRequestHandler<ApproveKycApplicationCommand, KycCommandResult>
 {
     public async Task<KycCommandResult> Handle(ApproveKycApplicationCommand cmd, CancellationToken ct)
     {
@@ -180,9 +188,15 @@ public class ApproveKycApplicationHandler(IApplicationDbContext db, IAuditServic
             before: before, after: new { KycStatus = "Approved", OnboardingComplete = true }, ct: ct);
         await db.SaveChangesAsync(ct);
 
-        // Notify driver they can go online
-        await realtime.PublishToDriverAsync(driver.UserId, "kyc.status_changed",
-            new { status = "approved" }, ct);
+        await KycNotify.NotifyDriverKycStatusAsync(
+            db, realtime, push, driver.UserId,
+            status: "approved",
+            step: null,
+            reason: null,
+            rejectedSteps: null,
+            pushTitle: "You're approved",
+            pushBody: "Your documents were approved. You can go online and start earning.",
+            ct);
 
         return new(true, null);
     }
@@ -194,7 +208,7 @@ public record RejectKycApplicationCommand(string DriverId, string Reason, bool B
     string StaffId, string StaffName) : IRequest<KycCommandResult>;
 
 public class RejectKycApplicationHandler(IApplicationDbContext db, IAuditService audit,
-    IRealtimeService realtime) : IRequestHandler<RejectKycApplicationCommand, KycCommandResult>
+    IRealtimeService realtime, IPushService push) : IRequestHandler<RejectKycApplicationCommand, KycCommandResult>
 {
     public async Task<KycCommandResult> Handle(RejectKycApplicationCommand cmd, CancellationToken ct)
     {
@@ -220,8 +234,15 @@ public class RejectKycApplicationHandler(IApplicationDbContext db, IAuditService
             before, new { KycStatus = "Rejected", Blocklisted = cmd.Blocklist }, ct: ct);
         await db.SaveChangesAsync(ct);
 
-        await realtime.PublishToDriverAsync(driver.UserId, "kyc.status_changed",
-            new { status = "rejected", reason = cmd.Reason }, ct);
+        await KycNotify.NotifyDriverKycStatusAsync(
+            db, realtime, push, driver.UserId,
+            status: "rejected",
+            step: null,
+            reason: cmd.Reason,
+            rejectedSteps: null,
+            pushTitle: "Application not approved",
+            pushBody: cmd.Reason,
+            ct);
 
         return new(true, null);
     }
