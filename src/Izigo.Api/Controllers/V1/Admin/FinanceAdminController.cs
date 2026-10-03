@@ -400,6 +400,28 @@ public class FinanceAdminController : AdminBaseController
 
     // ── A13 Pricing ───────────────────────────────────────────────────────────
 
+    [HttpGet("api/v1/admin/pricing/currency")]
+    public async Task<IActionResult> GetCurrency(CancellationToken ct = default)
+    {
+        var check = CheckPermission("pricing.view");
+        if (check is not null) return check;
+        var config = await Mediator.Send(new GetMarketCurrencyQuery(Market), ct);
+        return Ok(new { success = true, data = config });
+    }
+
+    [HttpPut("api/v1/admin/pricing/currency")]
+    public async Task<IActionResult> UpdateCurrency(
+        [FromBody] MarketCurrencyRequest req, CancellationToken ct = default)
+    {
+        var check = CheckPermission("pricing.write");
+        if (check is not null) return check;
+        var result = await Mediator.Send(new UpdateMarketCurrencyCommand(
+            Market, req.Currency, req.Symbol, StaffId, CurrentStaff.Email ?? StaffId), ct);
+        return result.Success
+            ? Ok(new { success = true, data = result.Data })
+            : BadRequest(new { success = false, error = new { code = result.ErrorCode } });
+    }
+
     /// <summary>Returns all active fare rules per service class.</summary>
     [HttpGet("api/v1/admin/pricing/fare-rules")]
     public async Task<IActionResult> GetFareRules(CancellationToken ct = default)
@@ -420,7 +442,8 @@ public class FinanceAdminController : AdminBaseController
         var result = await Mediator.Send(new UpdateFareRuleCommand(Market, serviceClass,
             req.Base, req.PerKm, req.PerMin, req.Minimum, req.WaitingPerMin,
             req.CancellationFee, req.EffectiveFrom,
-            StaffId, CurrentStaff.Email ?? StaffId), ct);
+            StaffId, CurrentStaff.Email ?? StaffId,
+            req.TrafficDelayMin, req.TrafficPercent), ct);
 
         return result.Success
             ? Ok(new { success = true, data = result.Data })
@@ -583,7 +606,10 @@ public record BulkApproveRequest(List<string> Ids);
 public record RecordCashRequest(long Amount, string Method, string ReceiptRef);
 public record WriteOffRequest(long Amount, string Reason);
 public record FareRuleRequest(long Base, long PerKm, long PerMin, long Minimum,
-    long WaitingPerMin, long CancellationFee, DateTime? EffectiveFrom);
+    long WaitingPerMin, long CancellationFee, DateTime? EffectiveFrom,
+    int? TrafficDelayMin = null, decimal? TrafficPercent = null);
+
+public record MarketCurrencyRequest(string Currency, string? Symbol);
 public record CommissionRequest(decimal CommissionRate, decimal BonusRate, string? BonusLabel,
     long? CashSettlementCap, string? VerticalOverridesJson, DateTime? EffectiveFrom);
 public record SurgeRequest(decimal Multiplier, DateTime? ExpiresAt, string Reason);

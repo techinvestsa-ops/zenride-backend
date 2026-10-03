@@ -129,6 +129,8 @@ public class Coupon : BaseEntity
     public string VerticalsJson { get; set; } = "[]";
     public string ZonesJson { get; set; } = "[]";
     public bool FirstTripOnly { get; set; }
+    /// <summary>When true, the quote applies this promo with no code typed.</summary>
+    public bool AutoApply { get; set; }
     public int PerUserLimit { get; set; } = 1;
     public int TotalCap { get; set; }
     public int RedemptionCount { get; set; }

@@ -41,7 +41,10 @@ public record QuoteFareDto(
     long Distance,
     long Time,
     long ServiceFee,
-    long Discount
+    long Discount,
+    long ListTotal = 0,
+    long Traffic = 0,
+    string? PromoTitle = null
 );
 
 // ── GET /fare-rules ───────────────────────────────────────────────────────────

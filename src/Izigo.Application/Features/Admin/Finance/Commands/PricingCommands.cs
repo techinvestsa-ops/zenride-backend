@@ -12,7 +12,8 @@ namespace Izigo.Application.Features.Admin.Finance.Commands;
 public record UpdateFareRuleCommand(string Market, string ServiceClass,
     long Base, long PerKm, long PerMin, long Minimum, long WaitingPerMin,
     long CancellationFee, DateTime? EffectiveFrom,
-    string StaffId, string StaffName) : IRequest<FinanceCommandResult>;
+    string StaffId, string StaffName,
+    int? TrafficDelayMin = null, decimal? TrafficPercent = null) : IRequest<FinanceCommandResult>;
 
 public class UpdateFareRuleHandler(IApplicationDbContext db, IAuditService audit)
     : IRequestHandler<UpdateFareRuleCommand, FinanceCommandResult>
@@ -27,6 +28,13 @@ public class UpdateFareRuleHandler(IApplicationDbContext db, IAuditService audit
             .Where(r => r.Market == cmd.Market && r.ServiceClass == sc && r.IsActive)
             .OrderByDescending(r => r.Version)
             .FirstOrDefaultAsync(ct);
+
+        var trafficDelay = cmd.TrafficDelayMin ?? current?.TrafficDelayMin ?? 15;
+        var trafficPercent = cmd.TrafficPercent ?? current?.TrafficPercent ?? 8m;
+        if (trafficDelay is < 1 or > 180)
+            return new(false, "TRAFFIC_DELAY_OUT_OF_RANGE");
+        if (trafficPercent is < 0 or > 20)
+            return new(false, "TRAFFIC_PERCENT_TOO_HIGH");
 
         var before = current is not null
             ? (object)new { current.Base, current.PerKm, current.PerMin, current.Minimum }
@@ -46,6 +54,8 @@ public class UpdateFareRuleHandler(IApplicationDbContext db, IAuditService audit
             Minimum          = cmd.Minimum,
             WaitingPerMin    = cmd.WaitingPerMin,
             CancellationFee  = cmd.CancellationFee,
+            TrafficDelayMin  = trafficDelay,
+            TrafficPercent   = trafficPercent,
             IsActive         = true,
             Version          = nextVersion,
             EffectiveFrom    = cmd.EffectiveFrom ?? DateTime.UtcNow,
@@ -150,5 +160,34 @@ public class UpdateSurgeHandler(IApplicationDbContext db, IAuditService audit)
             new { cmd.Multiplier, cmd.ExpiresAt }, market: cmd.Market, ct: ct);
         await db.SaveChangesAsync(ct);
         return new(true, null);
+    }
+}
+
+public record UpdateMarketCurrencyCommand(string Market, string Currency, string? Symbol,
+    string StaffId, string StaffName) : IRequest<FinanceCommandResult>;
+
+public class UpdateMarketCurrencyHandler(IApplicationDbContext db, IAuditService audit)
+    : IRequestHandler<UpdateMarketCurrencyCommand, FinanceCommandResult>
+{
+    public async Task<FinanceCommandResult> Handle(UpdateMarketCurrencyCommand cmd, CancellationToken ct)
+    {
+        var code = (cmd.Currency ?? "").Trim().ToUpperInvariant();
+        if (code.Length != 3)
+            return new(false, "INVALID_CURRENCY");
+
+        var config = await db.PlatformConfigs.FirstOrDefaultAsync(c => c.Market == cmd.Market, ct);
+        if (config is null)
+            return new(false, "CONFIG_NOT_FOUND");
+
+        var before = new { config.Currency, config.CurrencySymbol };
+        config.Currency = code;
+        config.CurrencySymbol = string.IsNullOrWhiteSpace(cmd.Symbol) ? code : cmd.Symbol.Trim();
+
+        await audit.RecordAsync(cmd.StaffId, cmd.StaffName, AuditAction.FareRuleChange,
+            "PlatformConfig", config.Id, reason: $"Currency set to {code}",
+            before: before, after: new { config.Currency, config.CurrencySymbol },
+            market: cmd.Market, ct: ct);
+        await db.SaveChangesAsync(ct);
+        return new(true, null, new { currency = config.Currency, symbol = config.CurrencySymbol });
     }
 }
