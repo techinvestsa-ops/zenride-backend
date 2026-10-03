@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Features.Safety.Helpers;
 using Izigo.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +46,8 @@ public record SuspendDriverCommand(string DriverId, string Reason, DateTime? Unt
     string StaffId, string StaffName) : IRequest<DriverCommandResult>;
 
 public class SuspendDriverHandler(IApplicationDbContext db, IAuditService audit,
-    IRealtimeService realtime) : IRequestHandler<SuspendDriverCommand, DriverCommandResult>
+    IRealtimeService realtime, IEmailService email, IPushService push)
+    : IRequestHandler<SuspendDriverCommand, DriverCommandResult>
 {
     public async Task<DriverCommandResult> Handle(SuspendDriverCommand cmd, CancellationToken ct)
     {
@@ -56,22 +58,21 @@ public class SuspendDriverHandler(IApplicationDbContext db, IAuditService audit,
 
         var before = new { driver.User.Status, driver.IsOnline };
 
-        driver.User.Status            = UserStatus.Suspended;
-        driver.User.SuspensionReason  = cmd.Reason;
-        driver.User.SuspendedUntil    = cmd.Until;
-        driver.IsOnline               = false; // force offline
+        await AccountModeration.LockAccountAsync(db, driver.User, cmd.Reason, ct);
+        driver.User.SuspendedUntil = cmd.Until;
 
-        // Cancel active job (driver-fault handling)
+        // Cancel active job (driver-fault handling). Trip.DriverId may be the profile id or the user id.
         await DriverHelpers.CancelActiveJobAsync(db, cmd.DriverId, cmd.StaffId, ct);
+        await DriverHelpers.CancelActiveJobAsync(db, driver.UserId, cmd.StaffId, ct);
 
         await audit.RecordAsync(cmd.StaffId, cmd.StaffName, AuditAction.DriverSuspend,
             "Driver", cmd.DriverId, cmd.Reason, before,
             new { Status = "Suspended", IsOnline = false, cmd.Until }, ct: ct);
         await db.SaveChangesAsync(ct);
 
-        // Push forced-offline event so the app toggle updates
-        await realtime.PublishToDriverAsync(cmd.DriverId, "driver.forced_offline",
+        await realtime.PublishToDriverAsync(driver.UserId, "driver.forced_offline",
             new { reason = cmd.Reason }, ct);
+        await AccountModeration.AnnounceAsync(db, realtime, email, push, driver.User, locked: true, ct);
 
         return new(true, null);
     }
@@ -303,7 +304,7 @@ public class RevokeDriverSessionsHandler(IApplicationDbContext db, IAuditService
             after: new { sessions_revoked = tokens.Count, forced_offline = true }, ct: ct);
         await db.SaveChangesAsync(ct);
 
-        await realtime.PublishToDriverAsync(cmd.DriverId, "driver.forced_offline",
+        await realtime.PublishToDriverAsync(driver.UserId, "driver.forced_offline",
             new { reason = "session_revoked" }, ct);
 
         return new(true, null);
@@ -318,7 +319,8 @@ public record BlockDriverCommand(string DriverId, string Reason, bool SettleCash
     string StaffId, string StaffName) : IRequest<DriverCommandResult>;
 
 public class BlockDriverHandler(IApplicationDbContext db, IAuditService audit,
-    IRealtimeService realtime) : IRequestHandler<BlockDriverCommand, DriverCommandResult>
+    IRealtimeService realtime, IEmailService email, IPushService push)
+    : IRequestHandler<BlockDriverCommand, DriverCommandResult>
 {
     public async Task<DriverCommandResult> Handle(BlockDriverCommand cmd, CancellationToken ct)
     {
@@ -351,8 +353,9 @@ public class BlockDriverHandler(IApplicationDbContext db, IAuditService audit,
             new { Status = "Blocked", IsOnline = false }, ct: ct);
         await db.SaveChangesAsync(ct);
 
-        await realtime.PublishToDriverAsync(cmd.DriverId, "driver.forced_offline",
+        await realtime.PublishToDriverAsync(driver.UserId, "driver.forced_offline",
             new { reason = cmd.Reason }, ct);
+        await AccountModeration.AnnounceAsync(db, realtime, email, push, driver.User, locked: true, ct);
 
         return new(true, null, new { cash_owed = cashOwed, wallet_balance = balance });
     }
@@ -364,7 +367,8 @@ public class BlockDriverHandler(IApplicationDbContext db, IAuditService audit,
 public record UnblockDriverCommand(string DriverId, string Reason, string StaffId, string StaffName)
     : IRequest<DriverCommandResult>;
 
-public class UnblockDriverHandler(IApplicationDbContext db, IAuditService audit)
+public class UnblockDriverHandler(IApplicationDbContext db, IAuditService audit,
+    IRealtimeService realtime, IEmailService email, IPushService push)
     : IRequestHandler<UnblockDriverCommand, DriverCommandResult>
 {
     public async Task<DriverCommandResult> Handle(UnblockDriverCommand cmd, CancellationToken ct)
@@ -377,6 +381,8 @@ public class UnblockDriverHandler(IApplicationDbContext db, IAuditService audit)
         var before = new { driver.User.Status };
         driver.User.Status           = UserStatus.Active;
         driver.User.SuspensionReason = null;
+        driver.User.SuspendedUntil   = null;
+        await AccountModeration.ReleaseListingsAsync(db, driver.User, ct);
 
         // Re-check document expiry — expired docs block going online
         var now            = DateTime.UtcNow;
@@ -394,6 +400,7 @@ public class UnblockDriverHandler(IApplicationDbContext db, IAuditService audit)
             "Driver", cmd.DriverId, cmd.Reason, before,
             new { Status = "Active", CanGoOnline = canGoOnline, ExpiredDocs = expiredDocs }, ct: ct);
         await db.SaveChangesAsync(ct);
+        await AccountModeration.AnnounceAsync(db, realtime, email, push, driver.User, locked: false, ct);
 
         return new(true, null, new { can_go_online = canGoOnline, expired_docs = expiredDocs });
     }

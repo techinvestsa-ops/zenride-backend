@@ -13,7 +13,7 @@ namespace Izigo.Application.Features.Admin.Growth.Queries;
 
 public record TicketRowDto(string Id, string Reference, string UserRole, string Category,
     string Status, string Priority, string? AssignedStaffId, double? SlaMinutesLeft,
-    DateTime CreatedAt, string Market);
+    DateTime CreatedAt, string Market, string Description = "");
 
 public record GetAdminTicketsQuery(string Market, string? Status, string? Category,
     string? Priority, string? Assignee, string? Audience, bool? PastSla,
@@ -62,7 +62,7 @@ public class GetAdminTicketsHandler(IApplicationDbContext db)
             .Select(t => new
             {
                 t.Id, t.Reference, t.UserRole, t.Category, t.Status, t.Priority,
-                t.AssignedStaffId, t.SlaDeadline, t.CreatedAt, t.Market
+                t.AssignedStaffId, t.SlaDeadline, t.CreatedAt, t.Market, t.Description
             })
             .ToListAsync(ct);
 
@@ -75,7 +75,7 @@ public class GetAdminTicketsHandler(IApplicationDbContext db)
                 t.Id, t.Reference, t.UserRole, t.Category,
                 t.Status.ToString().ToLower(), t.Priority.ToString().ToLower(),
                 t.AssignedStaffId, slaMinutesLeft is not null ? Math.Round(slaMinutesLeft.Value, 1) : null,
-                t.CreatedAt, t.Market);
+                t.CreatedAt, t.Market, t.Description);
         }).ToArray();
 
         var facets = new Dictionary<string, Dictionary<string, int>>

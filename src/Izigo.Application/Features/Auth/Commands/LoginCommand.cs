@@ -39,9 +39,6 @@ public class LoginHandler(
         if (user == null || !passwordValid)
             throw new UnauthorizedAccessException("Invalid credentials.");
 
-        if (user.Status == UserStatus.Suspended)
-            throw new UnauthorizedAccessException($"ACCOUNT_SUSPENDED: {user.SuspensionReason}");
-
         if (user.Status == UserStatus.Blocked)
             throw new UnauthorizedAccessException("ACCOUNT_BLOCKED: Contact support.");
 

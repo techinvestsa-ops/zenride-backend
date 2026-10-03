@@ -26,7 +26,9 @@ public record AuthUserDto(
     DateTime CreatedAt,
     decimal Rating,
     long WalletBalance,
-    string Currency
+    string Currency,
+    string AccountStatus = "active",
+    string? SuspensionReason = null
 );
 
 public record AuthDriverDto(
