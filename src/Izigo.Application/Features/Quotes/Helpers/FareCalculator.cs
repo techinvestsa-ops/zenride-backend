@@ -92,6 +92,7 @@ public static class FareCalculator
             _ => 5_000
         },
         WaitingPerMin = 20,
+        WaitGraceMin = 10,
         CancellationFee = sc is ServiceClass.ZenCar ? 500 : 300,
         TrafficDelayMin = 15,
         TrafficPercent = 8m

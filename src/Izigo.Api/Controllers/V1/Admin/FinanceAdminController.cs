@@ -443,7 +443,7 @@ public class FinanceAdminController : AdminBaseController
             req.Base, req.PerKm, req.PerMin, req.Minimum, req.WaitingPerMin,
             req.CancellationFee, req.EffectiveFrom,
             StaffId, CurrentStaff.Email ?? StaffId,
-            req.TrafficDelayMin, req.TrafficPercent), ct);
+            req.TrafficDelayMin, req.TrafficPercent, req.WaitGraceMin), ct);
 
         return result.Success
             ? Ok(new { success = true, data = result.Data })
@@ -607,7 +607,7 @@ public record RecordCashRequest(long Amount, string Method, string ReceiptRef);
 public record WriteOffRequest(long Amount, string Reason);
 public record FareRuleRequest(long Base, long PerKm, long PerMin, long Minimum,
     long WaitingPerMin, long CancellationFee, DateTime? EffectiveFrom,
-    int? TrafficDelayMin = null, decimal? TrafficPercent = null);
+    int? TrafficDelayMin = null, decimal? TrafficPercent = null, int? WaitGraceMin = null);
 
 public record MarketCurrencyRequest(string Currency, string? Symbol);
 public record CommissionRequest(decimal CommissionRate, decimal BonusRate, string? BonusLabel,

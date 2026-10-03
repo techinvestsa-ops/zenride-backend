@@ -65,7 +65,7 @@ public static class RideDetailMapper
             Progress: 0.0,
             Driver: driverDto,
             Fare: new RideFareDto(
-                trip.FareGross + trip.FareServiceFee - trip.FareDiscount,
+                trip.FareGross + trip.FareWaiting + trip.FareServiceFee - trip.FareDiscount,
                 trip.FareBase, trip.FareDistance, trip.FareTime,
                 trip.FareServiceFee, trip.FareDiscount,
                 trip.FareTip, trip.Currency, isFinal),

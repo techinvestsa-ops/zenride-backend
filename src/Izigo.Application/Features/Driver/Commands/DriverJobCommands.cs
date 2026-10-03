@@ -2,6 +2,7 @@ using Izigo.Application.Common.Interfaces;
 using Izigo.Application.Features.Driver.Dtos;
 using Izigo.Application.Features.Driver.Queries;
 using Izigo.Application.Features.Packages.Helpers;
+using Izigo.Application.Features.Quotes.Helpers;
 using Izigo.Application.Features.Realtime.Dtos;
 using Izigo.Application.Features.Rides.Helpers;
 using Izigo.Domain.Enums;
@@ -209,6 +210,7 @@ public class StartJobHandler(IApplicationDbContext db, IRealtimeService realtime
 
         trip.JobState  = JobState.PickedUp;
         trip.StartedAt = DateTime.UtcNow;
+        var waitingFee = await WaitingFare.ApplyAsync(db, trip, trip.StartedAt.Value, ct);
 
         db.TripStateHistories.Add(new Domain.Entities.TripStateHistory
         {
@@ -233,9 +235,12 @@ public class StartJobHandler(IApplicationDbContext db, IRealtimeService realtime
                 await realtime.PublishToUserAsync(trip.RiderId, "ride.status_changed",
                     new RideStatusChangedEvent(trip.Id, "in_progress", null, null, null, DateTime.UtcNow), ct);
 
+                var waitNote = waitingFee > 0
+                    ? $" A waiting charge of {waitingFee:N0} {trip.Currency} was added after the free wait."
+                    : "";
                 await JobNotify.PushRiderAsync(db, push, trip.RiderId,
                     title: "Trip started",
-                    body:  $"Enjoy your ride to {trip.DropoffLabel}",
+                    body:  $"Enjoy your ride to {trip.DropoffLabel}.{waitNote}",
                     tripId: trip.Id, ct);
             }
         }
@@ -297,8 +302,11 @@ public class CompleteJobHandler(
             .OrderByDescending(c => c.EffectiveFrom)
             .FirstOrDefaultAsync(ct);
 
+        if (trip.ArrivedAt is not null && trip.StartedAt is not null)
+            await WaitingFare.ApplyAsync(db, trip, trip.StartedAt.Value, ct);
+
         var commissionRate  = commission?.CommissionRate ?? 0.25m;
-        var gross           = trip.FareGross + trip.FareServiceFee - trip.FareDiscount + trip.FareTip;
+        var gross           = trip.FareGross + trip.FareWaiting + trip.FareServiceFee - trip.FareDiscount + trip.FareTip;
         var commissionAmt   = (long)(gross * commissionRate);
         var driverEarnings  = gross - commissionAmt;
 
@@ -528,22 +536,9 @@ public class StartWaitingHandler(IApplicationDbContext db)
             throw new InvalidOperationException(
                 "CONFLICT: Waiting timer only applies when at pickup.");
 
-        // Waiting starts from when the driver marked arrival
-        var arrivedAt      = trip.ArrivedAt ?? DateTime.UtcNow;
-        var waitingSeconds = (int)(DateTime.UtcNow - arrivedAt).TotalSeconds;
-        var waitingMinutes = waitingSeconds / 60m;
-
-        // Look up the waiting rate for this service class
-        var fareRule = await db.FareRules
-            .Where(r => r.ServiceClass == trip.ServiceClass && r.IsActive &&
-                        r.Market == trip.Market)
-            .OrderByDescending(r => r.Version)
-            .FirstOrDefaultAsync(ct);
-
-        var waitingPerMin = fareRule?.WaitingPerMin ?? 50L;
-        var accruedFee    = (long)(waitingMinutes * waitingPerMin);
-
-        trip.FareWaiting = accruedFee;
+        var arrivedAt = trip.ArrivedAt ?? DateTime.UtcNow;
+        var waitingSeconds = (int)Math.Max(0, (DateTime.UtcNow - arrivedAt).TotalSeconds);
+        var accruedFee = await WaitingFare.ApplyAsync(db, trip, DateTime.UtcNow, ct);
 
         db.TripStateHistories.Add(new Domain.Entities.TripStateHistory
         {

@@ -165,7 +165,7 @@ public class GetRidesHandler(IApplicationDbContext db)
                 RideProjector.ToRiderStatus(t.JobState),
                 t.ServiceClass.ToString().ToLower(),
                 t.PickupLabel, t.DropoffLabel,
-                t.FareGross + t.FareServiceFee - t.FareDiscount,
+                t.FareGross + t.FareWaiting + t.FareServiceFee - t.FareDiscount,
                 t.Currency, t.CompletedAt, t.CreatedAt))
             .ToListAsync(ct);
 
@@ -190,7 +190,7 @@ public class GetReceiptHandler(IApplicationDbContext db)
             TripId: trip.Id,
             Code: trip.Code,
             Fare: new RideFareDto(
-                trip.FareGross + trip.FareServiceFee - trip.FareDiscount,
+                trip.FareGross + trip.FareWaiting + trip.FareServiceFee - trip.FareDiscount,
                 trip.FareBase, trip.FareDistance, trip.FareTime,
                 trip.FareServiceFee, trip.FareDiscount,
                 trip.FareTip, trip.Currency, true),
