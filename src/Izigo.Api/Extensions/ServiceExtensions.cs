@@ -77,13 +77,15 @@ public static class ServiceExtensions
         })
         .AddJwtBearer("AdminBearer", opts =>
         {
+            opts.MapInboundClaims = false;
             opts.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true, ValidateAudience = true,
                 ValidateLifetime = true, ValidateIssuerSigningKey = true,
                 ValidIssuer = issuer, ValidAudience = adminAudience,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
-                ClockSkew = clockSkew
+                ClockSkew = clockSkew,
+                RoleClaimType = "role",
             };
             opts.Events = new JwtBearerEvents
             {

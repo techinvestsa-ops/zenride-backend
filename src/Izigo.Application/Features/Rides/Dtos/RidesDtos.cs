@@ -19,8 +19,11 @@ public record RideDetailDto(
     RidePaymentDto Payment,
     RideTimestampsDto Timestamps,
     RideActionsDto Actions,
-    string? ShareUrl
+    string? ShareUrl,
+    RideWaitingDto? Waiting = null
 );
+
+public record RideWaitingDto(int GraceMin, long PerMin);
 
 public record RideLocationDto(string Label, double Lat, double Lng);
 
@@ -47,7 +50,8 @@ public record RideFareDto(
     long Discount,
     long Tip,
     string Currency,
-    bool IsFinal
+    bool IsFinal,
+    long Waiting = 0
 );
 
 public record RidePaymentDto(string Method, string Status);

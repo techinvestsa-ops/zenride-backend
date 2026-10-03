@@ -23,17 +23,27 @@ public class CurrentStaffService(
         Principal?.Identity?.IsAuthenticated == true &&
         Principal?.FindFirstValue("is_staff") == "true";
 
-    // Lazily loaded from JWT claim or DB
+    // Lazily loaded from the staff row, which is the rank source of truth.
+    private bool _loaded;
+    private string? _roleKey;
     private IReadOnlyList<string>? _permissions;
     private IReadOnlyList<string>? _markets;
+
+    public string? RoleKey
+    {
+        get
+        {
+            EnsureLoaded();
+            return _roleKey;
+        }
+    }
 
     public IReadOnlyList<string> Permissions
     {
         get
         {
-            if (_permissions is not null) return _permissions;
-            _permissions = LoadPermissions();
-            return _permissions;
+            EnsureLoaded();
+            return _permissions ?? [];
         }
     }
 
@@ -53,14 +63,24 @@ public class CurrentStaffService(
     public bool HasPermission(string permission) =>
         Permissions.Contains(permission);
 
-    private List<string> LoadPermissions()
+    private void EnsureLoaded()
     {
-        if (!IsAuthenticated || StaffId is null) return [];
+        if (_loaded) return;
+        _loaded = true;
+        if (!IsAuthenticated || StaffId is null)
+        {
+            _permissions = [];
+            return;
+        }
 
-        // Load from DB synchronously (we're in a service context — no async available here)
-        var staff = db.Staff.AsNoTracking()
-            .FirstOrDefault(s => s.Id == StaffId);
+        var staff = db.Staff.AsNoTracking().FirstOrDefault(s => s.Id == StaffId);
+        if (staff is null)
+        {
+            _permissions = [];
+            return;
+        }
 
-        return staff is null ? [] : [.. AdminRoles.GetEffectivePermissions(staff)];
+        _roleKey = staff.RoleKey;
+        _permissions = [.. AdminRoles.GetEffectivePermissions(staff)];
     }
 }

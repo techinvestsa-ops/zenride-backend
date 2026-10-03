@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Izigo.Application.Features.Admin.Auth;
 using Izigo.Application.Features.Admin.StaffManagement.Commands;
 using Izigo.Application.Features.Admin.StaffManagement.Queries;
@@ -13,9 +14,12 @@ public class StaffAdminController : AdminBaseController
     // Every route re-checks permission AND rank per the spec.
     // actor.rank > target.rank; CANNOT_TARGET_SELF; LAST_SUPER_ADMIN; reason required on destructive routes.
 
-    private string ActorRoleKey => CurrentStaff.Permissions.Count > 0
-        ? User.FindFirst("role")?.Value ?? "read_only"
-        : "read_only";
+    private string ActorRoleKey =>
+        !string.IsNullOrWhiteSpace(CurrentStaff.RoleKey)
+            ? CurrentStaff.RoleKey!
+            : User.FindFirst("role")?.Value
+              ?? User.FindFirst(ClaimTypes.Role)?.Value
+              ?? "read_only";
 
     // ── Staff directory ───────────────────────────────────────────────────────
 
@@ -62,7 +66,15 @@ public class StaffAdminController : AdminBaseController
         if (!result.Success)
             return result.ErrorCode is "EMAIL_ALREADY_EXISTS" or "INVALID_ROLE"
                 ? Conflict(new { success = false, error = new { code = result.ErrorCode } })
-                : StatusCode(403, new { success = false, error = new { code = result.ErrorCode } });
+                : StatusCode(403, new
+                {
+                    success = false,
+                    error = new
+                    {
+                        code = result.ErrorCode,
+                        message = "Your role cannot invite someone at this rank."
+                    }
+                });
 
         return Ok(new { success = true, data = result.Data });
     }
