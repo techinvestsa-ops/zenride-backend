@@ -11,7 +11,7 @@ namespace Izigo.Application.Features.Admin.Finance.Queries;
 public record FareRuleDto(string Id, string ServiceClass, long Base, long PerKm, long PerMin,
     long Minimum, long WaitingPerMin, long CancellationFee, bool IsActive,
     int Version, DateTime EffectiveFrom, string? UpdatedByStaffId, string Market,
-    int TrafficDelayMin = 15, decimal TrafficPercent = 8m);
+    int TrafficDelayMin = 15, decimal TrafficPercent = 8m, int WaitGraceMin = 10);
 
 public record CommissionConfigDto(decimal CommissionRate, decimal BonusRate, string BonusLabel,
     long CashSettlementCap, string VerticalOverridesJson, int Version,
@@ -54,7 +54,7 @@ public class GetFareRulesHandler(IApplicationDbContext db)
             .Select(r => new FareRuleDto(r.Id, r.ServiceClass.ToString(),
                 r.Base, r.PerKm, r.PerMin, r.Minimum, r.WaitingPerMin, r.CancellationFee,
                 r.IsActive, r.Version, r.EffectiveFrom, r.UpdatedByStaffId, r.Market,
-                r.TrafficDelayMin, r.TrafficPercent))
+                r.TrafficDelayMin, r.TrafficPercent, r.WaitGraceMin))
             .ToListAsync(ct);
 
         return AdminApiResponse.Ok(rules);
@@ -81,7 +81,7 @@ public class GetFareRuleHistoryHandler(IApplicationDbContext db)
             .Select(r => new FareRuleDto(r.Id, r.ServiceClass.ToString(),
                 r.Base, r.PerKm, r.PerMin, r.Minimum, r.WaitingPerMin, r.CancellationFee,
                 r.IsActive, r.Version, r.EffectiveFrom, r.UpdatedByStaffId, r.Market,
-                r.TrafficDelayMin, r.TrafficPercent))
+                r.TrafficDelayMin, r.TrafficPercent, r.WaitGraceMin))
             .ToListAsync(ct);
 
         return AdminApiResponse.Ok(history);

@@ -168,6 +168,7 @@ public static class DbSeeder
             current.PerMin = 0;
             current.Minimum = rate.Minimum;
             current.WaitingPerMin = rate.WaitingPerMin;
+            current.WaitGraceMin = 10;
             current.CancellationFee = rate.CancellationFee;
             current.TrafficDelayMin = 15;
             current.TrafficPercent = 8m;
@@ -185,6 +186,7 @@ public static class DbSeeder
         PerMin = 0,
         Minimum = rate.Minimum,
         WaitingPerMin = rate.WaitingPerMin,
+        WaitGraceMin = 10,
         CancellationFee = rate.CancellationFee,
         TrafficDelayMin = 15,
         TrafficPercent = 8m,

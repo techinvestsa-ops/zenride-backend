@@ -131,7 +131,7 @@ internal static class JobDetailMapper
                     rider.PhotoUrl,
                     0),
             Fare: new JobFareDto(
-                Total:          trip.FareGross + trip.FareServiceFee - trip.FareDiscount,
+                Total:          trip.FareGross + trip.FareWaiting + trip.FareServiceFee - trip.FareDiscount,
                 Base:           trip.FareBase,
                 Distance:       trip.FareDistance,
                 Time:           trip.FareTime,

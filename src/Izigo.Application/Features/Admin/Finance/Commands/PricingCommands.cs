@@ -13,7 +13,8 @@ public record UpdateFareRuleCommand(string Market, string ServiceClass,
     long Base, long PerKm, long PerMin, long Minimum, long WaitingPerMin,
     long CancellationFee, DateTime? EffectiveFrom,
     string StaffId, string StaffName,
-    int? TrafficDelayMin = null, decimal? TrafficPercent = null) : IRequest<FinanceCommandResult>;
+    int? TrafficDelayMin = null, decimal? TrafficPercent = null,
+    int? WaitGraceMin = null) : IRequest<FinanceCommandResult>;
 
 public class UpdateFareRuleHandler(IApplicationDbContext db, IAuditService audit)
     : IRequestHandler<UpdateFareRuleCommand, FinanceCommandResult>
@@ -31,10 +32,15 @@ public class UpdateFareRuleHandler(IApplicationDbContext db, IAuditService audit
 
         var trafficDelay = cmd.TrafficDelayMin ?? current?.TrafficDelayMin ?? 15;
         var trafficPercent = cmd.TrafficPercent ?? current?.TrafficPercent ?? 8m;
+        var waitGrace = cmd.WaitGraceMin ?? current?.WaitGraceMin ?? 10;
         if (trafficDelay is < 1 or > 180)
             return new(false, "TRAFFIC_DELAY_OUT_OF_RANGE");
         if (trafficPercent is < 0 or > 20)
             return new(false, "TRAFFIC_PERCENT_TOO_HIGH");
+        if (waitGrace is < 0 or > 60)
+            return new(false, "WAIT_GRACE_OUT_OF_RANGE");
+        if (cmd.WaitingPerMin < 0)
+            return new(false, "WAITING_RATE_INVALID");
 
         var before = current is not null
             ? (object)new { current.Base, current.PerKm, current.PerMin, current.Minimum }
@@ -56,6 +62,7 @@ public class UpdateFareRuleHandler(IApplicationDbContext db, IAuditService audit
             CancellationFee  = cmd.CancellationFee,
             TrafficDelayMin  = trafficDelay,
             TrafficPercent   = trafficPercent,
+            WaitGraceMin     = waitGrace,
             IsActive         = true,
             Version          = nextVersion,
             EffectiveFrom    = cmd.EffectiveFrom ?? DateTime.UtcNow,
