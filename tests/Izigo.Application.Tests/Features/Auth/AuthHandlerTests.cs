@@ -197,7 +197,7 @@ public class AuthHandlerTests
     }
 
     [Fact]
-    public async Task VerifyOtp_SuspendedUser_ThrowsConflict()
+    public async Task VerifyOtp_SuspendedUser_ReturnsLockedBundle()
     {
         using var db = DbContextFactory.Create();
         var phone = "+2250700000012";
@@ -212,9 +212,10 @@ public class AuthHandlerTests
         await db.SaveChangesAsync();
 
         var handler = new VerifyOtpHandler(db, FakeServices.Token());
-        var act = () => handler.Handle(new VerifyOtpCommand("tok7", "123456", Device()), CancellationToken.None);
+        var bundle = await handler.Handle(new VerifyOtpCommand("tok7", "123456", Device()), CancellationToken.None);
 
-        await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("*suspended*");
+        bundle.NextStep.Should().Be("account_locked");
+        bundle.User.AccountStatus.Should().Be("suspended");
     }
 
     // ── LoginHandler ─────────────────────────────────────────────────────────
@@ -271,7 +272,7 @@ public class AuthHandlerTests
     }
 
     [Fact]
-    public async Task Login_SuspendedUser_ThrowsUnauthorized()
+    public async Task Login_SuspendedUser_ReturnsLockedBundle()
     {
         using var db = DbContextFactory.Create();
         var hasher = FakeServices.Hasher();
@@ -283,10 +284,11 @@ public class AuthHandlerTests
         await db.SaveChangesAsync();
 
         var handler = new LoginHandler(db, FakeServices.Token(), hasher);
-        var act = () => handler.Handle(
+        var bundle = await handler.Handle(
             new LoginCommand("+2250700000022", "pass", "rider", Device()), CancellationToken.None);
 
-        await act.Should().ThrowAsync<UnauthorizedAccessException>().WithMessage("*ACCOUNT_SUSPENDED*");
+        bundle.NextStep.Should().Be("account_locked");
+        bundle.User.SuspensionReason.Should().Be("Test");
     }
 
     [Fact]

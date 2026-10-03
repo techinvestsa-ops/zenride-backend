@@ -57,6 +57,7 @@ try
     app.UseRateLimiter();
     app.UseAuthentication();
     app.UseAuthorization();
+    app.UseMiddleware<AccountLockMiddleware>();
     app.MapControllers();
     app.MapHub<IzigoHub>("/hubs/izigo");
     app.MapHub<AdminHub>("/hubs/admin");

@@ -1,6 +1,7 @@
 using Izigo.Application.Common.Interfaces;
 using Izigo.Application.Common.Settings;
 using Izigo.Application.Features.Safety.Dtos;
+using Izigo.Application.Features.Safety.Helpers;
 using Izigo.Domain.Entities;
 using Izigo.Domain.Enums;
 using MediatR;
@@ -156,27 +157,32 @@ public class ShareTripHandler(IApplicationDbContext db, IOptions<AppSettings> ap
 public record ReportTripCommand(string UserId, string UserRole, string TripId, ReportTripRequest Request)
     : IRequest;
 
-public class ReportTripHandler(IApplicationDbContext db)
-    : IRequestHandler<ReportTripCommand>
+public class ReportTripHandler(
+    IApplicationDbContext db,
+    IRealtimeService realtime,
+    IEmailService email,
+    IPushService push) : IRequestHandler<ReportTripCommand>
 {
-    public async Task Handle(ReportTripCommand cmd, CancellationToken ct)
-    {
-        _ = await db.Trips.FirstOrDefaultAsync(t => t.Id == cmd.TripId, ct)
-            ?? throw new KeyNotFoundException("Trip not found.");
+    public Task Handle(ReportTripCommand cmd, CancellationToken ct) =>
+        AccountModeration.FileReportAsync(
+            db, realtime, email, push,
+            cmd.UserId, cmd.TripId, null,
+            cmd.Request.Category, cmd.Request.Description, ct);
+}
 
-        db.SupportTickets.Add(new SupportTicket
-        {
-            UserId      = cmd.UserId,
-            UserRole    = cmd.UserRole,
-            Category    = cmd.Request.Category,
-            Description = cmd.Request.Description,
-            TripId      = cmd.TripId,
-            Reference   = $"TKT-{Guid.CreateVersion7():N}"[..12],
-            Market      = "ci",
-        });
+public record ReportBookingCommand(string UserId, string BookingId, ReportTripRequest Request) : IRequest;
 
-        await db.SaveChangesAsync(ct);
-    }
+public class ReportBookingHandler(
+    IApplicationDbContext db,
+    IRealtimeService realtime,
+    IEmailService email,
+    IPushService push) : IRequestHandler<ReportBookingCommand>
+{
+    public Task Handle(ReportBookingCommand cmd, CancellationToken ct) =>
+        AccountModeration.FileReportAsync(
+            db, realtime, email, push,
+            cmd.UserId, null, cmd.BookingId,
+            cmd.Request.Category, cmd.Request.Description, ct);
 }
 
 // ── POST /safety/checkin ──────────────────────────────────────────────────────

@@ -46,6 +46,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Message> Messages => Set<Message>();
     public DbSet<SupportTicket> SupportTickets => Set<SupportTicket>();
     public DbSet<SupportTicketMessage> SupportTicketMessages => Set<SupportTicketMessage>();
+    public DbSet<AccountReport> AccountReports => Set<AccountReport>();
     public DbSet<SosIncident> SosIncidents => Set<SosIncident>();
     public DbSet<Coupon> Coupons => Set<Coupon>();
     public DbSet<Broadcast> Broadcasts => Set<Broadcast>();

@@ -53,6 +53,7 @@ public interface IApplicationDbContext
     DbSet<Message> Messages { get; }
     DbSet<SupportTicket> SupportTickets { get; }
     DbSet<SupportTicketMessage> SupportTicketMessages { get; }
+    DbSet<AccountReport> AccountReports { get; }
     DbSet<SosIncident> SosIncidents { get; }
     DbSet<Coupon> Coupons { get; }
     DbSet<Broadcast> Broadcasts { get; }

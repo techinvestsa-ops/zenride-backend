@@ -102,6 +102,13 @@ public class BookSeatsHandler(IApplicationDbContext db, IRealtimeService realtim
         if (listing.Status != "open")
             throw new InvalidOperationException("CONFLICT: LISTING_NOT_OPEN");
 
+        var driverAccount = await db.Users
+            .Where(u => u.Id == listing.DriverId)
+            .Select(u => (UserStatus?)u.Status)
+            .FirstOrDefaultAsync(ct);
+        if (driverAccount != UserStatus.Active)
+            throw new InvalidOperationException("CONFLICT: LISTING_NOT_OPEN");
+
         if (listing.SeatsLeft < req.Seats)
             throw new InvalidOperationException("CONFLICT: SEATS_UNAVAILABLE");
 

@@ -132,6 +132,7 @@ public class DispatchJobProcessor(
         var candidates = await db.DriverProfiles
             .Where(dp =>
                 dp.IsOnline &&
+                dp.User.Status  == UserStatus.Active &&
                 dp.KycStatus    == KycStatus.Approved &&
                 dp.OnboardingComplete &&
                 dp.LastLat      != null &&

@@ -92,7 +92,9 @@ public static class AuthBundleBuilder
                 CreatedAt: user.CreatedAt,
                 Rating: user.Rating,
                 WalletBalance: wallet?.Balance ?? 0,
-                Currency: wallet?.Currency ?? "XOF"
+                Currency: wallet?.Currency ?? "XOF",
+                AccountStatus: user.Status.ToString().ToLower(),
+                SuspensionReason: user.SuspensionReason
             ),
             Driver: driverDto,
             NextStep: DetermineNextStep(user, driverDto)
@@ -101,6 +103,7 @@ public static class AuthBundleBuilder
 
     private static string DetermineNextStep(User user, AuthDriverDto? driver)
     {
+        if (user.Status == UserStatus.Suspended) return "account_locked";
         if (!user.PhoneVerified) return "verify_phone";
         if (string.IsNullOrWhiteSpace(user.FirstName) || string.IsNullOrWhiteSpace(user.LastName))
             return "complete_profile";

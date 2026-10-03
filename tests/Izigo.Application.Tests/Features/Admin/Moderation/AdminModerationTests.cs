@@ -42,7 +42,7 @@ public class AdminModerationTests
     public async Task SuspendRider_NotFound_ReturnsFalse()
     {
         using var db = DbContextFactory.Create();
-        var handler = new SuspendRiderHandler(db, FakeServices.Audit());
+        var handler = new SuspendRiderHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Email(), FakeServices.Push());
 
         var result = await handler.Handle(
             new SuspendRiderCommand("nonexistent", "suspend", "Bad behavior",
@@ -61,7 +61,7 @@ public class AdminModerationTests
         db.Users.Add(rider);
         await db.SaveChangesAsync();
 
-        var handler = new SuspendRiderHandler(db, FakeServices.Audit());
+        var handler = new SuspendRiderHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Email(), FakeServices.Push());
         var result  = await handler.Handle(
             new SuspendRiderCommand(rider.Id, "suspend", "Policy violation",
                 DateTime.UtcNow.AddDays(7), "staff1", "Admin"),
@@ -82,7 +82,7 @@ public class AdminModerationTests
         db.Users.Add(rider);
         await db.SaveChangesAsync();
 
-        var handler = new SuspendRiderHandler(db, FakeServices.Audit());
+        var handler = new SuspendRiderHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Email(), FakeServices.Push());
         var result  = await handler.Handle(
             new SuspendRiderCommand(rider.Id, "reinstate", "Appeal approved",
                 null, "staff1", "Admin"),
@@ -136,7 +136,7 @@ public class AdminModerationTests
     public async Task BlockRider_NotFound_ReturnsFalse()
     {
         using var db = DbContextFactory.Create();
-        var handler = new BlockRiderHandler(db, FakeServices.Audit(), FakeServices.Realtime());
+        var handler = new BlockRiderHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Email(), FakeServices.Push());
 
         var result = await handler.Handle(
             new BlockRiderCommand("nonexistent", "Fraud", false, "staff1", "Admin"),
@@ -158,7 +158,7 @@ public class AdminModerationTests
         });
         await db.SaveChangesAsync();
 
-        var handler = new BlockRiderHandler(db, FakeServices.Audit(), FakeServices.Realtime());
+        var handler = new BlockRiderHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Email(), FakeServices.Push());
         var result  = await handler.Handle(
             new BlockRiderCommand(rider.Id, "Fraud", false, "staff1", "Admin"),
             CancellationToken.None);
@@ -181,7 +181,7 @@ public class AdminModerationTests
         });
         await db.SaveChangesAsync();
 
-        var handler = new BlockRiderHandler(db, FakeServices.Audit(), FakeServices.Realtime());
+        var handler = new BlockRiderHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Email(), FakeServices.Push());
         var result  = await handler.Handle(
             new BlockRiderCommand(rider.Id, "Fraud", false, "staff1", "Admin"),
             CancellationToken.None);
@@ -201,7 +201,7 @@ public class AdminModerationTests
         db.Trips.Add(trip);
         await db.SaveChangesAsync();
 
-        var handler = new BlockRiderHandler(db, FakeServices.Audit(), FakeServices.Realtime());
+        var handler = new BlockRiderHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Email(), FakeServices.Push());
         await handler.Handle(
             new BlockRiderCommand(rider.Id, "Fraud", true, "staff1", "Admin"),
             CancellationToken.None);
@@ -215,7 +215,7 @@ public class AdminModerationTests
     public async Task UnblockRider_NotFound_ReturnsFalse()
     {
         using var db = DbContextFactory.Create();
-        var handler = new UnblockRiderHandler(db, FakeServices.Audit());
+        var handler = new UnblockRiderHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Email(), FakeServices.Push());
 
         var result = await handler.Handle(
             new UnblockRiderCommand("nonexistent", "Appeal", "staff1", "Admin"),
@@ -235,7 +235,7 @@ public class AdminModerationTests
         db.Users.Add(rider);
         await db.SaveChangesAsync();
 
-        var handler = new UnblockRiderHandler(db, FakeServices.Audit());
+        var handler = new UnblockRiderHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Email(), FakeServices.Push());
         var result  = await handler.Handle(
             new UnblockRiderCommand(rider.Id, "Appeal approved", "staff1", "Admin"),
             CancellationToken.None);

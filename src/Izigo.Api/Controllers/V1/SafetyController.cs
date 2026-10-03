@@ -53,6 +53,27 @@ public class SafetyController : BaseController
         return NoContent();     // 204 — spec says no response body needed
     }
 
+    /// <summary>Reports the other person on a co-ride booking.</summary>
+    [Authorize(Policy = "AppPolicy")]
+    [HttpPost("co-ride/bookings/{id}/report")]
+    public async Task<IActionResult> ReportBooking(string id, [FromBody] ReportTripRequest body)
+    {
+        await Mediator.Send(new ReportBookingCommand(CurrentUserId, id, body));
+        return NoContent();
+    }
+
+    /// <summary>The locked-account appeal thread. Suspended users can still call this.</summary>
+    [Authorize(Policy = "AppPolicy")]
+    [HttpGet("appeals")]
+    public async Task<IActionResult> GetAppeal()
+        => Ok(await Mediator.Send(new GetAppealQuery(CurrentUserId)));
+
+    /// <summary>Sends an appeal message to support.</summary>
+    [Authorize(Policy = "AppPolicy")]
+    [HttpPost("appeals")]
+    public async Task<IActionResult> PostAppeal([FromBody] AppealRequest body)
+        => Ok(await Mediator.Send(new PostAppealCommand(CurrentUserId, body.Body)));
+
     /// <summary>Records a safety check-in from the user during an active trip.</summary>
     [Authorize(Policy = "AppPolicy")]
     [HttpPost("safety/checkin")]

@@ -83,9 +83,6 @@ public class VerifyOtpHandler(
             await db.SaveChangesAsync(ct);
         }
 
-        if (user.Status == UserStatus.Suspended)
-            throw new InvalidOperationException(
-                $"CONFLICT: Account suspended. {user.SuspensionReason}");
         if (user.Status == UserStatus.Blocked)
             throw new InvalidOperationException("CONFLICT: Account blocked. Contact support.");
 
