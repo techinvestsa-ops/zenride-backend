@@ -29,7 +29,7 @@ public class ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddlewa
             UnauthorizedAccessException => (HttpStatusCode.Unauthorized, "UNAUTHORIZED", exception.Message),
             KeyNotFoundException => (HttpStatusCode.NotFound, "NOT_FOUND", exception.Message),
             InvalidOperationException e when e.Message.StartsWith("CONFLICT:") =>
-                (HttpStatusCode.Conflict, "CONFLICT", e.Message[9..]),
+                (HttpStatusCode.Conflict, "CONFLICT", e.Message[9..].TrimStart()),
             ArgumentException e => (HttpStatusCode.UnprocessableEntity, "VALIDATION_ERROR", e.Message),
             MapsUnavailableException e => (HttpStatusCode.ServiceUnavailable, "MAPS_UNAVAILABLE", e.Message),
             SmsUnavailableException e => (HttpStatusCode.ServiceUnavailable, "SMS_UNAVAILABLE", e.Message),
