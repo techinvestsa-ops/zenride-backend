@@ -424,9 +424,17 @@ public class DriverController : BaseController
 
     /// <summary>Records that a passenger has boarded for a co-ride booking.</summary>
     [HttpPost("co-ride/bookings/{id}/board")]
-    public async Task<IActionResult> BoardCoRidePassenger(string id)
+    public async Task<IActionResult> BoardCoRidePassenger(string id, [FromBody] BoardPassengerRequest body)
     {
-        await Mediator.Send(new BoardPassengerCommand(CurrentUserId, id));
+        await Mediator.Send(new BoardPassengerCommand(CurrentUserId, id, body.Code));
+        return NoContent();
+    }
+
+    /// <summary>Records where and when a boarded passenger got out.</summary>
+    [HttpPost("co-ride/bookings/{id}/alight")]
+    public async Task<IActionResult> AlightCoRidePassenger(string id)
+    {
+        await Mediator.Send(new AlightPassengerCommand(CurrentUserId, id));
         return NoContent();
     }
 

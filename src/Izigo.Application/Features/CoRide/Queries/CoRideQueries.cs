@@ -185,7 +185,14 @@ public class GetMyBookingsHandler(IApplicationDbContext db)
                 Currency: b.Currency,
                 Status: b.Status.ToString().ToLower(),
                 PaymentMethod: b.PaymentMethod.ToString().ToLower(),
-                BookedAt: b.CreatedAt);
+                BookedAt: b.CreatedAt,
+                BoardingCode: b.BoardingCode,
+                BoardedAt: b.BoardedAt,
+                BoardLat: (double?)b.BoardLat,
+                BoardLng: (double?)b.BoardLng,
+                AlightedAt: b.AlightedAt,
+                AlightLat: (double?)b.AlightLat,
+                AlightLng: (double?)b.AlightLng);
         }).ToList();
     }
 }
@@ -222,7 +229,14 @@ public class GetBookingHandler(IApplicationDbContext db)
             Currency: booking.Currency,
             Status: booking.Status.ToString().ToLower(),
             PaymentMethod: booking.PaymentMethod.ToString().ToLower(),
-            BookedAt: booking.CreatedAt);
+            BookedAt: booking.CreatedAt,
+            BoardingCode: booking.BoardingCode,
+            BoardedAt: booking.BoardedAt,
+            BoardLat: (double?)booking.BoardLat,
+            BoardLng: (double?)booking.BoardLng,
+            AlightedAt: booking.AlightedAt,
+            AlightLat: (double?)booking.AlightLat,
+            AlightLng: (double?)booking.AlightLng);
     }
 }
 
@@ -281,7 +295,15 @@ public class GetManifestHandler(IApplicationDbContext db)
                 PassengerName: rider?.FullName ?? "Passenger",
                 SeatLabels: System.Text.Json.JsonSerializer.Deserialize<string[]>(b.SeatLabelsJson) ?? [],
                 PaymentStatus: b.PaymentMethod == PaymentMethod.Cash ? "pending" : "paid",
-                IsBoarded: b.Status == CoRideBookingStatus.InRide);
+                IsBoarded: b.Status == CoRideBookingStatus.InRide,
+                Status: b.Status switch
+                {
+                    CoRideBookingStatus.DriverArriving => "driver_arriving",
+                    CoRideBookingStatus.InRide => "in_ride",
+                    CoRideBookingStatus.Completed => "completed",
+                    CoRideBookingStatus.Cancelled => "cancelled",
+                    _ => "upcoming",
+                });
         }).ToList();
     }
 }
