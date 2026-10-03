@@ -128,6 +128,8 @@ public class CoRideListing : AuditableEntity
     public DateTime DepartureAt { get; set; }
     public int SeatsTotal { get; set; }
     public int SeatsTaken { get; set; }
+    /// <summary>Full fare to the driver's destination, before it is split across seats.</summary>
+    public long TripFare { get; set; }
     public long PricePerSeat { get; set; }
     public long ServiceFee { get; set; }
     public string Currency { get; set; } = "XOF";

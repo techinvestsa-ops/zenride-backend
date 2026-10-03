@@ -32,7 +32,7 @@ public class CoRideCommandTests
         });
         await db.SaveChangesAsync();
 
-        var handler = new PublishListingHandler(db, FakeServices.AppSettings(), FakeServices.Realtime(), FakeServices.Push());
+        var handler = new PublishListingHandler(db, FakeServices.Geo(), FakeServices.AppSettings(), FakeServices.Realtime(), FakeServices.Push());
         var act = () => handler.Handle(new PublishListingCommand(user.Id, new PublishListingRequest(
             FromLat: 5.3, FromLng: -4.0, FromLabel: "Abidjan",
             ToLat: 5.4, ToLng: -4.1, ToLabel: "Yopougon",
@@ -60,7 +60,7 @@ public class CoRideCommandTests
         });
         await db.SaveChangesAsync();
 
-        var handler = new PublishListingHandler(db, FakeServices.AppSettings(), FakeServices.Realtime(), FakeServices.Push());
+        var handler = new PublishListingHandler(db, FakeServices.Geo(), FakeServices.AppSettings(), FakeServices.Realtime(), FakeServices.Push());
         var result = await handler.Handle(new PublishListingCommand(user.Id, new PublishListingRequest(
             FromLat: 5.3, FromLng: -4.0, FromLabel: "Abidjan",
             ToLat: 5.4, ToLng: -4.1, ToLabel: "Yopougon",
@@ -68,7 +68,8 @@ public class CoRideCommandTests
             SeatsTotal: 3, PricePerSeat: 1500, IsEco: false, IsRecurring: null)),
             CancellationToken.None);
 
-        result.Should().NotBeNull();
+        result.TripFare.Should().Be(4_500);
+        result.PricePerSeat.Should().Be(1_500);
         db.CoRideListings.Should().HaveCount(1);
     }
 
@@ -101,7 +102,7 @@ public class CoRideCommandTests
         await db.SaveChangesAsync();
 
         var realtime = new Mock<IRealtimeService>();
-        var handler = new PublishListingHandler(db, FakeServices.AppSettings(), realtime.Object, FakeServices.Push());
+        var handler = new PublishListingHandler(db, FakeServices.Geo(), FakeServices.AppSettings(), realtime.Object, FakeServices.Push());
         await handler.Handle(new PublishListingCommand(user.Id, new PublishListingRequest(
             FromLat: 5.3, FromLng: -4.0, FromLabel: "Abidjan",
             ToLat: 5.4, ToLng: -4.1, ToLabel: "Yopougon",
