@@ -1,5 +1,7 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Features.Admin.Realtime;
 using Izigo.Application.Features.Driver.Dtos;
+using Izigo.Application.Features.Realtime.Dtos;
 using Izigo.Application.Features.Realtime.Dtos;
 using Izigo.Domain.Entities;
 using Izigo.Domain.Enums;
@@ -13,7 +15,7 @@ namespace Izigo.Application.Features.Driver.Commands;
 public record SetDriverStatusCommand(string DriverId, SetStatusRequest Request)
     : IRequest<DriverStatusDto>;
 
-public class SetDriverStatusHandler(IApplicationDbContext db)
+public class SetDriverStatusHandler(IApplicationDbContext db, IRealtimeService realtime)
     : IRequestHandler<SetDriverStatusCommand, DriverStatusDto>
 {
     public async Task<DriverStatusDto> Handle(SetDriverStatusCommand cmd, CancellationToken ct)
@@ -66,6 +68,14 @@ public class SetDriverStatusHandler(IApplicationDbContext db)
         }
 
         await db.SaveChangesAsync(ct);
+
+        var market = await db.Trips.AsNoTracking()
+            .Where(t => t.DriverId == cmd.DriverId)
+            .OrderByDescending(t => t.CreatedAt)
+            .Select(t => t.Market)
+            .FirstOrDefaultAsync(ct);
+        await AdminRealtimeNotify.DriverPresenceChangedAsync(realtime, market, cmd.DriverId, dp.IsOnline, ct);
+        await AdminRealtimeNotify.ConsoleInvalidateAsync(realtime, market, "ops", ct);
 
         var cashSettlement = dp.DriverWallet?.PendingCashSettlement ?? 0;
         const long Cap = 10_000;
@@ -157,7 +167,7 @@ public class UpdateLocationHandler(IApplicationDbContext db, IRealtimeService re
 
         var trip = await db.Trips
             .Where(t => t.Id == req.JobId && t.DriverId == cmd.DriverId)
-            .Select(t => new { t.JobState, t.PickupLat, t.PickupLng, t.DropoffLat, t.DropoffLng })
+            .Select(t => new { t.Market, t.JobState, t.PickupLat, t.PickupLng, t.DropoffLat, t.DropoffLng })
             .FirstOrDefaultAsync(ct);
 
         int? etaMin = null, distanceM = null;
@@ -173,8 +183,11 @@ public class UpdateLocationHandler(IApplicationDbContext db, IRealtimeService re
             etaMin = LiveEta.Minutes(distanceM.Value, req.Speed);
         }
 
-        await realtime.PublishToTripAsync(req.JobId, "driver.location",
-            new DriverLocationEvent(req.JobId, req.Lat, req.Lng, req.Heading, etaMin, distanceM, leg), ct);
+        var loc = new DriverLocationEvent(req.JobId, req.Lat, req.Lng, req.Heading, etaMin, distanceM, leg);
+        await realtime.PublishToTripAsync(req.JobId, "driver.location", loc, ct);
+
+        if (trip != null)
+            await AdminRealtimeNotify.DriverLocationAsync(realtime, trip.Market, cmd.DriverId, loc, ct);
     }
 }
 

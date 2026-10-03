@@ -1,5 +1,6 @@
 using Hangfire;
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Features.Admin.Realtime;
 using Izigo.Application.Features.Dispatch;
 using Izigo.Application.Features.Packages.Helpers;
 using Izigo.Application.Features.Realtime.Dtos;
@@ -175,10 +176,14 @@ public class DispatchJobProcessor(
                 p => p.ExpireOfferAsync(offer.Trip.Id, CancellationToken.None),
                 TimeSpan.FromSeconds(timeoutSec));
             await PublishOfferAsync(offer, timeoutSec, ct);
+            await AdminRealtimeNotify.JobStateChangedAsync(realtime, offer.Trip, ct);
         }
 
         foreach (var waiting in expires)
+        {
             await PublishNoDriversAsync(waiting, ct);
+            await AdminRealtimeNotify.JobStateChangedAsync(realtime, waiting, ct);
+        }
 
         foreach (var waiting in retries)
             await RequeueAsync(waiting.Id, TimeSpan.FromSeconds(timeoutSec), ct);

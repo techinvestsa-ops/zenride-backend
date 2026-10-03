@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Features.Admin.Realtime;
 using Izigo.Application.Features.Driver.Dtos;
 using Izigo.Application.Features.Driver.Queries;
 using Izigo.Application.Features.Packages.Helpers;
@@ -47,6 +48,7 @@ public class AcceptJobHandler(IApplicationDbContext db, IRealtimeService realtim
             PackageTripSync.ApplyTripState(linkedPackage, trip);
 
         await db.SaveChangesAsync(ct);
+        await AdminRealtimeNotify.JobStateChangedAsync(realtime, trip, ct);
 
         if (trip.RiderId != null)
         {
@@ -92,7 +94,7 @@ public class AcceptJobHandler(IApplicationDbContext db, IRealtimeService realtim
 
 public record DeclineJobCommand(string DriverId, string TripId, string? Reason) : IRequest;
 
-public class DeclineJobHandler(IApplicationDbContext db, IJobDispatcher jobDispatcher)
+public class DeclineJobHandler(IApplicationDbContext db, IJobDispatcher jobDispatcher, IRealtimeService realtime)
     : IRequestHandler<DeclineJobCommand>
 {
     public async Task Handle(DeclineJobCommand cmd, CancellationToken ct)
@@ -126,6 +128,7 @@ public class DeclineJobHandler(IApplicationDbContext db, IJobDispatcher jobDispa
         db.BackgroundJobs.Add(dispatchJob);
 
         await db.SaveChangesAsync(ct);
+        await AdminRealtimeNotify.JobStateChangedAsync(realtime, trip, ct);
 
         jobDispatcher.Enqueue(dispatchJob.Id, dispatchJob.Type);
     }
@@ -158,6 +161,7 @@ public class ArrivedPickupHandler(IApplicationDbContext db, IRealtimeService rea
         });
 
         await db.SaveChangesAsync(ct);
+        await AdminRealtimeNotify.JobStateChangedAsync(realtime, trip, ct);
 
         if (trip.RiderId != null)
         {
@@ -225,6 +229,7 @@ public class StartJobHandler(IApplicationDbContext db, IRealtimeService realtime
             PackageTripSync.ApplyTripState(linkedPackage, trip);
 
         await db.SaveChangesAsync(ct);
+        await AdminRealtimeNotify.JobStateChangedAsync(realtime, trip, ct);
 
         if (trip.RiderId != null)
         {
@@ -253,7 +258,7 @@ public class StartJobHandler(IApplicationDbContext db, IRealtimeService realtime
 
 public record ArrivedDropoffCommand(string DriverId, string TripId) : IRequest<JobDetailDto>;
 
-public class ArrivedDropoffHandler(IApplicationDbContext db)
+public class ArrivedDropoffHandler(IApplicationDbContext db, IRealtimeService realtime)
     : IRequestHandler<ArrivedDropoffCommand, JobDetailDto>
 {
     public async Task<JobDetailDto> Handle(ArrivedDropoffCommand cmd, CancellationToken ct)
@@ -275,6 +280,7 @@ public class ArrivedDropoffHandler(IApplicationDbContext db)
         });
 
         await db.SaveChangesAsync(ct);
+        await AdminRealtimeNotify.JobStateChangedAsync(realtime, trip, ct);
         return await JobDetailMapper.BuildAsync(trip, db, ct);
     }
 }
@@ -403,6 +409,8 @@ public class CompleteJobHandler(
         }
 
         await db.SaveChangesAsync(ct);
+        await AdminRealtimeNotify.JobStateChangedAsync(realtime, trip, ct);
+        await AdminRealtimeNotify.JobCompletedAsync(realtime, trip, ct);
 
         if (trip.RiderId != null)
         {
@@ -455,6 +463,7 @@ public class CancelJobHandler(IApplicationDbContext db, IRealtimeService realtim
             PackageTripSync.ApplyTripState(linkedPackage, trip);
 
         await db.SaveChangesAsync(ct);
+        await AdminRealtimeNotify.JobStateChangedAsync(realtime, trip, ct);
 
         if (trip.RiderId != null)
         {
@@ -579,6 +588,7 @@ public class EnRouteHandler(IApplicationDbContext db, IRealtimeService realtime,
                 OccurredAt = DateTime.UtcNow, Actor = "driver", ActorId = cmd.DriverId,
             });
             await db.SaveChangesAsync(ct);
+            await AdminRealtimeNotify.JobStateChangedAsync(realtime, trip, ct);
 
             // Notify rider: driver is on the way (driver_arriving)
             if (trip.RiderId != null)
@@ -618,10 +628,12 @@ public class EnRouteHandler(IApplicationDbContext db, IRealtimeService realtime,
                 PackageTripSync.ApplyTripState(linkedPackage, trip);
                 await db.SaveChangesAsync(ct);
                 await PackageTripSync.PublishStatusAsync(realtime, db, linkedPackage, ct);
+                await AdminRealtimeNotify.JobStateChangedAsync(realtime, trip, ct);
             }
             else
             {
                 await db.SaveChangesAsync(ct);
+                await AdminRealtimeNotify.JobStateChangedAsync(realtime, trip, ct);
             }
             // Rider is in the car — no notification needed for rides
         }

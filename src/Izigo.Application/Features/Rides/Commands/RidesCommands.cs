@@ -3,6 +3,7 @@ using Izigo.Application.Common.Interfaces;
 using Izigo.Application.Common.Settings;
 using Izigo.Application.Features.Quotes.Dtos;
 using Izigo.Application.Features.Quotes.Helpers;
+using Izigo.Application.Features.Admin.Realtime;
 using Izigo.Application.Features.Rides.Dtos;
 using Izigo.Application.Features.Rides.Helpers;
 using Izigo.Domain.Entities;
@@ -23,7 +24,7 @@ public record CreateRideCommand(
 
 public class CreateRideHandler(IApplicationDbContext db, IIdempotencyService idempotency,
     IOptions<AppSettings> appOptions, IOptions<QuoteSettings> quoteOptions,
-    IJobDispatcher jobDispatcher)
+    IJobDispatcher jobDispatcher, IRealtimeService realtime)
     : IRequestHandler<CreateRideCommand, RideDetailDto>
 {
     private static readonly System.Text.Json.JsonSerializerOptions _jsonOpts = new()
@@ -142,6 +143,7 @@ public class CreateRideHandler(IApplicationDbContext db, IIdempotencyService ide
         db.BackgroundJobs.Add(dispatchJob);
         await db.SaveChangesAsync(ct);
         jobDispatcher.Enqueue(dispatchJob.Id, dispatchJob.Type);
+        await AdminRealtimeNotify.JobStateChangedAsync(realtime, trip, ct);
 
         var result = await RideDetailMapper.BuildAsync(trip, db, ct, appOptions.Value.ShareBaseUrl, quoteOptions.Value.DefaultCancellationFee);
 
@@ -209,6 +211,7 @@ public class CancelRideHandler(IApplicationDbContext db, IRealtimeService realti
         });
 
         await db.SaveChangesAsync(ct);
+        await AdminRealtimeNotify.JobStateChangedAsync(realtime, trip, ct);
 
         // Notify driver if one was assigned
         if (trip.DriverId is not null)
