@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 
 namespace Izigo.Infrastructure.Persistence;
 
@@ -44,6 +45,8 @@ public static class DbSeeder
         await SeedDispatchConfigsAsync(db, logger);
         await SeedCommissionConfigsAsync(db, logger);
         await SeedFeatureFlagsAsync(db, logger);
+        await SeedCiZonesAsync(db, logger);
+        await SeedCiContentAsync(db, logger);
     }
 
     /// <summary>
@@ -326,6 +329,83 @@ public static class DbSeeder
         {
             await db.SaveChangesAsync();
             logger.LogInformation("[Seed] Created {Count} FeatureFlags", seeded);
+        }
+    }
+
+    // ── Conakry service zones (ci) ────────────────────────────────────────────
+
+    private static async Task SeedCiZonesAsync(ApplicationDbContext db, ILogger logger)
+    {
+        if (await db.Zones.AnyAsync(z => z.Market == "ci"))
+            return;
+
+        var districts = new (string Name, decimal Lat, decimal Lng)[]
+        {
+            ("Kaloum",  9.5092m, -13.7122m),
+            ("Dixinn",  9.5370m, -13.6773m),
+            ("Matam",   9.5350m, -13.6530m),
+            ("Ratoma",  9.5770m, -13.6550m),
+            ("Matoto",  9.6180m, -13.6020m),
+        };
+
+        foreach (var (name, lat, lng) in districts)
+        {
+            var d = 0.015m;
+            var ci  = CultureInfo.InvariantCulture;
+            var polygon = string.Format(ci,
+                "{{\"type\":\"Polygon\",\"coordinates\":[[[{0},{1}],[{2},{3}],[{4},{5}],[{6},{7}],[{0},{1}]]]}}",
+                lng - d, lat - d, lng + d, lat - d, lng + d, lat + d, lng - d, lat + d);
+
+            db.Zones.Add(new Zone
+            {
+                Name             = name,
+                Market           = "ci",
+                Status           = "live",
+                CenterLat        = lat,
+                CenterLng        = lng,
+                PolygonGeoJson   = polygon,
+                VerticalsEnabled = [Vertical.Ride, Vertical.CoRide, Vertical.Package]
+            });
+        }
+
+        await db.SaveChangesAsync();
+        logger.LogInformation("[Seed] Created {Count} zones for market=ci", districts.Length);
+    }
+
+    // ── Sample CMS pages (ci) ─────────────────────────────────────────────────
+
+    private static async Task SeedCiContentAsync(ApplicationDbContext db, ILogger logger)
+    {
+        var pages = new (string Slug, string Body)[]
+        {
+            ("terms", "En utilisant Izigo, vous acceptez nos conditions de service pour les courses, livraisons et paiements."),
+            ("privacy", "Nous collectons uniquement les données nécessaires au service, à la sécurité et au support client."),
+            ("about", "Izigo connecte passagers, chauffeurs et coursiers à Conakry et au-delà."),
+            ("driver-terms", "Les chauffeurs partenaires respectent les règles KYC, de sécurité et de règlement des espèces."),
+        };
+
+        var seeded = 0;
+        foreach (var (slug, body) in pages)
+        {
+            if (await db.AppPages.AnyAsync(p => p.Market == "ci" && p.Slug == slug && p.Language == "fr"))
+                continue;
+
+            db.AppPages.Add(new AppPage
+            {
+                Slug          = slug,
+                Market        = "ci",
+                Language      = "fr",
+                ContentFormat = "markdown",
+                Content       = body,
+                UpdatedAt     = DateTime.UtcNow
+            });
+            seeded++;
+        }
+
+        if (seeded > 0)
+        {
+            await db.SaveChangesAsync();
+            logger.LogInformation("[Seed] Created {Count} AppPages for market=ci", seeded);
         }
     }
 }
