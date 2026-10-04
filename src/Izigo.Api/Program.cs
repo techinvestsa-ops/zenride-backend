@@ -3,6 +3,7 @@ using Izigo.Api.Extensions;
 using Izigo.Api.Hubs;
 using Izigo.Api.Middleware;
 using Izigo.Infrastructure.Persistence;
+using Microsoft.Extensions.FileProviders;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -66,6 +67,17 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
     app.UseMiddleware<AccountLockMiddleware>();
+
+    var uploadRoot = builder.Configuration["Storage:LocalPath"]?.Trim();
+    if (string.IsNullOrEmpty(uploadRoot))
+        uploadRoot = Path.Combine(Path.GetTempPath(), "izigo-uploads");
+    Directory.CreateDirectory(uploadRoot);
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(uploadRoot),
+        RequestPath = "/uploads",
+    });
+
     app.MapControllers();
     app.MapHub<IzigoHub>("/hubs/izigo");
     app.MapHub<AdminHub>("/hubs/admin");
