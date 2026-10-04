@@ -46,6 +46,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Message> Messages => Set<Message>();
     public DbSet<SupportTicket> SupportTickets => Set<SupportTicket>();
     public DbSet<SupportTicketMessage> SupportTicketMessages => Set<SupportTicketMessage>();
+    public DbSet<AccountReport> AccountReports => Set<AccountReport>();
     public DbSet<SosIncident> SosIncidents => Set<SosIncident>();
     public DbSet<Coupon> Coupons => Set<Coupon>();
     public DbSet<Broadcast> Broadcasts => Set<Broadcast>();
@@ -73,6 +74,20 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
+        // The decimal(18,2) default rounds coordinates to ~1.1 km.
+        foreach (var property in modelBuilder.Model.GetEntityTypes().SelectMany(t => t.GetProperties()))
+        {
+            if (property.ClrType != typeof(decimal) && property.ClrType != typeof(decimal?)) continue;
+            var name = property.Name;
+            if (name.EndsWith("Lat") || name.EndsWith("Lng") ||
+                name.EndsWith("Latitude") || name.EndsWith("Longitude"))
+            {
+                property.SetPrecision(9);
+                property.SetScale(6);
+            }
+        }
+
         base.OnModelCreating(modelBuilder);
     }
 

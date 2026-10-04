@@ -197,6 +197,33 @@ public class AdminKycHandlerTests
         db.DriverProfiles.Find(dp.Id)!.OnboardingComplete.Should().BeTrue();
     }
 
+    [Fact]
+    public async Task ApproveKycApplication_ByUserId_ActivatesVehicleAndEnablesVerticals()
+    {
+        using var db = DbContextFactory.Create();
+        var userId = Guid.NewGuid().ToString();
+        var dp = new DriverProfileEntity { UserId = userId };
+        db.DriverProfiles.Add(dp);
+        db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id, OnboardingStepStatus.Approved));
+        db.Vehicles.Add(new Izigo.Domain.Entities.Vehicle
+        {
+            DriverId = userId, Make = "Toyota", Model = "Corolla", Plate = "AB-1",
+            Type = VehicleType.Car, Seats = 4, PendingReview = true,
+        });
+        await db.SaveChangesAsync();
+
+        var handler = new ApproveKycApplicationHandler(db, FakeServices.Audit(), FakeServices.Realtime());
+        var result  = await handler.Handle(
+            new ApproveKycApplicationCommand(userId, "staff1", "Admin"), CancellationToken.None);
+
+        result.Success.Should().BeTrue();
+        var vehicle = db.Vehicles.Single();
+        vehicle.IsActive.Should().BeTrue();
+        vehicle.PendingReview.Should().BeFalse();
+        db.DriverProfiles.Find(dp.Id)!.VerticalsAllowed
+            .Should().BeEquivalentTo([Vertical.Ride, Vertical.CoRide, Vertical.Package]);
+    }
+
     // ── RejectKycApplicationHandler ───────────────────────────────────────────
 
     [Fact]

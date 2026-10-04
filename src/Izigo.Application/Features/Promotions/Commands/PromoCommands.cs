@@ -27,7 +27,8 @@ public class ValidateCouponHandler(IApplicationDbContext db)
 
         var options = System.Text.Json.JsonSerializer
             .Deserialize<Izigo.Application.Features.Quotes.Dtos.QuoteOptionDto[]>(quote.OptionsJson) ?? [];
-        var orderAmount = options.FirstOrDefault()?.Fare.Total ?? 0;
+        var fare = options.FirstOrDefault()?.Fare;
+        var orderAmount = fare is null ? 0 : (fare.ListTotal > 0 ? fare.ListTotal : fare.Total);
 
         var coupon = await db.Coupons
             .FirstOrDefaultAsync(c => c.Code == req.Code.ToUpper() && c.IsActive, ct);
@@ -63,8 +64,11 @@ public class ValidateCouponHandler(IApplicationDbContext db)
         }
 
         long discount = coupon.DiscountType == "percent"
-            ? Math.Min(orderAmount * coupon.Value / 100, coupon.MaxDiscount)
-            : Math.Min(coupon.Value, coupon.MaxDiscount);
+            ? (long)Math.Round(orderAmount * (coupon.Value / 100m))
+            : coupon.Value;
+        if (coupon.MaxDiscount > 0)
+            discount = Math.Min(discount, coupon.MaxDiscount);
+        discount = Math.Clamp(discount, 0, orderAmount);
 
         return new CouponValidationDto(
             IsValid:       true,

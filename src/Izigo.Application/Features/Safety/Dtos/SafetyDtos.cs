@@ -34,6 +34,8 @@ public record TriggerSosRequest(
     string? Note
 );
 
+public record AppealRequest(string Body);
+
 public record ReportTripRequest(
     string Category,
     string Description,

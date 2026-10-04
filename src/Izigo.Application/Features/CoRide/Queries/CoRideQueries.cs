@@ -23,11 +23,20 @@ public class SearchListingsHandler(IApplicationDbContext db)
         var query = db.CoRideListings
             .Where(l => l.Status == "open" &&
                         l.DepartureAt > now &&
-                        l.SeatsLeft >= r.Seats &&
+                        l.SeatsTotal - l.SeatsTaken >= r.Seats &&
                         (double)l.FromLat >= r.FromLat - degApprox &&
                         (double)l.FromLat <= r.FromLat + degApprox &&
                         (double)l.FromLng >= r.FromLng - degApprox &&
                         (double)l.FromLng <= r.FromLng + degApprox);
+
+        var hasDestination = Math.Abs(r.ToLat - r.FromLat) > degApprox ||
+                             Math.Abs(r.ToLng - r.FromLng) > degApprox;
+        if (hasDestination)
+            query = query.Where(l =>
+                (double)l.ToLat >= r.ToLat - degApprox &&
+                (double)l.ToLat <= r.ToLat + degApprox &&
+                (double)l.ToLng >= r.ToLng - degApprox &&
+                (double)l.ToLng <= r.ToLng + degApprox);
 
         if (r.DepartureFrom.HasValue) query = query.Where(l => l.DepartureAt >= r.DepartureFrom.Value);
         if (r.DepartureTo.HasValue)   query = query.Where(l => l.DepartureAt <= r.DepartureTo.Value);
@@ -82,10 +91,12 @@ public class SearchListingsHandler(IApplicationDbContext db)
             SeatsTaken: l.SeatsTaken,
             SeatsLeft: l.SeatsLeft,
             PricePerSeat: l.PricePerSeat,
+            TripFare: l.TripFare > 0 ? l.TripFare : l.PricePerSeat * l.SeatsTotal,
             ServiceFee: l.ServiceFee,
             Currency: l.Currency,
             RouteOverlapPct: 0,    // calculated by route comparison algorithm — 0 until implemented
-            FromRequestId: null);
+            FromRequestId: null,
+            Status: l.Status);
     }
 }
 
@@ -174,7 +185,15 @@ public class GetMyBookingsHandler(IApplicationDbContext db)
                 Total: b.Total,
                 Currency: b.Currency,
                 Status: b.Status.ToString().ToLower(),
-                PaymentMethod: b.PaymentMethod.ToString().ToLower());
+                PaymentMethod: b.PaymentMethod.ToString().ToLower(),
+                BookedAt: b.CreatedAt,
+                BoardingCode: b.BoardingCode,
+                BoardedAt: b.BoardedAt,
+                BoardLat: (double?)b.BoardLat,
+                BoardLng: (double?)b.BoardLng,
+                AlightedAt: b.AlightedAt,
+                AlightLat: (double?)b.AlightLat,
+                AlightLng: (double?)b.AlightLng);
         }).ToList();
     }
 }
@@ -210,7 +229,15 @@ public class GetBookingHandler(IApplicationDbContext db)
             Total: booking.Total,
             Currency: booking.Currency,
             Status: booking.Status.ToString().ToLower(),
-            PaymentMethod: booking.PaymentMethod.ToString().ToLower());
+            PaymentMethod: booking.PaymentMethod.ToString().ToLower(),
+            BookedAt: booking.CreatedAt,
+            BoardingCode: booking.BoardingCode,
+            BoardedAt: booking.BoardedAt,
+            BoardLat: (double?)booking.BoardLat,
+            BoardLng: (double?)booking.BoardLng,
+            AlightedAt: booking.AlightedAt,
+            AlightLat: (double?)booking.AlightLat,
+            AlightLng: (double?)booking.AlightLng);
     }
 }
 
@@ -269,7 +296,15 @@ public class GetManifestHandler(IApplicationDbContext db)
                 PassengerName: rider?.FullName ?? "Passenger",
                 SeatLabels: System.Text.Json.JsonSerializer.Deserialize<string[]>(b.SeatLabelsJson) ?? [],
                 PaymentStatus: b.PaymentMethod == PaymentMethod.Cash ? "pending" : "paid",
-                IsBoarded: b.Status == CoRideBookingStatus.InRide);
+                IsBoarded: b.Status == CoRideBookingStatus.InRide,
+                Status: b.Status switch
+                {
+                    CoRideBookingStatus.DriverArriving => "driver_arriving",
+                    CoRideBookingStatus.InRide => "in_ride",
+                    CoRideBookingStatus.Completed => "completed",
+                    CoRideBookingStatus.Cancelled => "cancelled",
+                    _ => "upcoming",
+                });
         }).ToList();
     }
 }

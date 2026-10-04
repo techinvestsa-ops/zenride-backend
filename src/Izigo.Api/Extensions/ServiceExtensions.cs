@@ -77,13 +77,15 @@ public static class ServiceExtensions
         })
         .AddJwtBearer("AdminBearer", opts =>
         {
+            opts.MapInboundClaims = false;
             opts.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true, ValidateAudience = true,
                 ValidateLifetime = true, ValidateIssuerSigningKey = true,
                 ValidIssuer = issuer, ValidAudience = adminAudience,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
-                ClockSkew = clockSkew
+                ClockSkew = clockSkew,
+                RoleClaimType = "role",
             };
             opts.Events = new JwtBearerEvents
             {
@@ -215,10 +217,19 @@ public static class ServiceExtensions
         services.AddScoped<IIdempotencyService, IdempotencyService>();
         services.AddScoped<IGeoService, GoogleMapsService>();
         services.AddScoped<IPaymentGateway, PaymentGatewayService>();
+        services.AddSingleton<AdminStaffPresenceTracker>();
+        services.AddSingleton<AdminStaffPresenceService>();
         services.AddSingleton<IRealtimeService, SignalRRealtimeService>();
         services.AddSingleton<IPushService, FcmPushService>();
         services.AddScoped<IEmailService, SmtpEmailService>();
-        services.AddScoped<ISmsService, TermiiSmsService>();
+        services.AddScoped<ISmsService>(sp =>
+        {
+            var cfg = sp.GetRequiredService<IConfiguration>();
+            var provider = cfg["Sms:Provider"]?.Trim() ?? "Termii";
+            return provider.Equals("ProSmsMtn", StringComparison.OrdinalIgnoreCase)
+                ? ActivatorUtilities.CreateInstance<ProSmsMtnSmsService>(sp)
+                : ActivatorUtilities.CreateInstance<TermiiSmsService>(sp);
+        });
         services.AddScoped<IJobDispatcher, HangfireJobDispatcher>();
         // Hangfire job processors — must be registered so DI can inject their dependencies
         services.AddScoped<ReportJobProcessor>();

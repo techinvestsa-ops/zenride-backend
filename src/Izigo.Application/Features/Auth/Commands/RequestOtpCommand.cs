@@ -61,7 +61,8 @@ public class RequestOtpHandler(
         });
 
         await db.SaveChangesAsync(ct);
-        return new OtpResponseDto(otpToken, cfg.ExpirySeconds, cfg.ResendCooldownSeconds, isNewUser, code);
+        return new OtpResponseDto(otpToken, cfg.ExpirySeconds, cfg.ResendCooldownSeconds, isNewUser,
+            cfg.ExposeDevCode ? code : null);
     }
 
     internal static string HashCode(string code)

@@ -1,0 +1,115 @@
+name: Build and Deploy Zenride API
+
+on:
+  push:
+    branches: [develop]
+
+env:
+  DOTNET_VERSION: '9.0'
+  PROJECT_PATH: src/Izigo.Api/Izigo.Api.csproj
+  PUBLISH_OUTPUT: publish/api
+  RESOURCE_GROUP: rg-zenride-za
+  APP_NAME: zenride-api-tisa
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      # `secrets` is not available in step-level `if:` expressions, so expose them via env.
+      GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+      SMS_API_USER: ${{ secrets.SMS_API_USER }}
+      SMS_API_KEY: ${{ secrets.SMS_API_KEY }}
+      FCM_PROJECT_ID: ${{ secrets.FCM_PROJECT_ID }}
+      FCM_SERVICE_ACCOUNT_JSON: ${{ secrets.FCM_SERVICE_ACCOUNT_JSON }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore ${{ env.PROJECT_PATH }}
+
+      - name: Build
+        run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+
+      - name: Publish
+        run: dotnet publish ${{ env.PROJECT_PATH }} --configuration Release --output ./${{ env.PUBLISH_OUTPUT }}
+
+      - name: Zip package
+        run: cd ${{ env.PUBLISH_OUTPUT }} && zip -r ../../api.zip .
+
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Configure Google Maps API key
+        if: ${{ env.GOOGLE_MAPS_API_KEY != '' }}
+        run: |
+          az webapp config appsettings set \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --name ${{ env.APP_NAME }} \
+            --settings "GoogleMaps__ApiKey=$GOOGLE_MAPS_API_KEY" \
+            --output none
+
+      - name: Configure ProSMS MTN credentials
+        if: ${{ env.SMS_API_USER != '' && env.SMS_API_KEY != '' }}
+        run: |
+          az webapp config appsettings set \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --name ${{ env.APP_NAME }} \
+            --settings \
+              "Sms__Provider=ProSmsMtn" \
+              "Sms__ApiUser=$SMS_API_USER" \
+              "Sms__ApiKey=$SMS_API_KEY" \
+              "Sms__UserId=techInvest" \
+              "Sms__SenderId=ZENPay" \
+              "Otp__ExposeDevCode=false" \
+            --output none
+
+      # Without an SMS gateway, return OTP codes in the API response so testers can still sign in.
+      - name: Enable dev OTP codes (no SMS gateway configured)
+        if: ${{ env.SMS_API_USER == '' || env.SMS_API_KEY == '' }}
+        run: |
+          az webapp config appsettings set \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --name ${{ env.APP_NAME }} \
+            --settings "Otp__ExposeDevCode=true" \
+            --output none
+
+      - name: Configure Firebase Cloud Messaging
+        if: ${{ env.FCM_PROJECT_ID != '' && env.FCM_SERVICE_ACCOUNT_JSON != '' }}
+        run: |
+          az webapp config appsettings set \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --name ${{ env.APP_NAME }} \
+            --settings \
+              "Fcm__ProjectId=$FCM_PROJECT_ID" \
+              "Fcm__ServiceAccountJson=$(echo "$FCM_SERVICE_ACCOUNT_JSON" | tr -d '\n')" \
+            --output none
+
+      - name: Allow the admin console to call the API
+        run: |
+          az webapp config appsettings set \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --name ${{ env.APP_NAME }} \
+            --settings \
+              "Cors__Origins__0=http://localhost:3000" \
+              "Cors__Origins__1=https://admin-dashboard-tisa.azurewebsites.net" \
+              "Cors__Origins__2=https://admin.zenride.app" \
+              "Email__BaseUrl=https://admin-dashboard-tisa.azurewebsites.net" \
+            --output none
+
+      - name: Deploy to Azure App Service
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 5
+          max_attempts: 3
+          retry_wait_seconds: 15
+          command: |
+            az webapp deploy \
+              --resource-group ${{ env.RESOURCE_GROUP }} \
+              --name ${{ env.APP_NAME }} \
+              --src-path api.zip \
+              --type zip

@@ -24,6 +24,7 @@ public static class EntityId
     public static string ForPayout()            => $"pyo_{Base()}";
     public static string ForSosIncident()       => $"sos_{Base()}";
     public static string ForTicket()            => $"tkt_{Base()}";
+    public static string ForAccountReport()     => $"rpt_{Base()}";
     public static string ForConversation()      => $"cnv_{Base()}";
     public static string ForNotification()      => $"ntf_{Base()}";
     public static string ForStaff()             => $"stf_{Base()}";

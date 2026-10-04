@@ -22,6 +22,60 @@ namespace Izigo.Infrastructure.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Izigo.Domain.Entities.AccountReport", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("BookingId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Market")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReportedRole")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReportedUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReporterRole")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReporterUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TicketId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TripId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AccountReports");
+                });
+
             modelBuilder.Entity("Izigo.Domain.Entities.AppPage", b =>
                 {
                     b.Property<string>("Id")
@@ -331,6 +385,31 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<decimal?>("AlightLat")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<decimal?>("AlightLng")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<DateTime?>("AlightedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("BoardLat")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<decimal?>("BoardLng")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<DateTime?>("BoardedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("BoardingCode")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CancellationReason")
                         .HasColumnType("nvarchar(max)");
 
@@ -426,10 +505,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("FromLat")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal>("FromLng")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<bool>("IsEco")
                         .HasColumnType("bit");
@@ -458,10 +539,15 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("ToLat")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal>("ToLng")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<long>("TripFare")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -493,10 +579,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("DropoffLat")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal>("DropoffLng")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("datetime2");
@@ -512,10 +600,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PickupLat")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal>("PickupLng")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<string>("RiderId")
                         .IsRequired()
@@ -620,6 +710,9 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("AutoApply")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -836,10 +929,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Lat")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal>("Lng")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<DateTime>("RecordedAt")
                         .HasColumnType("datetime2");
@@ -992,10 +1087,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("LastLat")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal?>("LastLng")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<DateTime?>("LastLocationAt")
                         .HasColumnType("datetime2");
@@ -1194,6 +1291,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                     b.Property<int>("ServiceClass")
                         .HasColumnType("int");
 
+                    b.Property<int>("TrafficDelayMin")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TrafficPercent")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -1201,6 +1304,9 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Version")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WaitGraceMin")
                         .HasColumnType("int");
 
                     b.Property<long>("WaitingPerMin")
@@ -1598,10 +1704,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("DropoffLat")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal>("DropoffLng")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<string>("FailedDeliveryReason")
                         .HasColumnType("nvarchar(max)");
@@ -1636,10 +1744,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PickupLat")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal>("PickupLng")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<string>("ProofCode")
                         .HasColumnType("nvarchar(max)");
@@ -1933,10 +2043,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("DefaultMapCenterLat")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal>("DefaultMapCenterLng")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<string>("DispatchStrategy")
                         .IsRequired()
@@ -2049,10 +2161,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("DropoffLat")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal>("DropoffLng")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<int>("DurationS")
                         .HasColumnType("int");
@@ -2075,10 +2189,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PickupLat")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal>("PickupLng")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<string>("PromoCode")
                         .HasColumnType("nvarchar(max)");
@@ -2174,10 +2290,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Lat")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal>("Lng")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -2221,10 +2339,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Lat")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal>("Lng")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<string>("Market")
                         .IsRequired()
@@ -2677,10 +2797,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("DropoffLat")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal>("DropoffLng")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<string>("DropoffPlaceId")
                         .HasColumnType("nvarchar(max)");
@@ -2748,10 +2870,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PickupLat")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal>("PickupLng")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<string>("PickupPlaceId")
                         .HasColumnType("nvarchar(max)");
@@ -3337,10 +3461,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("CenterLat")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<decimal>("CenterLng")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");

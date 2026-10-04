@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Features.Driver.Helpers;
 using Izigo.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -77,8 +78,9 @@ public class ApproveKycStepHandler(IApplicationDbContext db, IAuditService audit
 {
     public async Task<KycCommandResult> Handle(ApproveKycStepCommand cmd, CancellationToken ct)
     {
-        var onboarding = await db.DriverOnboardings
-            .FirstOrDefaultAsync(o => o.DriverId == cmd.DriverId, ct);
+        var driver = await KycDriverLookup.FindDriverAsync(db, cmd.DriverId, ct);
+        var onboarding = await KycDriverLookup.FindOnboardingAsync(
+            db, KycDriverLookup.OwnerIds(driver, cmd.DriverId), ct);
         if (onboarding is null) return new(false, "APPLICATION_NOT_FOUND");
 
         OnboardingStepStatus before;
@@ -86,7 +88,6 @@ public class ApproveKycStepHandler(IApplicationDbContext db, IAuditService audit
         catch (ArgumentException) { return new(false, "INVALID_STEP"); }
 
         StepHelper.SetStepStatus(onboarding, cmd.Step, OnboardingStepStatus.Approved);
-        onboarding.ReviewedAt = DateTime.UtcNow;
 
         await audit.RecordAsync(cmd.StaffId, cmd.StaffName, AuditAction.KycStepApprove,
             "DriverOnboarding", cmd.DriverId, reason: $"Step {cmd.Step} approved",
@@ -104,12 +105,13 @@ public record RejectKycStepCommand(string DriverId, string Step, string Reason,
     string StaffId, string StaffName) : IRequest<KycCommandResult>;
 
 public class RejectKycStepHandler(IApplicationDbContext db, IAuditService audit,
-    IRealtimeService realtime) : IRequestHandler<RejectKycStepCommand, KycCommandResult>
+    IRealtimeService realtime, IPushService push) : IRequestHandler<RejectKycStepCommand, KycCommandResult>
 {
     public async Task<KycCommandResult> Handle(RejectKycStepCommand cmd, CancellationToken ct)
     {
-        var onboarding = await db.DriverOnboardings
-            .FirstOrDefaultAsync(o => o.DriverId == cmd.DriverId, ct);
+        var driver = await KycDriverLookup.FindDriverAsync(db, cmd.DriverId, ct);
+        var onboarding = await KycDriverLookup.FindOnboardingAsync(
+            db, KycDriverLookup.OwnerIds(driver, cmd.DriverId), ct);
         if (onboarding is null) return new(false, "APPLICATION_NOT_FOUND");
 
         OnboardingStepStatus before;
@@ -125,9 +127,16 @@ public class RejectKycStepHandler(IApplicationDbContext db, IAuditService audit,
             after: new { Step = cmd.Step, Status = "Rejected", Reason = cmd.Reason }, ct: ct);
         await db.SaveChangesAsync(ct);
 
-        // Push kyc.status_changed so the driver app re-opens just that step
-        await realtime.PublishToDriverAsync(cmd.DriverId, "kyc.status_changed",
-            new { step = cmd.Step, status = "rejected", reason = cmd.Reason }, ct);
+        var userId = driver?.UserId ?? cmd.DriverId;
+        await KycNotify.NotifyDriverKycStatusAsync(
+            db, realtime, push, userId,
+            status: "rejected",
+            step: cmd.Step,
+            reason: cmd.Reason,
+            rejectedSteps: [cmd.Step],
+            pushTitle: "Document needs attention",
+            pushBody: cmd.Reason,
+            ct);
 
         return new(true, null);
     }
@@ -140,12 +149,13 @@ public record ApproveKycApplicationCommand(string DriverId, string StaffId, stri
     : IRequest<KycCommandResult>;
 
 public class ApproveKycApplicationHandler(IApplicationDbContext db, IAuditService audit,
-    IRealtimeService realtime) : IRequestHandler<ApproveKycApplicationCommand, KycCommandResult>
+    IRealtimeService realtime, IPushService push) : IRequestHandler<ApproveKycApplicationCommand, KycCommandResult>
 {
     public async Task<KycCommandResult> Handle(ApproveKycApplicationCommand cmd, CancellationToken ct)
     {
-        var onboarding = await db.DriverOnboardings
-            .FirstOrDefaultAsync(o => o.DriverId == cmd.DriverId, ct);
+        var driver = await KycDriverLookup.FindDriverAsync(db, cmd.DriverId, ct);
+        var ownerIds = KycDriverLookup.OwnerIds(driver, cmd.DriverId);
+        var onboarding = await KycDriverLookup.FindOnboardingAsync(db, ownerIds, ct);
         if (onboarding is null) return new(false, "APPLICATION_NOT_FOUND");
 
         // 422 if any step is not approved
@@ -155,7 +165,6 @@ public class ApproveKycApplicationHandler(IApplicationDbContext db, IAuditServic
             return new(false, $"STEPS_NOT_APPROVED:{string.Join(",", unapproved)}");
         }
 
-        var driver = await db.DriverProfiles.FirstOrDefaultAsync(d => d.Id == cmd.DriverId, ct);
         if (driver is null) return new(false, "DRIVER_NOT_FOUND");
 
         var before = new { driver.KycStatus, driver.OnboardingComplete };
@@ -163,14 +172,31 @@ public class ApproveKycApplicationHandler(IApplicationDbContext db, IAuditServic
         driver.OnboardingComplete = true;
         onboarding.ReviewedAt     = DateTime.UtcNow;
 
+        if (driver.VerticalsAllowed.Count == 0)
+            driver.VerticalsAllowed = [Vertical.Ride, Vertical.CoRide, Vertical.Package];
+
+        var vehicles = await db.Vehicles
+            .Where(v => ownerIds.Contains(v.DriverId))
+            .OrderByDescending(v => v.CreatedAt)
+            .ToListAsync(ct);
+        foreach (var v in vehicles) v.PendingReview = false;
+        if (vehicles.Count > 0 && !vehicles.Any(v => v.IsActive))
+            vehicles[0].IsActive = true;
+
         await audit.RecordAsync(cmd.StaffId, cmd.StaffName, AuditAction.KycApprove,
             "DriverOnboarding", cmd.DriverId, reason: "Full application approved",
             before: before, after: new { KycStatus = "Approved", OnboardingComplete = true }, ct: ct);
         await db.SaveChangesAsync(ct);
 
-        // Notify driver they can go online
-        await realtime.PublishToDriverAsync(cmd.DriverId, "kyc.status_changed",
-            new { status = "approved" }, ct);
+        await KycNotify.NotifyDriverKycStatusAsync(
+            db, realtime, push, driver.UserId,
+            status: "approved",
+            step: null,
+            reason: null,
+            rejectedSteps: null,
+            pushTitle: "You're approved",
+            pushBody: "Your documents were approved. You can go online and start earning.",
+            ct);
 
         return new(true, null);
     }
@@ -182,28 +208,41 @@ public record RejectKycApplicationCommand(string DriverId, string Reason, bool B
     string StaffId, string StaffName) : IRequest<KycCommandResult>;
 
 public class RejectKycApplicationHandler(IApplicationDbContext db, IAuditService audit,
-    IRealtimeService realtime) : IRequestHandler<RejectKycApplicationCommand, KycCommandResult>
+    IRealtimeService realtime, IPushService push) : IRequestHandler<RejectKycApplicationCommand, KycCommandResult>
 {
     public async Task<KycCommandResult> Handle(RejectKycApplicationCommand cmd, CancellationToken ct)
     {
-        var driver = await db.DriverProfiles
-            .Include(d => d.User)
-            .FirstOrDefaultAsync(d => d.Id == cmd.DriverId, ct);
+        var driver = await KycDriverLookup.FindDriverAsync(db, cmd.DriverId, ct);
         if (driver is null) return new(false, "DRIVER_NOT_FOUND");
 
         var before = new { driver.KycStatus };
         driver.KycStatus = KycStatus.Rejected;
 
+        // Re-open the application so the driver can fix it and resubmit.
+        var onboarding = await KycDriverLookup.FindOnboardingAsync(
+            db, KycDriverLookup.OwnerIds(driver, cmd.DriverId), ct);
+        if (onboarding is not null) onboarding.SubmittedAt = null;
+
         if (cmd.Blocklist)
-            driver.User.Status = UserStatus.Blocked; // fraud blocklist
+        {
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Id == driver.UserId, ct);
+            if (user is not null) user.Status = UserStatus.Blocked; // fraud blocklist
+        }
 
         await audit.RecordAsync(cmd.StaffId, cmd.StaffName, AuditAction.KycReject,
             "DriverOnboarding", cmd.DriverId, cmd.Reason,
             before, new { KycStatus = "Rejected", Blocklisted = cmd.Blocklist }, ct: ct);
         await db.SaveChangesAsync(ct);
 
-        await realtime.PublishToDriverAsync(cmd.DriverId, "kyc.status_changed",
-            new { status = "rejected", reason = cmd.Reason }, ct);
+        await KycNotify.NotifyDriverKycStatusAsync(
+            db, realtime, push, driver.UserId,
+            status: "rejected",
+            step: null,
+            reason: cmd.Reason,
+            rejectedSteps: null,
+            pushTitle: "Application not approved",
+            pushBody: cmd.Reason,
+            ct);
 
         return new(true, null);
     }
@@ -220,8 +259,9 @@ public class AssignKycReviewerHandler(IApplicationDbContext db, IAuditService au
 {
     public async Task<KycCommandResult> Handle(AssignKycReviewerCommand cmd, CancellationToken ct)
     {
-        var onboarding = await db.DriverOnboardings
-            .FirstOrDefaultAsync(o => o.DriverId == cmd.DriverId, ct);
+        var driver = await KycDriverLookup.FindDriverAsync(db, cmd.DriverId, ct);
+        var onboarding = await KycDriverLookup.FindOnboardingAsync(
+            db, KycDriverLookup.OwnerIds(driver, cmd.DriverId), ct);
         if (onboarding is null) return new(false, "APPLICATION_NOT_FOUND");
 
         // If already assigned to another reviewer, reject

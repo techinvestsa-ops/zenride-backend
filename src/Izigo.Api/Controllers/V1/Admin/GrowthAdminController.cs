@@ -39,7 +39,7 @@ public class GrowthAdminController : AdminBaseController
             req.MaxDiscount, req.MinOrder, req.Verticals ?? [],
             req.Zones ?? [], req.FirstTripOnly, req.PerUserLimit,
             req.TotalCap, req.StartsAt, req.ExpiresAt,
-            Market, StaffId, CurrentStaff.Email ?? StaffId), ct);
+            Market, StaffId, CurrentStaff.Email ?? StaffId, req.AutoApply), ct);
 
         if (!result.Success)
             return Conflict(new { success = false, error = new { code = result.ErrorCode } });
@@ -422,7 +422,7 @@ public record CreateCouponRequest(string Code, string Title, string DiscountType
     long Value, long MaxDiscount, long MinOrder,
     string[]? Verticals, string[]? Zones,
     bool FirstTripOnly, int PerUserLimit, int TotalCap,
-    DateTime? StartsAt, DateTime? ExpiresAt);
+    DateTime? StartsAt, DateTime? ExpiresAt, bool AutoApply = false);
 
 public record UpdateCouponRequest(string? Title, string? DiscountType, long? Value,
     long? MaxDiscount, long? MinOrder,

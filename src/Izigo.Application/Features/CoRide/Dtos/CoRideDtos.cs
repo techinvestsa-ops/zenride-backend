@@ -13,10 +13,12 @@ public record CoRideListingDto(
     int SeatsTaken,
     int SeatsLeft,
     long PricePerSeat,
+    long TripFare,
     long ServiceFee,
     string Currency,
     int RouteOverlapPct,
-    string? FromRequestId
+    string? FromRequestId,
+    string Status = "open"
 );
 
 public record CoRideDriverDto(
@@ -45,7 +47,15 @@ public record CoRideBookingDto(
     long Total,
     string Currency,
     string Status,
-    string PaymentMethod
+    string PaymentMethod,
+    DateTime BookedAt,
+    string? BoardingCode = null,
+    DateTime? BoardedAt = null,
+    double? BoardLat = null,
+    double? BoardLng = null,
+    DateTime? AlightedAt = null,
+    double? AlightLat = null,
+    double? AlightLng = null
 );
 
 // ── Match request ─────────────────────────────────────────────────────────────
@@ -99,14 +109,16 @@ public record PublishListingRequest(
     double ToLat, double ToLng, string ToLabel,
     DateTime DepartureAt,
     int SeatsTotal,
-    long PricePerSeat,
     bool IsEco,
-    bool? IsRecurring
+    bool? IsRecurring,
+    long PricePerSeat = 0
 );
 
 public record EditListingRequest(DateTime? DepartureAt);
 
 public record DeleteListingRequest(string? Reason);
+
+public record BoardPassengerRequest(string Code);
 
 // ── Driver manifest ───────────────────────────────────────────────────────────
 
@@ -115,5 +127,6 @@ public record PassengerManifestDto(
     string PassengerName,
     string[] SeatLabels,
     string PaymentStatus,
-    bool IsBoarded
+    bool IsBoarded,
+    string Status
 );

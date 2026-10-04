@@ -62,7 +62,7 @@ public class GetDriverHomeHandler(IApplicationDbContext db)
         // Active job for cold-start resume
         var activeTrip = await db.Trips
             .FirstOrDefaultAsync(t => t.DriverId == req.DriverId &&
-                                      !RideProjector.IsTerminal(t.JobState), ct);
+                                      !RideProjector.TerminalStates.Contains(t.JobState), ct);
 
         JobOfferDto? activeJob = null;
         if (activeTrip != null)

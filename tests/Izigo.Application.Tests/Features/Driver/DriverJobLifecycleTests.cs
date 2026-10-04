@@ -3,6 +3,7 @@ using Izigo.Application.Features.Driver.Commands;
 using Izigo.Application.Tests.Helpers;
 using Izigo.Domain.Enums;
 using Xunit;
+using FareRuleEntity = Izigo.Domain.Entities.FareRule;
 using UserEntity = Izigo.Domain.Entities.User;
 using TripEntity = Izigo.Domain.Entities.Trip;
 using DriverProfileEntity = Izigo.Domain.Entities.DriverProfile;
@@ -358,6 +359,43 @@ public class DriverJobLifecycleTests
         db.Trips.Find(trip.Id)!.JobState.Should().Be(JobState.Completed);
         db.Wallets.First(w => w.UserId == riderId).Balance.Should().BeLessThan(10000);
         db.WalletTransactions.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public async Task CompleteJob_AfterGrace_AddsWaitingMinutesToWhatTheRiderPays()
+    {
+        using var db = DbContextFactory.Create();
+        var driverId = Guid.NewGuid().ToString();
+        var riderId  = Guid.NewGuid().ToString();
+        db.FareRules.Add(new FareRuleEntity
+        {
+            ServiceClass = ServiceClass.ZenCar,
+            Market = "ci",
+            IsActive = true,
+            Version = 1,
+            WaitingPerMin = 1315,
+            WaitGraceMin = 10,
+            Base = 2000, PerKm = 3000, Minimum = 7000
+        });
+
+        var started = DateTime.UtcNow;
+        var trip = BuildTrip(driverId, riderId, JobState.ArrivedAtDropoff);
+        trip.PaymentMethod = PaymentMethod.Cash;
+        trip.FareGross = 7000;
+        trip.FareServiceFee = 0;
+        trip.FareDiscount = 0;
+        trip.FareTip = 0;
+        trip.ArrivedAt = started.AddMinutes(-12);
+        trip.StartedAt = started;
+        db.Trips.Add(trip);
+        await db.SaveChangesAsync();
+
+        var handler = new CompleteJobHandler(db, FakeServices.Realtime(), FakeServices.Push());
+        await handler.Handle(new CompleteJobCommand(driverId, trip.Id), CancellationToken.None);
+
+        var updated = db.Trips.Find(trip.Id)!;
+        updated.FareWaiting.Should().Be(2630);
+        updated.CashCollected.Should().Be(9630);
     }
 
     [Fact]

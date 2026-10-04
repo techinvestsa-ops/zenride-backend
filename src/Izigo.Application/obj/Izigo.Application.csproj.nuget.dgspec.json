@@ -1,40 +1,33 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Projects\\izigo-api\\src\\Izigo.Application\\Izigo.Application.csproj": {}
+    "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Application/Izigo.Application.csproj": {}
   },
   "projects": {
-    "C:\\Projects\\izigo-api\\src\\Izigo.Application\\Izigo.Application.csproj": {
+    "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Application/Izigo.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Projects\\izigo-api\\src\\Izigo.Application\\Izigo.Application.csproj",
+        "projectUniqueName": "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Application/Izigo.Application.csproj",
         "projectName": "Izigo.Application",
-        "projectPath": "C:\\Projects\\izigo-api\\src\\Izigo.Application\\Izigo.Application.csproj",
-        "packagesPath": "C:\\Users\\Chuks\\.nuget\\packages\\",
-        "outputPath": "C:\\Projects\\izigo-api\\src\\Izigo.Application\\obj\\",
+        "projectPath": "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Application/Izigo.Application.csproj",
+        "packagesPath": "/var/folders/y4/79qtw8pd6dz2f67t2nqmknmc0000gn/T/cursor-sandbox-cache/bcb34382266fad9d5c27c0de3c225b24/nuget",
+        "outputPath": "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Application/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Chuks\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/otitoju/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "C:\\Projects\\izigo-api\\src\\Izigo.Domain\\Izigo.Domain.csproj": {
-                "projectPath": "C:\\Projects\\izigo-api\\src\\Izigo.Domain\\Izigo.Domain.csproj"
+              "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Domain/Izigo.Domain.csproj": {
+                "projectPath": "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Domain/Izigo.Domain.csproj"
               }
             }
           }
@@ -88,33 +81,26 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/Users/otitoju/.dotnet/sdk/9.0.318/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Projects\\izigo-api\\src\\Izigo.Domain\\Izigo.Domain.csproj": {
+    "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Domain/Izigo.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Projects\\izigo-api\\src\\Izigo.Domain\\Izigo.Domain.csproj",
+        "projectUniqueName": "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Domain/Izigo.Domain.csproj",
         "projectName": "Izigo.Domain",
-        "projectPath": "C:\\Projects\\izigo-api\\src\\Izigo.Domain\\Izigo.Domain.csproj",
-        "packagesPath": "C:\\Users\\Chuks\\.nuget\\packages\\",
-        "outputPath": "C:\\Projects\\izigo-api\\src\\Izigo.Domain\\obj\\",
+        "projectPath": "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Domain/Izigo.Domain.csproj",
+        "packagesPath": "/var/folders/y4/79qtw8pd6dz2f67t2nqmknmc0000gn/T/cursor-sandbox-cache/bcb34382266fad9d5c27c0de3c225b24/nuget",
+        "outputPath": "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Domain/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Chuks\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/otitoju/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -154,7 +140,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/Users/otitoju/.dotnet/sdk/9.0.318/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

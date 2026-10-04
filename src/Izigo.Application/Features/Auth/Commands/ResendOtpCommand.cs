@@ -39,6 +39,7 @@ public class ResendOtpHandler(
         await db.SaveChangesAsync(ct);
 
         var remaining = (int)(record.ExpiresAt - DateTime.UtcNow).TotalSeconds;
-        return new OtpResponseDto(record.OtpToken, remaining, cfg.ResendCooldownSeconds, record.IsNewUser, code);
+        return new OtpResponseDto(record.OtpToken, remaining, cfg.ResendCooldownSeconds, record.IsNewUser,
+            cfg.ExposeDevCode ? code : null);
     }
 }

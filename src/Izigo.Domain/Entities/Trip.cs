@@ -128,6 +128,8 @@ public class CoRideListing : AuditableEntity
     public DateTime DepartureAt { get; set; }
     public int SeatsTotal { get; set; }
     public int SeatsTaken { get; set; }
+    /// <summary>Full fare to the driver's destination, before it is split across seats.</summary>
+    public long TripFare { get; set; }
     public long PricePerSeat { get; set; }
     public long ServiceFee { get; set; }
     public string Currency { get; set; } = "XOF";
@@ -159,6 +161,15 @@ public class CoRideBooking : AuditableEntity
     public string? PaymentId { get; set; }
     public string? CancellationReason { get; set; }
     public int? RatingByRider { get; set; }
+
+    /// <summary>Three-digit code the rider shows so the driver can confirm boarding.</summary>
+    public string? BoardingCode { get; set; }
+    public DateTime? BoardedAt { get; set; }
+    public decimal? BoardLat { get; set; }
+    public decimal? BoardLng { get; set; }
+    public DateTime? AlightedAt { get; set; }
+    public decimal? AlightLat { get; set; }
+    public decimal? AlightLng { get; set; }
 }
 
 public class Package : AuditableEntity

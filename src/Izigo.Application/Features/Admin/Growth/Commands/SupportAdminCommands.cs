@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Features.Safety.Helpers;
 using Izigo.Domain.Entities;
 using Izigo.Domain.Enums;
 using MediatR;
@@ -14,7 +15,9 @@ public record SupportCommandResult(bool Success, string? ErrorCode, object? Data
 public record ReplyToTicketCommand(string TicketId, string Body, string? AttachmentsJson,
     bool IsInternalNote, string StaffId, string StaffName) : IRequest<SupportCommandResult>;
 
-public class ReplyToTicketHandler(IApplicationDbContext db, IAuditService audit)
+public class ReplyToTicketHandler(
+    IApplicationDbContext db, IAuditService audit,
+    IRealtimeService realtime, IEmailService email, IPushService push)
     : IRequestHandler<ReplyToTicketCommand, SupportCommandResult>
 {
     public async Task<SupportCommandResult> Handle(ReplyToTicketCommand cmd, CancellationToken ct)
@@ -42,6 +45,11 @@ public class ReplyToTicketHandler(IApplicationDbContext db, IAuditService audit)
             "SupportTicket", cmd.TicketId,
             reason: cmd.IsInternalNote ? "Internal note added" : "Staff replied", ct: ct);
         await db.SaveChangesAsync(ct);
+
+        if (!cmd.IsInternalNote)
+            await AccountModeration.NotifyStaffReplyAsync(
+                db, realtime, email, push, ticket, cmd.Body, ct);
+
         return new(true, null, new { message_id = message.Id });
     }
 }

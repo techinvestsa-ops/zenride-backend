@@ -39,11 +39,17 @@ try
     builder.Services.AddSwaggerServices();
     builder.Services.AddSignalR();
 
+    var corsOrigins = (builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? [])
+        .Append("http://localhost:3000")
+        .Append("https://admin-dashboard-tisa.azurewebsites.net")
+        .Append("https://admin.zenride.app")
+        .Where(origin => !string.IsNullOrWhiteSpace(origin))
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .ToArray();
+
     builder.Services.AddCors(opts =>
         opts.AddDefaultPolicy(p => p
-            .WithOrigins(
-                builder.Configuration.GetSection("Cors:Origins").Get<string[]>()
-                ?? ["http://localhost:3000"])
+            .WithOrigins(corsOrigins)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials()));
@@ -51,12 +57,15 @@ try
     // ── App ─────────────────────────────────────────────────────────────────
     var app = builder.Build();
 
+    // CORS has to wrap error responses. Otherwise a failed login is reported
+    // by the browser as a CORS error and the real status never surfaces.
+    app.UseCors();
     app.UseMiddleware<ExceptionMiddleware>();
     app.UseSerilogRequestLogging();
-    app.UseCors();
     app.UseRateLimiter();
     app.UseAuthentication();
     app.UseAuthorization();
+    app.UseMiddleware<AccountLockMiddleware>();
     app.MapControllers();
     app.MapHub<IzigoHub>("/hubs/izigo");
     app.MapHub<AdminHub>("/hubs/admin");

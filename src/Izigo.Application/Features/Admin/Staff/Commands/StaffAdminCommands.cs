@@ -77,7 +77,7 @@ public class InviteStaffHandler(IApplicationDbContext db, IAuditService audit,
             Phone   = cmd.Phone,
             RoleKey = cmd.RoleKey,
             Markets = cmd.Markets.ToList(),
-            Status  = StaffStatus.Active,
+            Status  = StaffStatus.Pending,
             MustChangePassword = true,
             PasswordHash = hasher.Hash(Guid.NewGuid().ToString()) // placeholder until invite accepted
         };

@@ -22,7 +22,10 @@ public record PackageDto(
     DateTime CreatedAt,
     DateTime? PickedUpAt,
     DateTime? DeliveredAt,
-    DateTime? CancelledAt
+    DateTime? CancelledAt,
+    string? TripId = null,   // join trip-{trip_id} for live courier location
+    DateTime? ArrivedAt = null,
+    DateTime? StartedAt = null
 );
 
 public record PackageLocationDto(string Label, double Lat, double Lng);

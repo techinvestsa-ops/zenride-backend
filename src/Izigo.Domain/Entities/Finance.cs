@@ -156,7 +156,13 @@ public class FareRule : BaseEntity
     public long PerMin { get; set; }
     public long Minimum { get; set; }
     public long WaitingPerMin { get; set; }
+    /// <summary>Free minutes after the driver arrives at pickup, before <see cref="WaitingPerMin"/> starts.</summary>
+    public int WaitGraceMin { get; set; } = 10;
     public long CancellationFee { get; set; }
+    /// <summary>Extra minutes of traffic, above the free-flow drive, before a surcharge starts.</summary>
+    public int TrafficDelayMin { get; set; } = 15;
+    /// <summary>Percent added to the fare once traffic delay passes <see cref="TrafficDelayMin"/>. Capped at 20.</summary>
+    public decimal TrafficPercent { get; set; } = 8m;
     public bool IsActive { get; set; } = true;
     public int Version { get; set; } = 1;
     public DateTime EffectiveFrom { get; set; } = DateTime.UtcNow;

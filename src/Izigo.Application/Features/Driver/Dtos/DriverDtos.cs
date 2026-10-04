@@ -72,7 +72,16 @@ public record JobDetailDto(
     string PaymentMethod,
     string? NoteToDriver,
     JobTimestampsDto Timestamps,
-    JobActionsDto Actions
+    JobActionsDto Actions,
+    JobDeliveryDto? Delivery = null
+);
+
+/// Recipient and proof for a package job. Package contents are intentionally omitted.
+public record JobDeliveryDto(
+    string RecipientName,
+    string RecipientPhoneMasked,
+    string? ProofCode,
+    string? ProofPhotoUrl
 );
 
 public record JobCustomerDto(

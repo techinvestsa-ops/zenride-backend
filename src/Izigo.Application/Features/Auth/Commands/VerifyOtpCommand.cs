@@ -65,7 +65,11 @@ public class VerifyOtpHandler(
 
             if (role == UserRole.Driver)
             {
-                var profile = new DriverProfile { UserId = user.Id };
+                var profile = new DriverProfile
+                {
+                    UserId = user.Id,
+                    VerticalsAllowed = [Vertical.Ride, Vertical.CoRide, Vertical.Package],
+                };
                 db.DriverProfiles.Add(profile);
                 db.DriverOnboardings.Add(new DriverOnboarding { DriverId = profile.Id });
                 db.DriverWallets.Add(new DriverWallet { DriverId = user.Id });
@@ -79,9 +83,6 @@ public class VerifyOtpHandler(
             await db.SaveChangesAsync(ct);
         }
 
-        if (user.Status == UserStatus.Suspended)
-            throw new InvalidOperationException(
-                $"CONFLICT: Account suspended. {user.SuspensionReason}");
         if (user.Status == UserStatus.Blocked)
             throw new InvalidOperationException("CONFLICT: Account blocked. Contact support.");
 

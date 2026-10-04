@@ -82,6 +82,22 @@ public class SupportTicketMessage : BaseEntity
     public string? AttachmentsJson { get; set; }
 }
 
+/// One person reporting another. The fourth report auto-suspends the reported account.
+public class AccountReport : BaseEntity
+{
+    public AccountReport() => Id = EntityId.ForAccountReport();
+    public string ReporterUserId { get; set; } = string.Empty;
+    public string ReporterRole { get; set; } = string.Empty;
+    public string ReportedUserId { get; set; } = string.Empty;
+    public string ReportedRole { get; set; } = string.Empty;
+    public string? TripId { get; set; }
+    public string? BookingId { get; set; }
+    public string Category { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string TicketId { get; set; } = string.Empty;
+    public string Market { get; set; } = "ci";
+}
+
 public class SosIncident : BaseEntity
 {
     public SosIncident() => Id = EntityId.ForSosIncident();
@@ -113,6 +129,8 @@ public class Coupon : BaseEntity
     public string VerticalsJson { get; set; } = "[]";
     public string ZonesJson { get; set; } = "[]";
     public bool FirstTripOnly { get; set; }
+    /// <summary>When true, the quote applies this promo with no code typed.</summary>
+    public bool AutoApply { get; set; }
     public int PerUserLimit { get; set; } = 1;
     public int TotalCap { get; set; }
     public int RedemptionCount { get; set; }

@@ -129,6 +129,7 @@ public interface ICurrentStaffService
 {
     string? StaffId { get; }
     string? Email { get; }
+    string? RoleKey { get; }
     IReadOnlyList<string> Permissions { get; }
     IReadOnlyList<string> Markets { get; }
     bool HasPermission(string permission);

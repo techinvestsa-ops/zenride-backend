@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Features.Safety.Helpers;
 using Izigo.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,8 @@ public record RiderCommandResult(bool Success, string? ErrorCode, object? Data =
 public record SuspendRiderCommand(string RiderId, string Action, string Reason,
     DateTime? Until, string StaffId, string StaffName) : IRequest<RiderCommandResult>;
 
-public class SuspendRiderHandler(IApplicationDbContext db, IAuditService audit)
+public class SuspendRiderHandler(IApplicationDbContext db, IAuditService audit,
+    IRealtimeService realtime, IEmailService email, IPushService push)
     : IRequestHandler<SuspendRiderCommand, RiderCommandResult>
 {
     public async Task<RiderCommandResult> Handle(SuspendRiderCommand cmd, CancellationToken ct)
@@ -28,20 +30,23 @@ public class SuspendRiderHandler(IApplicationDbContext db, IAuditService audit)
             user.Status          = UserStatus.Active;
             user.SuspensionReason = null;
             user.SuspendedUntil  = null;
+            await AccountModeration.ReleaseListingsAsync(db, user, ct);
             await audit.RecordAsync(cmd.StaffId, cmd.StaffName, AuditAction.RiderSuspend,
                 "Rider", cmd.RiderId, cmd.Reason, before, new { Status = "Active" }, ct: ct);
+            await db.SaveChangesAsync(ct);
+            await AccountModeration.AnnounceAsync(db, realtime, email, push, user, locked: false, ct);
         }
         else
         {
-            user.Status           = UserStatus.Suspended;
-            user.SuspensionReason = cmd.Reason; // shown in app on next launch
-            user.SuspendedUntil   = cmd.Until;
+            await AccountModeration.LockAccountAsync(db, user, cmd.Reason, ct);
+            user.SuspendedUntil = cmd.Until;
             await audit.RecordAsync(cmd.StaffId, cmd.StaffName, AuditAction.RiderSuspend,
                 "Rider", cmd.RiderId, cmd.Reason, before,
                 new { Status = "Suspended", cmd.Until }, ct: ct);
+            await db.SaveChangesAsync(ct);
+            await AccountModeration.AnnounceAsync(db, realtime, email, push, user, locked: true, ct);
         }
 
-        await db.SaveChangesAsync(ct);
         return new(true, null);
     }
 }
@@ -261,7 +266,8 @@ public record BlockRiderCommand(string RiderId, string Reason, bool CancelActive
     string StaffId, string StaffName) : IRequest<RiderCommandResult>;
 
 public class BlockRiderHandler(IApplicationDbContext db, IAuditService audit,
-    IRealtimeService realtime) : IRequestHandler<BlockRiderCommand, RiderCommandResult>
+    IRealtimeService realtime, IEmailService email, IPushService push)
+    : IRequestHandler<BlockRiderCommand, RiderCommandResult>
 {
     private static readonly JobState[] ActiveStates =
     [
@@ -311,6 +317,7 @@ public class BlockRiderHandler(IApplicationDbContext db, IAuditService audit,
         await audit.RecordAsync(cmd.StaffId, cmd.StaffName, AuditAction.RiderBlock,
             "Rider", cmd.RiderId, cmd.Reason, before, new { Status = "Blocked" }, ct: ct);
         await db.SaveChangesAsync(ct);
+        await AccountModeration.AnnounceAsync(db, realtime, email, push, user, locked: true, ct);
 
         return new(true, null, new { wallet_balance_stranded = walletBalance > 0, wallet_balance = walletBalance });
     }
@@ -321,7 +328,8 @@ public class BlockRiderHandler(IApplicationDbContext db, IAuditService audit,
 public record UnblockRiderCommand(string RiderId, string Reason, string StaffId, string StaffName)
     : IRequest<RiderCommandResult>;
 
-public class UnblockRiderHandler(IApplicationDbContext db, IAuditService audit)
+public class UnblockRiderHandler(IApplicationDbContext db, IAuditService audit,
+    IRealtimeService realtime, IEmailService email, IPushService push)
     : IRequestHandler<UnblockRiderCommand, RiderCommandResult>
 {
     public async Task<RiderCommandResult> Handle(UnblockRiderCommand cmd, CancellationToken ct)
@@ -332,10 +340,12 @@ public class UnblockRiderHandler(IApplicationDbContext db, IAuditService audit)
         var before     = new { user.Status };
         user.Status           = UserStatus.Active;
         user.SuspensionReason = null;
+        user.SuspendedUntil   = null;
 
         await audit.RecordAsync(cmd.StaffId, cmd.StaffName, AuditAction.RiderUnblock,
             "Rider", cmd.RiderId, cmd.Reason, before, new { Status = "Active" }, ct: ct);
         await db.SaveChangesAsync(ct);
+        await AccountModeration.AnnounceAsync(db, realtime, email, push, user, locked: false, ct);
         return new(true, null);
     }
 }

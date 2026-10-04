@@ -9,86 +9,92 @@ public record FareBreakdown(
     long Distance,
     long Time,
     long ServiceFee,
-    long Discount
-);
+    long Discount,
+    long ListTotal = 0,
+    long Traffic = 0);
 
 public static class FareCalculator
 {
+    public const int MaxTrafficPercent = 20;
+
+    /// <summary>
+    /// Rider total is the admin base fare plus the distance charge.
+    /// When traffic makes the drive more than the admin threshold longer
+    /// than the free-flow time, a small percent of that fare is added.
+    /// </summary>
     public static FareBreakdown Calculate(
         FareRule rule,
         int distanceM,
-        int durationS,
+        int freeFlowDurationS,
+        int trafficDurationS,
         decimal surgeMultiplier = 1.0m,
-        long promoDiscount = 0,
-        decimal serviceFeeRate = 0.08m)
+        long promoDiscount = 0)
     {
         var distanceKm = distanceM / 1000m;
-        var durationMin = durationS / 60m;
-
         var baseAmount = rule.Base;
         var distanceAmount = (long)Math.Round(distanceKm * rule.PerKm);
-        var timeAmount = (long)Math.Round(durationMin * rule.PerMin);
 
-        var subtotal = baseAmount + distanceAmount + timeAmount;
-        // Apply surge
-        subtotal = (long)Math.Round(subtotal * surgeMultiplier);
-        // Apply minimum fare
+        var subtotal = baseAmount + distanceAmount;
+        subtotal = (long)Math.Round(subtotal * (surgeMultiplier <= 0 ? 1m : surgeMultiplier));
         subtotal = Math.Max(subtotal, rule.Minimum);
 
-        var serviceFee = (long)Math.Round(subtotal * serviceFeeRate);
-        var total = subtotal + serviceFee - promoDiscount;
+        var delayMin = Math.Max(0, (trafficDurationS - freeFlowDurationS) / 60);
+        var threshold = rule.TrafficDelayMin <= 0 ? 15 : rule.TrafficDelayMin;
+        var percent = Math.Clamp(rule.TrafficPercent, 0m, MaxTrafficPercent);
+        long traffic = 0;
+        if (delayMin > threshold && percent > 0)
+            traffic = (long)Math.Round(subtotal * percent / 100m);
+
+        var listTotal = subtotal + traffic;
+        var discount = Math.Clamp(promoDiscount, 0, listTotal);
+        var total = listTotal - discount;
 
         return new FareBreakdown(
-            Total: Math.Max(0, total),
+            Total: total,
             Base: baseAmount,
             Distance: distanceAmount,
-            Time: timeAmount,
-            ServiceFee: serviceFee,
-            Discount: promoDiscount
-        );
+            Time: traffic,
+            ServiceFee: 0,
+            Discount: discount,
+            ListTotal: listTotal,
+            Traffic: traffic);
     }
 
-    /// <summary>Returns the default fare rule for a service class when none is in the DB.</summary>
     public static FareRule DefaultRule(ServiceClass sc) => new()
     {
         ServiceClass = sc,
         Base = sc switch
         {
-            ServiceClass.ZenCar     => 500,
-            ServiceClass.ZenBike    => 300,
-            ServiceClass.ZenCoRide  => 250,
-            ServiceClass.PackageSmall => 400,
-            ServiceClass.PackageLarge => 600,
-            _ => 400
+            ServiceClass.ZenCar     => 2_000,
+            ServiceClass.ZenBike    => 1_000,
+            ServiceClass.ZenCoRide  => 500,
+            ServiceClass.PackageSmall => 1_500,
+            ServiceClass.PackageLarge => 2_500,
+            _ => 1_500
         },
         PerKm = sc switch
         {
-            ServiceClass.ZenCar     => 250,
-            ServiceClass.ZenBike    => 180,
-            ServiceClass.ZenCoRide  => 190,
-            ServiceClass.PackageSmall => 200,
-            ServiceClass.PackageLarge => 280,
-            _ => 200
+            ServiceClass.ZenCar     => 3_000,
+            ServiceClass.ZenBike    => 1_800,
+            ServiceClass.ZenCoRide  => 800,
+            ServiceClass.PackageSmall => 2_200,
+            ServiceClass.PackageLarge => 3_200,
+            _ => 2_200
         },
-        PerMin = sc switch
-        {
-            ServiceClass.ZenCar     => 15,
-            ServiceClass.ZenBike    => 10,
-            ServiceClass.ZenCoRide  => 10,
-            ServiceClass.PackageSmall => 12,
-            ServiceClass.PackageLarge => 12,
-            _ => 12
-        },
+        PerMin = 0,
         Minimum = sc switch
         {
-            ServiceClass.ZenCar     => 1200,
-            ServiceClass.ZenBike    => 800,
-            ServiceClass.ZenCoRide  => 600,
-            ServiceClass.PackageSmall => 900,
-            ServiceClass.PackageLarge => 1500,
-            _ => 1000
+            ServiceClass.ZenCar     => 7_000,
+            ServiceClass.ZenBike    => 4_000,
+            ServiceClass.ZenCoRide  => 2_000,
+            ServiceClass.PackageSmall => 5_000,
+            ServiceClass.PackageLarge => 8_000,
+            _ => 5_000
         },
         WaitingPerMin = 20,
-        CancellationFee = sc is ServiceClass.ZenCar ? 500 : 300
+        WaitGraceMin = 10,
+        CancellationFee = sc is ServiceClass.ZenCar ? 500 : 300,
+        TrafficDelayMin = 15,
+        TrafficPercent = 8m
     };
 }

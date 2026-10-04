@@ -21,7 +21,8 @@ public class GetActiveRideHandler(IApplicationDbContext db, IOptions<AppSettings
         var trip = await db.Trips
             .FirstOrDefaultAsync(t =>
                 t.RiderId == req.UserId &&
-                !RideProjector.IsTerminal(t.JobState), ct);
+                t.Vertical == Vertical.Ride &&
+                !RideProjector.TerminalStates.Contains(t.JobState), ct);
 
         return trip == null ? null : await RideDetailMapper.BuildAsync(trip, db, ct,
             appOptions.Value.ShareBaseUrl, quoteOptions.Value.DefaultCancellationFee);
@@ -164,7 +165,7 @@ public class GetRidesHandler(IApplicationDbContext db)
                 RideProjector.ToRiderStatus(t.JobState),
                 t.ServiceClass.ToString().ToLower(),
                 t.PickupLabel, t.DropoffLabel,
-                t.FareGross + t.FareServiceFee - t.FareDiscount,
+                t.FareGross + t.FareWaiting + t.FareServiceFee - t.FareDiscount,
                 t.Currency, t.CompletedAt, t.CreatedAt))
             .ToListAsync(ct);
 
@@ -189,10 +190,10 @@ public class GetReceiptHandler(IApplicationDbContext db)
             TripId: trip.Id,
             Code: trip.Code,
             Fare: new RideFareDto(
-                trip.FareGross + trip.FareServiceFee - trip.FareDiscount,
+                trip.FareGross + trip.FareWaiting + trip.FareServiceFee - trip.FareDiscount,
                 trip.FareBase, trip.FareDistance, trip.FareTime,
                 trip.FareServiceFee, trip.FareDiscount,
-                trip.FareTip, trip.Currency, true),
+                trip.FareTip, trip.Currency, true, trip.FareWaiting),
             PdfUrl: null);
     }
 }
