@@ -109,3 +109,5 @@ public record SubmitPayoutRequest(
 public record SubmitSelfieRequest(string FileUrl);
 
 public record ResolveAccountRequest(string BankCode, string AccountNumber);
+
+public record KycDocumentUploadResult(string FileUrl);

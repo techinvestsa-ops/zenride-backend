@@ -109,7 +109,7 @@ public class AdminKycHandlerTests
     public async Task RejectKycStep_ApplicationNotFound_ReturnsFalse()
     {
         using var db = DbContextFactory.Create();
-        var handler = new RejectKycStepHandler(db, FakeServices.Audit(), FakeServices.Realtime());
+        var handler = new RejectKycStepHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Push());
 
         var result = await handler.Handle(
             new RejectKycStepCommand("nonexistent", "identity", "Invalid ID", "staff1", "Admin"),
@@ -128,7 +128,7 @@ public class AdminKycHandlerTests
         db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id));
         await db.SaveChangesAsync();
 
-        var handler = new RejectKycStepHandler(db, FakeServices.Audit(), FakeServices.Realtime());
+        var handler = new RejectKycStepHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Push());
         var result  = await handler.Handle(
             new RejectKycStepCommand(dp.Id, "identity", "ID image is blurry", "staff1", "Admin"),
             CancellationToken.None);
@@ -145,7 +145,7 @@ public class AdminKycHandlerTests
     public async Task ApproveKycApplication_ApplicationNotFound_ReturnsFalse()
     {
         using var db = DbContextFactory.Create();
-        var handler = new ApproveKycApplicationHandler(db, FakeServices.Audit(), FakeServices.Realtime());
+        var handler = new ApproveKycApplicationHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Push());
 
         var result = await handler.Handle(
             new ApproveKycApplicationCommand("nonexistent", "staff1", "Admin"),
@@ -167,7 +167,7 @@ public class AdminKycHandlerTests
         db.DriverOnboardings.Add(onb);
         await db.SaveChangesAsync();
 
-        var handler = new ApproveKycApplicationHandler(db, FakeServices.Audit(), FakeServices.Realtime());
+        var handler = new ApproveKycApplicationHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Push());
         var result  = await handler.Handle(
             new ApproveKycApplicationCommand(dp.Id, "staff1", "Admin"),
             CancellationToken.None);
@@ -187,7 +187,7 @@ public class AdminKycHandlerTests
         db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id, OnboardingStepStatus.Approved));
         await db.SaveChangesAsync();
 
-        var handler = new ApproveKycApplicationHandler(db, FakeServices.Audit(), FakeServices.Realtime());
+        var handler = new ApproveKycApplicationHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Push());
         var result  = await handler.Handle(
             new ApproveKycApplicationCommand(dp.Id, "staff1", "Admin"),
             CancellationToken.None);
@@ -212,7 +212,7 @@ public class AdminKycHandlerTests
         });
         await db.SaveChangesAsync();
 
-        var handler = new ApproveKycApplicationHandler(db, FakeServices.Audit(), FakeServices.Realtime());
+        var handler = new ApproveKycApplicationHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Push());
         var result  = await handler.Handle(
             new ApproveKycApplicationCommand(userId, "staff1", "Admin"), CancellationToken.None);
 
@@ -230,7 +230,7 @@ public class AdminKycHandlerTests
     public async Task RejectKycApplication_DriverNotFound_ReturnsFalse()
     {
         using var db = DbContextFactory.Create();
-        var handler = new RejectKycApplicationHandler(db, FakeServices.Audit(), FakeServices.Realtime());
+        var handler = new RejectKycApplicationHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Push());
 
         var result = await handler.Handle(
             new RejectKycApplicationCommand("nonexistent", "Fraud detected", false, "staff1", "Admin"),
@@ -255,7 +255,7 @@ public class AdminKycHandlerTests
         db.DriverProfiles.Add(dp);
         await db.SaveChangesAsync();
 
-        var handler = new RejectKycApplicationHandler(db, FakeServices.Audit(), FakeServices.Realtime());
+        var handler = new RejectKycApplicationHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Push());
         var result  = await handler.Handle(
             new RejectKycApplicationCommand(dp.Id, "Fraudulent documents", true, "staff1", "Admin"),
             CancellationToken.None);
@@ -280,7 +280,7 @@ public class AdminKycHandlerTests
         db.DriverProfiles.Add(dp);
         await db.SaveChangesAsync();
 
-        var handler = new RejectKycApplicationHandler(db, FakeServices.Audit(), FakeServices.Realtime());
+        var handler = new RejectKycApplicationHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Push());
         var result  = await handler.Handle(
             new RejectKycApplicationCommand(dp.Id, "Incomplete documents", false, "staff1", "Admin"),
             CancellationToken.None);

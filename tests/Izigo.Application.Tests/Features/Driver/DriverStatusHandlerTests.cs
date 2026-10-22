@@ -38,7 +38,7 @@ public class DriverStatusHandlerTests
         db.DriverProfiles.Add(BuildProfile(userId, kycStatus: KycStatus.Pending));
         await db.SaveChangesAsync();
 
-        var handler = new SetDriverStatusHandler(db);
+        var handler = new SetDriverStatusHandler(db, FakeServices.Realtime());
         var act = () => handler.Handle(
             new SetDriverStatusCommand(userId, new SetStatusRequest(true, null)),
             CancellationToken.None);
@@ -54,7 +54,7 @@ public class DriverStatusHandlerTests
         db.DriverProfiles.Add(BuildProfile(userId, onboardingComplete: false));
         await db.SaveChangesAsync();
 
-        var handler = new SetDriverStatusHandler(db);
+        var handler = new SetDriverStatusHandler(db, FakeServices.Realtime());
         var act = () => handler.Handle(
             new SetDriverStatusCommand(userId, new SetStatusRequest(true, null)),
             CancellationToken.None);
@@ -70,7 +70,7 @@ public class DriverStatusHandlerTests
         db.DriverProfiles.Add(BuildProfile(userId, pendingCash: 10_000));
         await db.SaveChangesAsync();
 
-        var handler = new SetDriverStatusHandler(db);
+        var handler = new SetDriverStatusHandler(db, FakeServices.Realtime());
         var act = () => handler.Handle(
             new SetDriverStatusCommand(userId, new SetStatusRequest(true, null)),
             CancellationToken.None);
@@ -86,7 +86,7 @@ public class DriverStatusHandlerTests
         db.DriverProfiles.Add(BuildProfile(userId));
         await db.SaveChangesAsync();
 
-        var handler = new SetDriverStatusHandler(db);
+        var handler = new SetDriverStatusHandler(db, FakeServices.Realtime());
         var result = await handler.Handle(
             new SetDriverStatusCommand(userId, new SetStatusRequest(true, null)),
             CancellationToken.None);
@@ -103,7 +103,7 @@ public class DriverStatusHandlerTests
         db.DriverProfiles.Add(BuildProfile(userId, isOnline: true));
         await db.SaveChangesAsync();
 
-        var handler = new SetDriverStatusHandler(db);
+        var handler = new SetDriverStatusHandler(db, FakeServices.Realtime());
         var result = await handler.Handle(
             new SetDriverStatusCommand(userId, new SetStatusRequest(false, null)),
             CancellationToken.None);
@@ -119,7 +119,7 @@ public class DriverStatusHandlerTests
         db.DriverProfiles.Add(BuildProfile(userId, pendingCash: 9_999));
         await db.SaveChangesAsync();
 
-        var handler = new SetDriverStatusHandler(db);
+        var handler = new SetDriverStatusHandler(db, FakeServices.Realtime());
         var result = await handler.Handle(
             new SetDriverStatusCommand(userId, new SetStatusRequest(true, null)),
             CancellationToken.None);
@@ -132,7 +132,7 @@ public class DriverStatusHandlerTests
     public async Task SetStatus_ProfileNotFound_ThrowsKeyNotFound()
     {
         using var db = DbContextFactory.Create();
-        var handler = new SetDriverStatusHandler(db);
+        var handler = new SetDriverStatusHandler(db, FakeServices.Realtime());
         var act = () => handler.Handle(
             new SetDriverStatusCommand("nonexistent", new SetStatusRequest(true, null)),
             CancellationToken.None);

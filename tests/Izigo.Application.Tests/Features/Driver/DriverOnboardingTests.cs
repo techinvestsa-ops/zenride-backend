@@ -49,7 +49,7 @@ public class DriverOnboardingTests
         db.DriverProfiles.Add(dp);
         await db.SaveChangesAsync();
 
-        var handler = new SubmitPersonalHandler(db);
+        var handler = new SubmitPersonalHandler(db, FakeServices.Realtime());
         var result  = await handler.Handle(
             new SubmitPersonalCommand(driverId, new SubmitPersonalRequest(
                 "John", "Doe", DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-25)),
@@ -73,7 +73,7 @@ public class DriverOnboardingTests
         db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id));
         await db.SaveChangesAsync();
 
-        var handler = new SubmitVehicleHandler(db);
+        var handler = new SubmitVehicleHandler(db, FakeServices.Realtime());
         var act = () => handler.Handle(
             new SubmitVehicleCommand(driverId, new SubmitVehicleRequest(
                 "Toyota", "Corolla", 2020, "White", "AB-1234-CI", "INVALID_TYPE", 4)),
@@ -92,7 +92,7 @@ public class DriverOnboardingTests
         db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id));
         await db.SaveChangesAsync();
 
-        var handler = new SubmitVehicleHandler(db);
+        var handler = new SubmitVehicleHandler(db, FakeServices.Realtime());
         var result  = await handler.Handle(
             new SubmitVehicleCommand(driverId, new SubmitVehicleRequest(
                 "Toyota", "Corolla", 2020, "White", "AB-1234-CI", "Car", 4)),
@@ -121,7 +121,7 @@ public class DriverOnboardingTests
         });
         await db.SaveChangesAsync();
 
-        var handler = new SubmitVehicleHandler(db);
+        var handler = new SubmitVehicleHandler(db, FakeServices.Realtime());
         await handler.Handle(
             new SubmitVehicleCommand(driverId, new SubmitVehicleRequest(
                 "Toyota", "Corolla", 2022, "White", "NEW-PLATE", "Car", 4)),
@@ -144,7 +144,7 @@ public class DriverOnboardingTests
         db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id));
         await db.SaveChangesAsync();
 
-        var handler = new SubmitPayoutHandler(db);
+        var handler = new SubmitPayoutHandler(db, FakeServices.Realtime());
         var result  = await handler.Handle(
             new SubmitPayoutCommand(driverId, new SubmitPayoutRequest(
                 "mobile_money", null, null, null, "+2250700000099")),
@@ -172,7 +172,7 @@ public class DriverOnboardingTests
         });
         await db.SaveChangesAsync();
 
-        var handler = new SubmitPayoutHandler(db);
+        var handler = new SubmitPayoutHandler(db, FakeServices.Realtime());
         await handler.Handle(
             new SubmitPayoutCommand(driverId, new SubmitPayoutRequest(
                 "mobile_money", null, null, null, "+2250700000099")),
@@ -195,7 +195,7 @@ public class DriverOnboardingTests
         db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id, OnboardingStepStatus.Empty));
         await db.SaveChangesAsync();
 
-        var handler = new SubmitOnboardingHandler(db);
+        var handler = new SubmitOnboardingHandler(db, FakeServices.Realtime());
         var act = () => handler.Handle(
             new SubmitOnboardingCommand(driverId), CancellationToken.None);
 
@@ -214,7 +214,7 @@ public class DriverOnboardingTests
         db.DriverOnboardings.Add(onb);
         await db.SaveChangesAsync();
 
-        var handler = new SubmitOnboardingHandler(db);
+        var handler = new SubmitOnboardingHandler(db, FakeServices.Realtime());
         var act = () => handler.Handle(
             new SubmitOnboardingCommand(driverId), CancellationToken.None);
 
@@ -231,7 +231,7 @@ public class DriverOnboardingTests
         db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id));
         await db.SaveChangesAsync();
 
-        var handler = new SubmitOnboardingHandler(db);
+        var handler = new SubmitOnboardingHandler(db, FakeServices.Realtime());
         var result  = await handler.Handle(
             new SubmitOnboardingCommand(driverId), CancellationToken.None);
 
