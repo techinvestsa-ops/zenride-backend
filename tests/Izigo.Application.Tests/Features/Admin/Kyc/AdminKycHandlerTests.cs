@@ -36,7 +36,7 @@ public class AdminKycHandlerTests
     public async Task ApproveKycStep_ApplicationNotFound_ReturnsFalse()
     {
         using var db = DbContextFactory.Create();
-        var handler = new ApproveKycStepHandler(db, FakeServices.Audit());
+        var handler = new ApproveKycStepHandler(db, FakeServices.Audit(), FakeServices.Realtime());
 
         var result = await handler.Handle(
             new ApproveKycStepCommand("nonexistent", "identity", "staff1", "Admin"),
@@ -55,7 +55,7 @@ public class AdminKycHandlerTests
         db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id));
         await db.SaveChangesAsync();
 
-        var handler = new ApproveKycStepHandler(db, FakeServices.Audit());
+        var handler = new ApproveKycStepHandler(db, FakeServices.Audit(), FakeServices.Realtime());
         var result  = await handler.Handle(
             new ApproveKycStepCommand(dp.Id, "invalid_step", "staff1", "Admin"),
             CancellationToken.None);
@@ -81,7 +81,7 @@ public class AdminKycHandlerTests
         db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id));
         await db.SaveChangesAsync();
 
-        var handler = new ApproveKycStepHandler(db, FakeServices.Audit());
+        var handler = new ApproveKycStepHandler(db, FakeServices.Audit(), FakeServices.Realtime());
         var result  = await handler.Handle(
             new ApproveKycStepCommand(dp.Id, step, "staff1", "Admin"),
             CancellationToken.None);
@@ -296,7 +296,7 @@ public class AdminKycHandlerTests
     public async Task AssignKycReviewer_ApplicationNotFound_ReturnsFalse()
     {
         using var db = DbContextFactory.Create();
-        var handler = new AssignKycReviewerHandler(db, FakeServices.Audit());
+        var handler = new AssignKycReviewerHandler(db, FakeServices.Realtime());
 
         var result = await handler.Handle(
             new AssignKycReviewerCommand("nonexistent", "staff1", "Admin"),
@@ -314,10 +314,11 @@ public class AdminKycHandlerTests
         db.DriverProfiles.Add(dp);
         var onb = BuildFullOnboarding(dp.Id);
         onb.AssignedReviewerStaffId = "existing-reviewer";
+        onb.AssignedAt              = DateTime.UtcNow.AddMinutes(-5);
         db.DriverOnboardings.Add(onb);
         await db.SaveChangesAsync();
 
-        var handler = new AssignKycReviewerHandler(db, FakeServices.Audit());
+        var handler = new AssignKycReviewerHandler(db, FakeServices.Realtime());
         var result  = await handler.Handle(
             new AssignKycReviewerCommand(dp.Id, "different-reviewer", "Admin"),
             CancellationToken.None);
@@ -335,7 +336,7 @@ public class AdminKycHandlerTests
         db.DriverOnboardings.Add(BuildFullOnboarding(dp.Id));
         await db.SaveChangesAsync();
 
-        var handler = new AssignKycReviewerHandler(db, FakeServices.Audit());
+        var handler = new AssignKycReviewerHandler(db, FakeServices.Realtime());
         var result  = await handler.Handle(
             new AssignKycReviewerCommand(dp.Id, "staff1", "Admin"),
             CancellationToken.None);
@@ -356,11 +357,107 @@ public class AdminKycHandlerTests
         db.DriverOnboardings.Add(onb);
         await db.SaveChangesAsync();
 
-        var handler = new AssignKycReviewerHandler(db, FakeServices.Audit());
+        var handler = new AssignKycReviewerHandler(db, FakeServices.Realtime());
         var result  = await handler.Handle(
             new AssignKycReviewerCommand(dp.Id, "staff1", "Admin"),
             CancellationToken.None);
 
         result.Success.Should().BeTrue(); // re-assigning self is allowed
+    }
+
+    // ── Review claims ────────────────────────────────────────────────────────
+
+    private static async Task<(Izigo.Infrastructure.Persistence.ApplicationDbContext Db, DriverProfileEntity Dp, DriverOnboardingEntity Onb)>
+        ClaimedApplication(string? holder, int claimedMinutesAgo = 5)
+    {
+        var db = DbContextFactory.Create();
+        var dp = new DriverProfileEntity { UserId = Guid.NewGuid().ToString() };
+        db.DriverProfiles.Add(dp);
+        var onb = BuildFullOnboarding(dp.Id);
+        onb.AssignedReviewerStaffId = holder;
+        onb.AssignedAt = holder is null ? null : DateTime.UtcNow.AddMinutes(-claimedMinutesAgo);
+        db.DriverOnboardings.Add(onb);
+        await db.SaveChangesAsync();
+        return (db, dp, onb);
+    }
+
+    [Fact]
+    public async Task AssignKycReviewer_ExpiredClaim_CanBeTakenOver()
+    {
+        var (db, dp, onb) = await ClaimedApplication("away-reviewer", claimedMinutesAgo: 45);
+        using var _ = db;
+
+        var result = await new AssignKycReviewerHandler(db, FakeServices.Realtime()).Handle(
+            new AssignKycReviewerCommand(dp.Id, "staff2", "Admin"), CancellationToken.None);
+
+        result.Success.Should().BeTrue();
+        onb.AssignedReviewerStaffId.Should().Be("staff2");
+    }
+
+    [Fact]
+    public async Task ApproveKycStep_ClaimedByAnotherReviewer_IsRefused()
+    {
+        var (db, dp, onb) = await ClaimedApplication("staff1");
+        using var _ = db;
+
+        var result = await new ApproveKycStepHandler(db, FakeServices.Audit(), FakeServices.Realtime()).Handle(
+            new ApproveKycStepCommand(dp.Id, "personal", "staff2", "Other"), CancellationToken.None);
+
+        result.ErrorCode.Should().Be("CLAIMED_BY_OTHER");
+        onb.PersonalStatus.Should().Be(OnboardingStepStatus.Submitted);
+    }
+
+    [Fact]
+    public async Task ApproveKycStep_Unclaimed_ClaimsForTheReviewer()
+    {
+        var (db, dp, onb) = await ClaimedApplication(null);
+        using var _ = db;
+
+        await new ApproveKycStepHandler(db, FakeServices.Audit(), FakeServices.Realtime()).Handle(
+            new ApproveKycStepCommand(dp.Id, "personal", "staff1", "Admin"), CancellationToken.None);
+
+        onb.AssignedReviewerStaffId.Should().Be("staff1");
+        onb.AssignedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
+    }
+
+    [Fact]
+    public async Task RejectKycApplication_StoresReason_AndReleasesTheClaim()
+    {
+        var (db, dp, onb) = await ClaimedApplication("staff1");
+        using var _ = db;
+
+        var result = await new RejectKycApplicationHandler(db, FakeServices.Audit(), FakeServices.Realtime(), FakeServices.Push())
+            .Handle(new RejectKycApplicationCommand(dp.Id, "Photos are unreadable", false, "staff1", "Admin"),
+                CancellationToken.None);
+
+        result.Success.Should().BeTrue();
+        onb.ApplicationRejectionReason.Should().Be("Photos are unreadable");
+        onb.SubmittedAt.Should().BeNull();
+        onb.AssignedReviewerStaffId.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task ReleaseKycReviewer_ByTheHolder_ClearsTheClaim()
+    {
+        var (db, dp, onb) = await ClaimedApplication("staff1");
+        using var _ = db;
+
+        await new ReleaseKycReviewerHandler(db, FakeServices.Realtime())
+            .Handle(new ReleaseKycReviewerCommand(dp.Id, "staff1"), CancellationToken.None);
+
+        onb.AssignedReviewerStaffId.Should().BeNull();
+        onb.AssignedAt.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task ReleaseKycReviewer_BySomeoneElse_KeepsTheClaim()
+    {
+        var (db, dp, onb) = await ClaimedApplication("staff1");
+        using var _ = db;
+
+        await new ReleaseKycReviewerHandler(db, FakeServices.Realtime())
+            .Handle(new ReleaseKycReviewerCommand(dp.Id, "staff2"), CancellationToken.None);
+
+        onb.AssignedReviewerStaffId.Should().Be("staff1");
     }
 }

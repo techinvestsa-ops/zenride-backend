@@ -67,13 +67,40 @@ file static class StepHelper
     }
 }
 
+// ── Review claims ─────────────────────────────────────────────────────────────
+// One reviewer works an application at a time. A claim is refreshed by every action
+// and lapses after ClaimTtl without one, so an abandoned review does not lock it.
+
+public static class KycClaim
+{
+    public static readonly TimeSpan Ttl = TimeSpan.FromMinutes(30);
+
+    public static bool IsActive(Domain.Entities.DriverOnboarding o, DateTime now) =>
+        o.AssignedReviewerStaffId is not null && o.AssignedAt is not null && o.AssignedAt.Value + Ttl > now;
+
+    public static bool HeldByOther(Domain.Entities.DriverOnboarding o, string staffId, DateTime now) =>
+        IsActive(o, now) && o.AssignedReviewerStaffId != staffId;
+
+    internal static void Take(Domain.Entities.DriverOnboarding o, string staffId, DateTime now)
+    {
+        o.AssignedReviewerStaffId = staffId;
+        o.AssignedAt              = now;
+    }
+
+    internal static void Clear(Domain.Entities.DriverOnboarding o)
+    {
+        o.AssignedReviewerStaffId = null;
+        o.AssignedAt              = null;
+    }
+}
+
 // ── POST /admin/kyc/{driver_id}/steps/{step}/approve ─────────────────────────
 // Permission: kyc.approve
 
 public record ApproveKycStepCommand(string DriverId, string Step,
     string StaffId, string StaffName) : IRequest<KycCommandResult>;
 
-public class ApproveKycStepHandler(IApplicationDbContext db, IAuditService audit)
+public class ApproveKycStepHandler(IApplicationDbContext db, IAuditService audit, IRealtimeService realtime)
     : IRequestHandler<ApproveKycStepCommand, KycCommandResult>
 {
     public async Task<KycCommandResult> Handle(ApproveKycStepCommand cmd, CancellationToken ct)
@@ -87,6 +114,10 @@ public class ApproveKycStepHandler(IApplicationDbContext db, IAuditService audit
         try { before = StepHelper.GetStepStatus(onboarding, cmd.Step); }
         catch (ArgumentException) { return new(false, "INVALID_STEP"); }
 
+        var now = DateTime.UtcNow;
+        if (KycClaim.HeldByOther(onboarding, cmd.StaffId, now)) return new(false, "CLAIMED_BY_OTHER");
+        KycClaim.Take(onboarding, cmd.StaffId, now);
+
         StepHelper.SetStepStatus(onboarding, cmd.Step, OnboardingStepStatus.Approved);
 
         await audit.RecordAsync(cmd.StaffId, cmd.StaffName, AuditAction.KycStepApprove,
@@ -94,6 +125,7 @@ public class ApproveKycStepHandler(IApplicationDbContext db, IAuditService audit
             before: new { Step = cmd.Step, Status = before.ToString() },
             after: new { Step = cmd.Step, Status = "Approved" }, ct: ct);
         await db.SaveChangesAsync(ct);
+        await KycNotify.InvalidateAdminQueueAsync(db, realtime, driver?.UserId ?? cmd.DriverId, ct);
         return new(true, null);
     }
 }
@@ -118,6 +150,10 @@ public class RejectKycStepHandler(IApplicationDbContext db, IAuditService audit,
         try { before = StepHelper.GetStepStatus(onboarding, cmd.Step); }
         catch (ArgumentException) { return new(false, "INVALID_STEP"); }
 
+        var now = DateTime.UtcNow;
+        if (KycClaim.HeldByOther(onboarding, cmd.StaffId, now)) return new(false, "CLAIMED_BY_OTHER");
+        KycClaim.Take(onboarding, cmd.StaffId, now);
+
         // reason string is what the driver app displays
         StepHelper.SetStepStatus(onboarding, cmd.Step, OnboardingStepStatus.Rejected, cmd.Reason);
 
@@ -137,6 +173,7 @@ public class RejectKycStepHandler(IApplicationDbContext db, IAuditService audit,
             pushTitle: "Document needs attention",
             pushBody: cmd.Reason,
             ct);
+        await KycNotify.InvalidateAdminQueueAsync(db, realtime, userId, ct);
 
         return new(true, null);
     }
@@ -157,6 +194,7 @@ public class ApproveKycApplicationHandler(IApplicationDbContext db, IAuditServic
         var ownerIds = KycDriverLookup.OwnerIds(driver, cmd.DriverId);
         var onboarding = await KycDriverLookup.FindOnboardingAsync(db, ownerIds, ct);
         if (onboarding is null) return new(false, "APPLICATION_NOT_FOUND");
+        if (KycClaim.HeldByOther(onboarding, cmd.StaffId, DateTime.UtcNow)) return new(false, "CLAIMED_BY_OTHER");
 
         // 422 if any step is not approved
         if (!StepHelper.AllStepsApproved(onboarding))
@@ -171,6 +209,8 @@ public class ApproveKycApplicationHandler(IApplicationDbContext db, IAuditServic
         driver.KycStatus          = KycStatus.Approved;
         driver.OnboardingComplete = true;
         onboarding.ReviewedAt     = DateTime.UtcNow;
+        onboarding.ApplicationRejectionReason = null;
+        KycClaim.Clear(onboarding);
 
         if (driver.VerticalsAllowed.Count == 0)
             driver.VerticalsAllowed = [Vertical.Ride, Vertical.CoRide, Vertical.Package];
@@ -197,6 +237,7 @@ public class ApproveKycApplicationHandler(IApplicationDbContext db, IAuditServic
             pushTitle: "You're approved",
             pushBody: "Your documents were approved. You can go online and start earning.",
             ct);
+        await KycNotify.InvalidateAdminQueueAsync(db, realtime, driver.UserId, ct);
 
         return new(true, null);
     }
@@ -215,13 +256,22 @@ public class RejectKycApplicationHandler(IApplicationDbContext db, IAuditService
         var driver = await KycDriverLookup.FindDriverAsync(db, cmd.DriverId, ct);
         if (driver is null) return new(false, "DRIVER_NOT_FOUND");
 
+        var onboarding = await KycDriverLookup.FindOnboardingAsync(
+            db, KycDriverLookup.OwnerIds(driver, cmd.DriverId), ct);
+        if (onboarding is not null && KycClaim.HeldByOther(onboarding, cmd.StaffId, DateTime.UtcNow))
+            return new(false, "CLAIMED_BY_OTHER");
+
         var before = new { driver.KycStatus };
         driver.KycStatus = KycStatus.Rejected;
 
-        // Re-open the application so the driver can fix it and resubmit.
-        var onboarding = await KycDriverLookup.FindOnboardingAsync(
-            db, KycDriverLookup.OwnerIds(driver, cmd.DriverId), ct);
-        if (onboarding is not null) onboarding.SubmittedAt = null;
+        // Re-open the application so the driver can fix it and resubmit. Their saved steps
+        // are kept, so they can resubmit as-is; the reason stays visible in their app.
+        if (onboarding is not null)
+        {
+            onboarding.SubmittedAt                = null;
+            onboarding.ApplicationRejectionReason = cmd.Reason;
+            KycClaim.Clear(onboarding);
+        }
 
         if (cmd.Blocklist)
         {
@@ -243,6 +293,7 @@ public class RejectKycApplicationHandler(IApplicationDbContext db, IAuditService
             pushTitle: "Application not approved",
             pushBody: cmd.Reason,
             ct);
+        await KycNotify.InvalidateAdminQueueAsync(db, realtime, driver.UserId, ct);
 
         return new(true, null);
     }
@@ -254,9 +305,11 @@ public class RejectKycApplicationHandler(IApplicationDbContext db, IAuditService
 public record AssignKycReviewerCommand(string DriverId, string StaffId, string StaffName)
     : IRequest<KycCommandResult>;
 
-public class AssignKycReviewerHandler(IApplicationDbContext db, IAuditService audit)
+public class AssignKycReviewerHandler(IApplicationDbContext db, IRealtimeService realtime)
     : IRequestHandler<AssignKycReviewerCommand, KycCommandResult>
 {
+    // Claims are not decisions, so they are not written to the audit log; every approve
+    // and reject made under the claim is.
     public async Task<KycCommandResult> Handle(AssignKycReviewerCommand cmd, CancellationToken ct)
     {
         var driver = await KycDriverLookup.FindDriverAsync(db, cmd.DriverId, ct);
@@ -264,17 +317,38 @@ public class AssignKycReviewerHandler(IApplicationDbContext db, IAuditService au
             db, KycDriverLookup.OwnerIds(driver, cmd.DriverId), ct);
         if (onboarding is null) return new(false, "APPLICATION_NOT_FOUND");
 
-        // If already assigned to another reviewer, reject
-        if (onboarding.AssignedReviewerStaffId is not null &&
-            onboarding.AssignedReviewerStaffId != cmd.StaffId)
+        var now = DateTime.UtcNow;
+        if (KycClaim.HeldByOther(onboarding, cmd.StaffId, now))
             return new(false, "ALREADY_ASSIGNED");
 
-        onboarding.AssignedReviewerStaffId = cmd.StaffId;
-
-        await audit.RecordAsync(cmd.StaffId, cmd.StaffName, AuditAction.KycStepApprove,
-            "DriverOnboarding", cmd.DriverId, reason: "KYC application claimed for review",
-            after: new { AssignedTo = cmd.StaffId }, ct: ct);
+        KycClaim.Take(onboarding, cmd.StaffId, now);
         await db.SaveChangesAsync(ct);
+        await KycNotify.InvalidateAdminQueueAsync(db, realtime, driver?.UserId ?? cmd.DriverId, ct);
+        return new(true, null);
+    }
+}
+
+// ── POST /admin/kyc/{driver_id}/release ──────────────────────────────────────
+// Gives up this reviewer's claim, e.g. when they close the application.
+
+public record ReleaseKycReviewerCommand(string DriverId, string StaffId) : IRequest<KycCommandResult>;
+
+public class ReleaseKycReviewerHandler(IApplicationDbContext db, IRealtimeService realtime)
+    : IRequestHandler<ReleaseKycReviewerCommand, KycCommandResult>
+{
+    public async Task<KycCommandResult> Handle(ReleaseKycReviewerCommand cmd, CancellationToken ct)
+    {
+        var driver = await KycDriverLookup.FindDriverAsync(db, cmd.DriverId, ct);
+        var onboarding = await KycDriverLookup.FindOnboardingAsync(
+            db, KycDriverLookup.OwnerIds(driver, cmd.DriverId), ct);
+        if (onboarding is null) return new(false, "APPLICATION_NOT_FOUND");
+
+        // Only the holder can release; anyone else's request is a no-op.
+        if (onboarding.AssignedReviewerStaffId != cmd.StaffId) return new(true, null);
+
+        KycClaim.Clear(onboarding);
+        await db.SaveChangesAsync(ct);
+        await KycNotify.InvalidateAdminQueueAsync(db, realtime, driver?.UserId ?? cmd.DriverId, ct);
         return new(true, null);
     }
 }

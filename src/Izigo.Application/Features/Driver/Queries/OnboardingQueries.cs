@@ -78,7 +78,8 @@ public class GetKycHandler(IApplicationDbContext db)
             SubmittedAt:    onb.SubmittedAt,
             ReviewedAt:     onb.ReviewedAt,
             EstimatedHours: dp?.KycStatus == Domain.Enums.KycStatus.InReview ? 24 : null,
-            FaceMatchScore: onb.FaceMatchScore);
+            FaceMatchScore: onb.FaceMatchScore,
+            RejectionReason: onb.ApplicationRejectionReason);
     }
 }
 

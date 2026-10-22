@@ -28,7 +28,8 @@ public record KycDetailDto(
     DateTime? SubmittedAt,
     DateTime? ReviewedAt,
     int? EstimatedHours,        // spec: estimated_hours
-    decimal? FaceMatchScore
+    decimal? FaceMatchScore,
+    string? RejectionReason = null  // why the whole application was rejected, until resubmitted
 );
 
 // ── GET /driver/banks ─────────────────────────────────────────────────────────
