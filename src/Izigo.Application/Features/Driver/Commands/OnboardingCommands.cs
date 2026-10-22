@@ -286,6 +286,7 @@ public class SubmitOnboardingHandler(IApplicationDbContext db, IRealtimeService 
                 "CONFLICT: Application has already been submitted.");
 
         onb.SubmittedAt = DateTime.UtcNow;
+        onb.ApplicationRejectionReason = null;
 
         var dp = await db.DriverProfiles.FirstOrDefaultAsync(d => d.UserId == cmd.DriverId, ct);
         if (dp != null)

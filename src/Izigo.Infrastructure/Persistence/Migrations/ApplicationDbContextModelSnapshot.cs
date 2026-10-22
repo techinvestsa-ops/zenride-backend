@@ -955,6 +955,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ApplicationRejectionReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("AssignedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("AssignedReviewerStaffId")
                         .HasColumnType("nvarchar(max)");
 

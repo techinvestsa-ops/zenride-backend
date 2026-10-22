@@ -63,10 +63,7 @@ public class KycAdminController : AdminBaseController
         var result = await Mediator.Send(
             new ApproveKycStepCommand(driverId, step, StaffId, CurrentStaff.Email ?? StaffId), ct);
 
-        if (!result.Success)
-            return result.ErrorCode == "APPLICATION_NOT_FOUND"
-                ? NotFound(new { success = false, error = new { code = result.ErrorCode } })
-                : BadRequest(new { success = false, error = new { code = result.ErrorCode } });
+        if (!result.Success) return KycFailure(result.ErrorCode);
 
         return Ok(new { success = true });
     }
@@ -85,10 +82,7 @@ public class KycAdminController : AdminBaseController
         var result = await Mediator.Send(
             new RejectKycStepCommand(driverId, step, req.Reason, StaffId, CurrentStaff.Email ?? StaffId), ct);
 
-        if (!result.Success)
-            return result.ErrorCode == "APPLICATION_NOT_FOUND"
-                ? NotFound(new { success = false, error = new { code = result.ErrorCode } })
-                : BadRequest(new { success = false, error = new { code = result.ErrorCode } });
+        if (!result.Success) return KycFailure(result.ErrorCode);
 
         return Ok(new { success = true });
     }
@@ -105,6 +99,7 @@ public class KycAdminController : AdminBaseController
 
         if (!result.Success)
         {
+            if (result.ErrorCode == "CLAIMED_BY_OTHER") return KycFailure(result.ErrorCode);
             if (result.ErrorCode?.StartsWith("STEPS_NOT_APPROVED") == true)
             {
                 var unapproved = result.ErrorCode.Split(":").ElementAtOrDefault(1)?.Split(",") ?? [];
@@ -134,9 +129,7 @@ public class KycAdminController : AdminBaseController
         var result = await Mediator.Send(new RejectKycApplicationCommand(
             driverId, req.Reason, req.Blocklist, StaffId, CurrentStaff.Email ?? StaffId), ct);
 
-        return result.Success
-            ? Ok(new { success = true })
-            : NotFound(new { success = false, error = new { code = result.ErrorCode } });
+        return result.Success ? Ok(new { success = true }) : KycFailure(result.ErrorCode);
     }
 
     /// <summary>Claims the KYC application for this reviewer, preventing two reviewers from working the same file.</summary>
@@ -155,6 +148,17 @@ public class KycAdminController : AdminBaseController
                 : NotFound(new { success = false, error = new { code = result.ErrorCode } });
 
         return Ok(new { success = true });
+    }
+
+    /// <summary>Releases this reviewer's claim on the application so a colleague can pick it up.</summary>
+    [HttpPost("api/v1/admin/kyc/{driverId}/release")]
+    public async Task<IActionResult> ReleaseReviewer(string driverId, CancellationToken ct = default)
+    {
+        var check = CheckPermission("kyc.view");
+        if (check is not null) return check;
+
+        var result = await Mediator.Send(new ReleaseKycReviewerCommand(driverId, StaffId), ct);
+        return result.Success ? Ok(new { success = true }) : KycFailure(result.ErrorCode);
     }
 
     /// <summary>Returns KYC queue health: depth, oldest wait, approvals per reviewer, rejection reasons ranked.</summary>
@@ -196,6 +200,18 @@ public class KycAdminController : AdminBaseController
             ? Ok(new { success = true })
             : NotFound(new { success = false, error = new { code = result.ErrorCode } });
     }
+
+    private IActionResult KycFailure(string? code) => code switch
+    {
+        "APPLICATION_NOT_FOUND" or "DRIVER_NOT_FOUND" =>
+            NotFound(new { success = false, error = new { code } }),
+        "CLAIMED_BY_OTHER" => Conflict(new
+        {
+            success = false,
+            error = new { code, message = "Another reviewer is working on this application." }
+        }),
+        _ => BadRequest(new { success = false, error = new { code } }),
+    };
 }
 
 // ── Request shapes ────────────────────────────────────────────────────────────

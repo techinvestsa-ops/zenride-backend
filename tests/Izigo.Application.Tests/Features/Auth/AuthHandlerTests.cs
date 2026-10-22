@@ -402,4 +402,91 @@ public class AuthHandlerTests
         db.OtpRecords.First(r => r.OtpToken == "resend3").CodeHash
             .Should().Be(RequestOtpHandler.HashCode("999999"));
     }
+
+    [Fact]
+    public async Task ResendOtp_CooldownRunsFromTheLatestSend()
+    {
+        using var db = DbContextFactory.Create();
+        db.OtpRecords.Add(new OtpRecord
+        {
+            OtpToken  = "resend4", Identifier = "+2250700000043",
+            CodeHash  = RequestOtpHandler.HashCode("111111"),
+            Purpose   = OtpPurpose.Register, Role = "driver",
+            ExpiresAt = DateTime.UtcNow.AddMinutes(3),
+            CreatedAt = DateTime.UtcNow.AddMinutes(-2)
+        });
+        await db.SaveChangesAsync();
+
+        var handler = new ResendOtpHandler(db, FakeServices.Otp("222222"), FakeServices.OtpSettings());
+        await handler.Handle(new ResendOtpCommand("resend4", null), CancellationToken.None);
+        var again = () => handler.Handle(new ResendOtpCommand("resend4", null), CancellationToken.None);
+
+        await again.Should().ThrowAsync<InvalidOperationException>().WithMessage("*Please wait*");
+        db.OtpRecords.First(r => r.OtpToken == "resend4").ExpiresAt
+            .Should().BeCloseTo(DateTime.UtcNow.AddMinutes(5), TimeSpan.FromSeconds(5));
+    }
+
+    // ── RegisterHandler ──────────────────────────────────────────────────────
+
+    private static RegisterCommand Register(string phone, string first = "Ama", string? email = null,
+        string password = "Secret123!") =>
+        new(first, "Kone", phone, email, password, "driver", null, "fr", Device());
+
+    private static RegisterHandler RegisterHandler(global::Izigo.Infrastructure.Persistence.ApplicationDbContext db) =>
+        new(db, FakeServices.Token(), FakeServices.Hasher());
+
+    [Fact]
+    public async Task Register_ReplacesAnUnverifiedEarlierAttempt()
+    {
+        using var db = DbContextFactory.Create();
+        await RegisterHandler(db).Handle(Register("+2250700000050", first: "Old"), CancellationToken.None);
+
+        await RegisterHandler(db).Handle(
+            Register("+2250700000050", first: "New", password: "Changed123!"), CancellationToken.None);
+
+        var users = db.Users.Where(u => u.Phone == "+2250700000050").ToList();
+        users.Should().ContainSingle();
+        users[0].FirstName.Should().Be("New");
+        users[0].PasswordHash.Should().Be("hashed:Changed123!");
+        db.DriverProfiles.Count(d => d.UserId == users[0].Id).Should().Be(1);
+    }
+
+    [Fact]
+    public async Task Register_RejectsAVerifiedPhone()
+    {
+        using var db = DbContextFactory.Create();
+        await RegisterHandler(db).Handle(Register("+2250700000051"), CancellationToken.None);
+        db.Users.Single(u => u.Phone == "+2250700000051").PhoneVerified = true;
+        await db.SaveChangesAsync();
+
+        var act = () => RegisterHandler(db).Handle(Register("+2250700000051"), CancellationToken.None);
+
+        await act.Should().ThrowAsync<ArgumentException>().WithMessage("*Phone already registered*");
+    }
+
+    [Fact]
+    public async Task Register_ReleasesAnEmailHeldOnlyByAnUnverifiedSignUp()
+    {
+        using var db = DbContextFactory.Create();
+        await RegisterHandler(db).Handle(Register("+2250700000052", email: "ama@example.com"), CancellationToken.None);
+
+        await RegisterHandler(db).Handle(Register("+2250700000053", email: "ama@example.com"), CancellationToken.None);
+
+        db.Users.Single(u => u.Phone == "+2250700000052").Email.Should().BeNull();
+        db.Users.Single(u => u.Phone == "+2250700000053").Email.Should().Be("ama@example.com");
+    }
+
+    [Fact]
+    public async Task Register_RejectsAnEmailOfAVerifiedUser()
+    {
+        using var db = DbContextFactory.Create();
+        await RegisterHandler(db).Handle(Register("+2250700000054", email: "kofi@example.com"), CancellationToken.None);
+        db.Users.Single(u => u.Phone == "+2250700000054").PhoneVerified = true;
+        await db.SaveChangesAsync();
+
+        var act = () => RegisterHandler(db).Handle(
+            Register("+2250700000055", email: "kofi@example.com"), CancellationToken.None);
+
+        await act.Should().ThrowAsync<ArgumentException>().WithMessage("*Email already registered*");
+    }
 }

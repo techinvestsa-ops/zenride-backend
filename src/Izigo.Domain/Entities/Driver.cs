@@ -69,6 +69,11 @@ public class DriverOnboarding : BaseEntity
     public DateTime? SubmittedAt { get; set; }
     public DateTime? ReviewedAt { get; set; }
     public string? AssignedReviewerStaffId { get; set; }
+    /// When the reviewer claimed or last acted on the application; a claim lapses after a
+    /// period of inactivity so an abandoned review does not lock it.
+    public DateTime? AssignedAt { get; set; }
+    /// Why the whole application was rejected, shown in the driver app until they resubmit.
+    public string? ApplicationRejectionReason { get; set; }
     public decimal? FaceMatchScore { get; set; }
 }
 

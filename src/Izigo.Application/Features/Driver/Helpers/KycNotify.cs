@@ -61,6 +61,18 @@ internal static class KycNotify
         await PublishAdminKycEventAsync(realtime, market, row.ProfileId, name, stepKey, resubmit: true, ct);
     }
 
+    /// <summary>Refreshes the KYC queue on every admin console in the driver's market, so
+    /// reviewers see claims and decisions made by colleagues.</summary>
+    public static async Task InvalidateAdminQueueAsync(
+        IApplicationDbContext db,
+        IRealtimeService realtime,
+        string driverUserId,
+        CancellationToken ct)
+    {
+        var market = await ResolveAdminMarketAsync(db, driverUserId, ct);
+        await realtime.PublishToAdminAsync(market, "console.invalidate", new { scope = "kyc" }, ct);
+    }
+
     public static async Task NotifyDriverKycStatusAsync(
         IApplicationDbContext db,
         IRealtimeService realtime,

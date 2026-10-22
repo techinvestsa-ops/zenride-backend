@@ -14,10 +14,12 @@ public record KycDocumentDto(string Id, string Type, string Status, string? Sign
 public record KycStepDto(string Key, string Status, string? ValuesJson,
     string? RejectionReason, IEnumerable<KycDocumentDto> Documents);
 
+/// <summary>AssignedReviewer* and ClaimExpiresAt are set only while a reviewer's claim is active.</summary>
 public record KycQueueItemDto(
     string DriverId, string DriverName, string PhoneMasked,
     DateTime? SubmittedAt, double HoursWaiting, bool PastSla,
-    string? AssignedReviewerStaffId, IEnumerable<KycStepDto> Steps);
+    string? AssignedReviewerStaffId, IEnumerable<KycStepDto> Steps,
+    string? AssignedReviewerName = null, DateTime? ClaimExpiresAt = null);
 
 public record KycAutomatedChecksDto(string? IdBureauResult, decimal? FaceMatchScore,
     string? BankNameEnquiry, bool DuplicateDeviceHit, bool PlateAlreadyRegistered);
@@ -41,7 +43,7 @@ internal sealed record KycDocData(string Id, string DriverId, DocumentType Type,
     OnboardingStepStatus Status, string FileUrl, DateTime? ExpiresAt, string? RejectionReason);
 
 internal sealed record KycOnboardingData(
-    string DriverId, DateTime? SubmittedAt, string? AssignedReviewerStaffId,
+    string DriverId, DateTime? SubmittedAt, string? AssignedReviewerStaffId, DateTime? AssignedAt,
     OnboardingStepStatus PersonalStatus,   string? PersonalDataJson,   string? PersonalRejectionReason,
     OnboardingStepStatus IdentityStatus,   string? IdentityDataJson,   string? IdentityRejectionReason,
     OnboardingStepStatus LicenseStatus,    string? LicenseDataJson,    string? LicenseRejectionReason,
@@ -55,6 +57,27 @@ internal sealed record KycOnboardingData(
 
 internal static class KycStepBuilder
 {
+    /// <summary>The active claim on an application, with the reviewer's display name.</summary>
+    public static (string? StaffId, string? Name, DateTime? ExpiresAt) Claim(
+        KycOnboardingData o, IReadOnlyDictionary<string, string> staffNames, DateTime now)
+    {
+        if (o.AssignedReviewerStaffId is null || o.AssignedAt is null
+            || o.AssignedAt.Value + Commands.KycClaim.Ttl <= now)
+            return (null, null, null);
+        staffNames.TryGetValue(o.AssignedReviewerStaffId, out var name);
+        return (o.AssignedReviewerStaffId, name, o.AssignedAt.Value + Commands.KycClaim.Ttl);
+    }
+
+    public static async Task<Dictionary<string, string>> StaffNamesAsync(
+        IApplicationDbContext db, IEnumerable<string?> staffIds, CancellationToken ct)
+    {
+        var ids = staffIds.OfType<string>().Distinct().ToList();
+        if (ids.Count == 0) return [];
+        return await db.Staff
+            .Where(st => ids.Contains(st.Id))
+            .ToDictionaryAsync(st => st.Id, st => string.IsNullOrWhiteSpace(st.Name) ? st.Email : st.Name, ct);
+    }
+
     private static DocumentType[] StepDocTypes(string step) => step switch
     {
         "identity"  => [DocumentType.GovernmentId],
@@ -121,7 +144,7 @@ public class GetKycQueueHandler(IApplicationDbContext db, IFileStorageService st
             .Skip((req.Page - 1) * perPage)
             .Take(perPage)
             .Select(o => new KycOnboardingData(
-                o.DriverId, o.SubmittedAt, o.AssignedReviewerStaffId,
+                o.DriverId, o.SubmittedAt, o.AssignedReviewerStaffId, o.AssignedAt,
                 o.PersonalStatus,   o.PersonalDataJson,   o.PersonalRejectionReason,
                 o.IdentityStatus,   o.IdentityDataJson,   o.IdentityRejectionReason,
                 o.LicenseStatus,    o.LicenseDataJson,    o.LicenseRejectionReason,
@@ -148,8 +171,11 @@ public class GetKycQueueHandler(IApplicationDbContext db, IFileStorageService st
             .ToListAsync(ct);
 
         var now   = DateTime.UtcNow;
+        var staffNames = await KycStepBuilder.StaffNamesAsync(
+            db, onboardings.Select(o => o.AssignedReviewerStaffId), ct);
         var items = onboardings.Select(o =>
         {
+            var claim = KycStepBuilder.Claim(o, staffNames, now);
             driverMap.TryGetValue(o.DriverId, out var drv);
             var driverDocs = docs
                 .Where(d => d.DriverId == o.DriverId || (drv != null && (d.DriverId == drv.Id || d.DriverId == drv.UserId)))
@@ -162,8 +188,9 @@ public class GetKycQueueHandler(IApplicationDbContext db, IFileStorageService st
                 drv is not null ? $"{drv.FirstName} {drv.LastName}".Trim() : "—",
                 drv is not null ? Ops.Queries.GetLiveOpsHandler.MaskPhone(drv.Phone) : "—",
                 o.SubmittedAt, hoursWaiting, hoursWaiting > SlaHours,
-                o.AssignedReviewerStaffId,
-                KycStepBuilder.Build(o, driverDocs, storage));
+                claim.StaffId,
+                KycStepBuilder.Build(o, driverDocs, storage),
+                claim.Name, claim.ExpiresAt);
         }).ToArray();
 
         return AdminApiResponse.Ok(items, new AdminPagedMeta(req.Page, perPage, total, lastPage));
@@ -186,7 +213,7 @@ public class GetKycDetailHandler(IApplicationDbContext db, IFileStorageService s
             .Where(o => ownerIds.Contains(o.DriverId))
             .OrderByDescending(o => o.SubmittedAt)
             .Select(o => new KycOnboardingData(
-                o.DriverId, o.SubmittedAt, o.AssignedReviewerStaffId,
+                o.DriverId, o.SubmittedAt, o.AssignedReviewerStaffId, o.AssignedAt,
                 o.PersonalStatus,   o.PersonalDataJson,   o.PersonalRejectionReason,
                 o.IdentityStatus,   o.IdentityDataJson,   o.IdentityRejectionReason,
                 o.LicenseStatus,    o.LicenseDataJson,    o.LicenseRejectionReason,
@@ -228,12 +255,15 @@ public class GetKycDetailHandler(IApplicationDbContext db, IFileStorageService s
             .Where(d => d.UserId == driver.UserId)
             .AnyAsync(d => db.UserDevices.Any(o => o.DeviceId == d.DeviceId && o.UserId != driver.UserId), ct);
 
+        var staffNames = await KycStepBuilder.StaffNamesAsync(db, [onboarding.AssignedReviewerStaffId], ct);
+        var claim = KycStepBuilder.Claim(onboarding, staffNames, now);
+
         var app = new KycQueueItemDto(
             req.DriverId,
             driver is not null ? $"{driver.FirstName} {driver.LastName}".Trim() : "—",
             driver is not null ? Ops.Queries.GetLiveOpsHandler.MaskPhone(driver.Phone) : "—",
             onboarding.SubmittedAt, hoursWaiting, hoursWaiting > 48,
-            onboarding.AssignedReviewerStaffId, steps);
+            claim.StaffId, steps, claim.Name, claim.ExpiresAt);
 
         var checks = new KycAutomatedChecksDto(
             IdBureauResult:         null,
