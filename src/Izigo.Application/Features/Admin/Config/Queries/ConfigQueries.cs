@@ -37,7 +37,26 @@ public class GetAdminConfigHandler(IApplicationDbContext db, IOptions<DispatchSe
                 dispatchOptions.Value.LocationPingOnTripS, dispatchOptions.Value.LocationPingIdleS,
                 null, null);
 
-        return AdminApiResponse.Ok(new { dispatch = dispatchDto, flags });
+        var platform = await db.PlatformConfigs
+            .FirstOrDefaultAsync(c => c.Market == req.Market, ct);
+
+        object? versions = platform is null ? null : new
+        {
+            ios = new
+            {
+                latest = platform.LatestAppVersionIos,
+                minimum = platform.MinAppVersionIos,
+                store_url = platform.IosStoreUrl
+            },
+            android = new
+            {
+                latest = platform.LatestAppVersionAndroid,
+                minimum = platform.MinAppVersionAndroid,
+                store_url = platform.AndroidStoreUrl
+            }
+        };
+
+        return AdminApiResponse.Ok(new { dispatch = dispatchDto, flags, versions });
     }
 }
 

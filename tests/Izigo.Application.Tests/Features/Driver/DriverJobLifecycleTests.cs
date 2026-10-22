@@ -102,7 +102,7 @@ public class DriverJobLifecycleTests
     public async Task DeclineJob_NotFound_ThrowsKeyNotFound()
     {
         using var db = DbContextFactory.Create();
-        var handler = new DeclineJobHandler(db, FakeServices.JobDispatcher());
+        var handler = new DeclineJobHandler(db, FakeServices.JobDispatcher(), FakeServices.Realtime());
 
         var act = () => handler.Handle(
             new DeclineJobCommand("driver1", "nonexistent", null), CancellationToken.None);
@@ -122,7 +122,7 @@ public class DriverJobLifecycleTests
         db.Trips.Add(trip);
         await db.SaveChangesAsync();
 
-        var handler = new DeclineJobHandler(db, FakeServices.JobDispatcher());
+        var handler = new DeclineJobHandler(db, FakeServices.JobDispatcher(), FakeServices.Realtime());
         await handler.Handle(
             new DeclineJobCommand(driverId, trip.Id, "Too far"), CancellationToken.None);
 
@@ -293,7 +293,7 @@ public class DriverJobLifecycleTests
         db.Trips.Add(trip);
         await db.SaveChangesAsync();
 
-        var handler = new ArrivedDropoffHandler(db);
+        var handler = new ArrivedDropoffHandler(db, FakeServices.Realtime());
         await handler.Handle(new ArrivedDropoffCommand(driverId, trip.Id), CancellationToken.None);
 
         db.Trips.Find(trip.Id)!.JobState.Should().Be(JobState.ArrivedAtDropoff);

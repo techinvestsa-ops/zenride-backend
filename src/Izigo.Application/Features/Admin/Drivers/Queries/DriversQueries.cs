@@ -77,7 +77,9 @@ public class GetAdminDriversHandler(IApplicationDbContext db)
                 d.User.FirstName.Contains(req.Q) || d.User.LastName.Contains(req.Q) ||
                 d.User.Phone.Contains(req.Q));
 
+        // Newest first, so drivers who just signed up are on the first page.
         var profiles = await profileQuery
+            .OrderByDescending(d => d.CreatedAt)
             .Select(d => new
             {
                 d.Id, d.UserId, d.KycStatus, d.IsOnline, d.AcceptanceRate,

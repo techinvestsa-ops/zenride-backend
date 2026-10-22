@@ -70,6 +70,19 @@ public class DriverController : BaseController
     public async Task<IActionResult> SubmitSelfie([FromBody] SubmitSelfieRequest body)
         => Ok(await Mediator.Send(new SubmitSelfieCommand(CurrentUserId, body)));
 
+    /// <summary>Uploads a KYC document (image or PDF) and returns the file_url to send with the onboarding step.</summary>
+    [HttpPost("onboarding/documents")]
+    [RequestSizeLimit(11 * 1024 * 1024)]    // 11 MB hard limit — handler enforces 10 MB business rule
+    public async Task<IActionResult> UploadKycDocument(IFormFile file, CancellationToken ct)
+    {
+        if (file == null || file.Length == 0)
+            return Unprocessable("VALIDATION_ERROR", "No file uploaded.");
+
+        await using var stream = file.OpenReadStream();
+        return Ok(await Mediator.Send(new UploadKycDocumentCommand(
+            CurrentUserId, stream, file.ContentType, file.Length), ct));
+    }
+
     /// <summary>Finalises and submits the completed onboarding application for review.</summary>
     [HttpPost("onboarding/submit")]
     public async Task<IActionResult> SubmitOnboarding()
