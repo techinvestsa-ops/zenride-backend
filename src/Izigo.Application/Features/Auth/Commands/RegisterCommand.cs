@@ -34,12 +34,24 @@ public class RegisterHandler(
         if (!Enum.TryParse<UserRole>(req.Role, true, out var role))
             throw new ArgumentException("VALIDATION_ERROR: Invalid role.");
 
-        if (await db.Users.AnyAsync(u => u.Phone == req.Phone && u.Role == role, ct))
+        // A registration only counts once the phone is verified. An unverified account
+        // for this number is an abandoned attempt, so signing up again replaces it.
+        var pending = await db.Users
+            .FirstOrDefaultAsync(u => u.Phone == req.Phone && u.Role == role, ct);
+        if (pending is { PhoneVerified: true })
             throw new ArgumentException("VALIDATION_ERROR: Phone already registered.");
 
-        if (!string.IsNullOrWhiteSpace(req.Email) &&
-            await db.Users.AnyAsync(u => u.Email == req.Email.Trim().ToLower() && u.Role == role, ct))
-            throw new ArgumentException("VALIDATION_ERROR: Email already registered.");
+        var email = string.IsNullOrWhiteSpace(req.Email) ? null : req.Email.Trim().ToLower();
+        if (email is not null)
+        {
+            var holders = await db.Users
+                .Where(u => u.Email == email && u.Role == role && (pending == null || u.Id != pending.Id))
+                .ToListAsync(ct);
+            if (holders.Any(u => u.PhoneVerified))
+                throw new ArgumentException("VALIDATION_ERROR: Email already registered.");
+            // Another unfinished sign-up is only holding the email; release it.
+            foreach (var holder in holders) holder.Email = null;
+        }
 
         string? referrerId = null;
         if (!string.IsNullOrWhiteSpace(req.ReferralCode))
@@ -48,13 +60,25 @@ public class RegisterHandler(
                 .Select(u => u.Id)
                 .FirstOrDefaultAsync(ct);
 
+        if (pending is not null)
+        {
+            pending.FirstName        = req.FirstName.Trim();
+            pending.LastName         = req.LastName.Trim();
+            pending.Email            = email;
+            pending.PasswordHash     = string.IsNullOrWhiteSpace(req.Password) ? null : hasher.Hash(req.Password);
+            pending.Language         = req.Language;
+            pending.ReferredByUserId = referrerId;
+            await db.SaveChangesAsync(ct);
+            return await AuthBundleBuilder.BuildAsync(pending, db, tokenSvc, req.Device, req.IpAddress, ct);
+        }
+
         var user = new User
         {
             FirstName = req.FirstName.Trim(),
             LastName = req.LastName.Trim(),
             Phone = req.Phone,
             PhoneVerified = false,
-            Email = string.IsNullOrWhiteSpace(req.Email) ? null : req.Email.Trim().ToLower(),
+            Email = email,
             PasswordHash = string.IsNullOrWhiteSpace(req.Password) ? null : hasher.Hash(req.Password),
             Role = role,
             Language = req.Language,

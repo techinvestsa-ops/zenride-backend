@@ -59,8 +59,8 @@ public class GetAdminDriversHandler(IApplicationDbContext db)
     {
         var now = DateTime.UtcNow;
 
-        // Start from DriverProfiles
-        var profileQuery = db.DriverProfiles.AsQueryable();
+        // Start from DriverProfiles. A sign-up only counts once the phone is verified.
+        var profileQuery = db.DriverProfiles.Where(d => d.User.PhoneVerified);
 
         if (req.Online.HasValue)
             profileQuery = profileQuery.Where(d => d.IsOnline == req.Online.Value);

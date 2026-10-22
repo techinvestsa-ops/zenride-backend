@@ -26,16 +26,20 @@ public class ResendOtpHandler(
         if (record.ExpiresAt <= DateTime.UtcNow)
             throw new InvalidOperationException("CONFLICT: OTP session has expired. Request a new one.");
 
-        if (record.CreatedAt.AddSeconds(cfg.ResendCooldownSeconds) > DateTime.UtcNow)
+        // Each send restarts the code's lifetime, so the last send is ExpiresAt minus that
+        // lifetime. The cooldown runs from the latest send, not the first.
+        var lastSentAt = record.ExpiresAt.AddSeconds(-cfg.ExpirySeconds);
+        var resendAt   = lastSentAt.AddSeconds(cfg.ResendCooldownSeconds);
+        if (resendAt > DateTime.UtcNow)
         {
-            var wait = (int)(record.CreatedAt.AddSeconds(cfg.ResendCooldownSeconds) - DateTime.UtcNow).TotalSeconds;
+            var wait = (int)Math.Ceiling((resendAt - DateTime.UtcNow).TotalSeconds);
             throw new InvalidOperationException($"CONFLICT: Please wait {wait} seconds before resending.");
         }
 
         var code = await otpSvc.GenerateAndSendAsync(record.Identifier, record.Purpose.ToString(), ct);
-        record.CodeHash    = RequestOtpHandler.HashCode(code);
+        record.CodeHash     = RequestOtpHandler.HashCode(code);
         record.AttemptCount = 0;
-        record.UpdatedAt   = DateTime.UtcNow;
+        record.ExpiresAt    = DateTime.UtcNow.AddSeconds(cfg.ExpirySeconds);
         await db.SaveChangesAsync(ct);
 
         var remaining = (int)(record.ExpiresAt - DateTime.UtcNow).TotalSeconds;
