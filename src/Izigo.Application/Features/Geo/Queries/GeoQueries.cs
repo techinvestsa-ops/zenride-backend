@@ -57,8 +57,11 @@ public class ReverseGeocodeHandler(IGeoService geo)
 {
     public async Task<ReverseGeocodeDto> Handle(ReverseGeocodeQuery req, CancellationToken ct)
     {
-        var result = await geo.ReverseGeocodeAsync(req.Lat, req.Lng, ct)
-            ?? throw new KeyNotFoundException("Could not reverse-geocode the given coordinates.");
+        var result = await geo.ReverseGeocodeAsync(req.Lat, req.Lng, ct);
+        if (result is null)
+        {
+            return new ReverseGeocodeDto("Current location", req.Lat, req.Lng);
+        }
 
         return new ReverseGeocodeDto(result.FormattedAddress, result.Lat, result.Lng);
     }
