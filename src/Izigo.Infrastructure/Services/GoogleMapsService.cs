@@ -67,9 +67,9 @@ public class GoogleMapsService(
                     "[Maps] Autocomplete status={Status} detail={Detail} q={Q}",
                     status, detail, q);
                 throw new MapsUnavailableException(
-                    detail is { Length: > 0 }
-                        ? $"Google Places autocomplete failed ({status}): {detail}"
-                        : $"Google Places autocomplete failed ({status}).");
+                    status == "REQUEST_DENIED"
+                        ? "Place search is temporarily unavailable. Please try again later."
+                        : "Place search is temporarily unavailable.");
             }
 
             return [.. doc.RootElement.GetProperty("predictions").EnumerateArray()
@@ -156,7 +156,16 @@ public class GoogleMapsService(
             if (doc is null) return null;
 
             var status = doc.RootElement.GetProperty("status").GetString();
-            if (status is not ("OK" or "ZERO_RESULTS")) return null;
+            if (status is not ("OK" or "ZERO_RESULTS"))
+            {
+                var detail = doc.RootElement.TryGetProperty("error_message", out var err)
+                    ? err.GetString()
+                    : null;
+                logger.LogWarning(
+                    "[Maps] ReverseGeocode status={Status} detail={Detail} lat={Lat} lng={Lng}",
+                    status, detail, lat, lng);
+                return null;
+            }
 
             var results = doc.RootElement.GetProperty("results");
             if (results.GetArrayLength() == 0) return null;
