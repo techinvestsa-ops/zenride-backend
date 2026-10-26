@@ -39,7 +39,12 @@ try
         });
 
     builder.Services.AddSwaggerServices();
-    builder.Services.AddSignalR();
+    builder.Services.AddSignalR(options =>
+    {
+        options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+        options.ClientTimeoutInterval = TimeSpan.FromSeconds(60);
+        options.EnableDetailedErrors = true;
+    });
 
     var corsOrigins = (builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? [])
         .Append("http://localhost:3000")

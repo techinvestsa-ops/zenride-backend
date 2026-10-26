@@ -106,11 +106,17 @@ public class DeclineJobHandler(IApplicationDbContext db, IJobDispatcher jobDispa
         if (trip.JobState != JobState.Offered)
             throw new InvalidOperationException("CONFLICT: Job is no longer in an offered state.");
 
-        // Reset to Broadcasting so dispatch can re-offer to the next driver.
-        // The Offered history entry with ActorId = this driver is the decline record.
         trip.JobState = JobState.Broadcasting;
         trip.DriverId = null;
 
+        db.TripStateHistories.Add(new Domain.Entities.TripStateHistory
+        {
+            TripId     = trip.Id,
+            State      = JobState.RejectedByDriver,
+            OccurredAt = DateTime.UtcNow,
+            Actor      = "driver",
+            ActorId    = cmd.DriverId,
+        });
         db.TripStateHistories.Add(new Domain.Entities.TripStateHistory
         {
             TripId     = trip.Id,

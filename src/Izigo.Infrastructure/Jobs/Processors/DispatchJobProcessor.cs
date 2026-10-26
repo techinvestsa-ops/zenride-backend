@@ -193,7 +193,9 @@ public class DispatchJobProcessor(
         Trip trip, int searchRadius, DateTime freshnessCutoff, CancellationToken ct)
     {
         var triedIds = await db.TripStateHistories
-            .Where(h => h.TripId == trip.Id && h.State == JobState.Offered && h.ActorId != null)
+            .Where(h => h.TripId == trip.Id &&
+                        h.State == JobState.RejectedByDriver &&
+                        h.ActorId != null)
             .Select(h => h.ActorId!)
             .Distinct()
             .ToListAsync(ct);

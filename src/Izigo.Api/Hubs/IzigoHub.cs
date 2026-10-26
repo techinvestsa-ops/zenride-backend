@@ -21,7 +21,8 @@ public class IzigoHub(IApplicationDbContext db) : Hub
 {
     public override async Task OnConnectedAsync()
     {
-        var userId = Context.UserIdentifier;
+        var userId = Context.UserIdentifier
+                     ?? Context.User?.FindFirst("sub")?.Value;
         var role   = Context.User?.FindFirst("role")?.Value;
 
         if (userId is not null)
@@ -36,7 +37,8 @@ public class IzigoHub(IApplicationDbContext db) : Hub
     /// <summary>Join the shared trip room to receive driver location and chat events.</summary>
     public async Task JoinTripRoom(string tripId)
     {
-        var userId = Context.UserIdentifier;
+        var userId = Context.UserIdentifier
+                     ?? Context.User?.FindFirst("sub")?.Value;
         var isParticipant = userId is not null && await db.Trips
             .AnyAsync(t => t.Id == tripId && (t.RiderId == userId || t.DriverId == userId));
         if (!isParticipant)
