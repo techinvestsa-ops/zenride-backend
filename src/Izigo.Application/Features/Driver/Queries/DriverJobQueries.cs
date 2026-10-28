@@ -174,6 +174,6 @@ internal static class JobOfferMapper
             FareGross:        trip.FareGross + trip.FareServiceFee - trip.FareDiscount,
             Currency:         trip.Currency,
             PaymentMethod:    trip.PaymentMethod.ToString().ToLower(),
-            OfferExpiresInSec: 15,
+            OfferExpiresInSec: 60,
             NoteToDriver:     trip.NoteToDriver);
 }

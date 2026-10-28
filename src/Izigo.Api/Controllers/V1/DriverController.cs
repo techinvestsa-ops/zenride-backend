@@ -187,7 +187,8 @@ public class DriverController : BaseController
     /// <summary>Starts the trip / marks the rider as on board.</summary>
     [HttpPost("jobs/{id}/start")]
     public async Task<IActionResult> StartJob(string id, [FromBody] StartJobRequest body)
-        => Ok(await Mediator.Send(new StartJobCommand(CurrentUserId, id, body.Otp)));
+        => Ok(await Mediator.Send(new StartJobCommand(
+            CurrentUserId, id, (body.Otp ?? body.StartOtp ?? "").Trim())));
 
     /// <summary>Records that the driver has arrived at the drop-off location.</summary>
     [HttpPost("jobs/{id}/arrived-dropoff")]
@@ -477,7 +478,7 @@ public class DriverController : BaseController
     // ── Inline request records ────────────────────────────────────────────────
 
     public record DeclineJobRequest(string? Reason);
-    public record StartJobRequest(string Otp);
+    public record StartJobRequest(string? Otp = null, string? StartOtp = null);
     public record CancelJobRequest(string? Reason);
     public record RateCustomerRequest(int Stars, string? Comment);
     public record UploadProofRequest(string? ProofCode, string? PhotoUrl);

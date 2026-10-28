@@ -39,11 +39,16 @@ try
         });
 
     builder.Services.AddSwaggerServices();
+    builder.Services.AddSingleton<Microsoft.AspNetCore.SignalR.IUserIdProvider, IzigoUserIdProvider>();
     builder.Services.AddSignalR(options =>
     {
         options.KeepAliveInterval = TimeSpan.FromSeconds(15);
         options.ClientTimeoutInterval = TimeSpan.FromSeconds(60);
         options.EnableDetailedErrors = true;
+    }).AddJsonProtocol(options =>
+    {
+        options.PayloadSerializerOptions.PropertyNamingPolicy =
+            System.Text.Json.JsonNamingPolicy.SnakeCaseLower;
     });
 
     var corsOrigins = (builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? [])

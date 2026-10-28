@@ -126,7 +126,7 @@ public class DispatchJobProcessor(
             pending.Add(trip);
 
         var cfg = await db.DispatchConfigs.FirstOrDefaultAsync(d => d.Market == trip.Market, ct);
-        var timeoutSec   = cfg?.OfferTimeoutSeconds ?? config.GetValue("DispatchDefaults:OfferTimeoutSeconds", 15);
+        var timeoutSec   = cfg?.OfferTimeoutSeconds ?? config.GetValue("DispatchDefaults:OfferTimeoutSeconds", 60);
         var searchRadius = cfg?.SearchRadiusM       ?? config.GetValue("DispatchDefaults:SearchRadiusM", 3000);
         var freshnessCutoff = DateTime.UtcNow.AddMinutes(
             -config.GetValue("Ops:DriverLocationFreshnessMinutes", 5));

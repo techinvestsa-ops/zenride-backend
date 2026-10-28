@@ -68,8 +68,8 @@ public class GetLiveOpsHandler(IApplicationDbContext db, IOptions<OpsSettings> o
             .ToListAsync(ct);
 
         var drivers = await db.DriverProfiles
-            .Where(d => driverIds.Contains(d.Id))
-            .Select(d => new { d.Id, d.User.FirstName, d.User.LastName })
+            .Where(d => driverIds.Contains(d.UserId) || driverIds.Contains(d.Id))
+            .Select(d => new { d.Id, d.UserId, d.User.FirstName, d.User.LastName })
             .ToListAsync(ct);
 
         var vehicles = await db.Vehicles
@@ -78,7 +78,10 @@ public class GetLiveOpsHandler(IApplicationDbContext db, IOptions<OpsSettings> o
             .ToListAsync(ct);
 
         var riderMap  = riders.ToDictionary(u => u.Id);
-        var driverMap = drivers.ToDictionary(d => d.Id);
+        var driverMap = drivers
+            .SelectMany(d => new[] { (Key: d.UserId, d), (Key: d.Id, d) })
+            .GroupBy(x => x.Key)
+            .ToDictionary(g => g.Key, g => g.First().d);
         var plateMap  = vehicles.ToDictionary(v => v.DriverId, v => v.Plate);
 
         var jobs = trips.Select(t =>
@@ -87,7 +90,7 @@ public class GetLiveOpsHandler(IApplicationDbContext db, IOptions<OpsSettings> o
             LiveJobDriverDto? driver = null;
             if (t.DriverId is not null && driverMap.TryGetValue(t.DriverId, out var dp))
                 driver = new LiveJobDriverDto(t.DriverId, $"{dp.FirstName} {dp.LastName}".Trim(),
-                    plateMap.GetValueOrDefault(t.DriverId));
+                    plateMap.GetValueOrDefault(dp.Id) ?? plateMap.GetValueOrDefault(t.DriverId));
 
             return new LiveJobDto(
                 t.Id,
@@ -141,7 +144,7 @@ public class GetLiveOpsHandler(IApplicationDbContext db, IOptions<OpsSettings> o
     internal static string ToDisplayState(JobState state) => state switch
     {
         JobState.Broadcasting    => "searching",
-        JobState.Offered         => "searching",
+        JobState.Offered         => "offered",
         JobState.Accepted        => "driver_assigned",
         JobState.EnRouteToPickup => "driver_assigned",
         JobState.ArrivedAtPickup => "driver_arrived",

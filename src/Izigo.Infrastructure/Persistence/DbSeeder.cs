@@ -242,13 +242,18 @@ public static class DbSeeder
     {
         foreach (var market in new[] { "ci", "ng" })
         {
-            if (await db.DispatchConfigs.AnyAsync(d => d.Market == market))
+            var existing = await db.DispatchConfigs.FirstOrDefaultAsync(d => d.Market == market);
+            if (existing is not null)
+            {
+                if (existing.OfferTimeoutSeconds < 60)
+                    existing.OfferTimeoutSeconds = 60;
                 continue;
+            }
 
             db.DispatchConfigs.Add(new DispatchConfig
             {
                 Market               = market,
-                OfferTimeoutSeconds  = 15,
+                OfferTimeoutSeconds  = 60,
                 SearchRadiusM        = 3000,
                 Strategy             = "broadcast",
                 MaxConcurrentOffers  = 3,

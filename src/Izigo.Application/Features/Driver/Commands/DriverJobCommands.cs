@@ -214,9 +214,15 @@ public class StartJobHandler(IApplicationDbContext db, IRealtimeService realtime
             throw new InvalidOperationException(
                 $"CONFLICT: Cannot start — job is in state '{trip.JobState}'.");
 
+        var otp = (cmd.Otp ?? "").Trim();
+        if (otp.Length != 4 || !otp.All(char.IsDigit))
+            throw new ArgumentException(
+                "Enter the 4-digit start code shown on the rider's phone.");
+
         if (trip.StartOtp != null &&
-            !string.Equals(trip.StartOtp, cmd.Otp, StringComparison.Ordinal))
-            throw new UnauthorizedAccessException("FORBIDDEN: Invalid start OTP.");
+            !string.Equals(trip.StartOtp, otp, StringComparison.Ordinal))
+            throw new UnauthorizedAccessException(
+                "Wrong start code. Ask the rider for the 4-digit Start OTP.");
 
         trip.JobState  = JobState.PickedUp;
         trip.StartedAt = DateTime.UtcNow;

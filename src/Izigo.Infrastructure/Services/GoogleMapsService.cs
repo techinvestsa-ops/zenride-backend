@@ -147,7 +147,10 @@ public class GoogleMapsService(
     {
         if (!HasKey()) return null;
 
-        var url = $"{MapsBase}/geocode/json?latlng={lat},{lng}&key={ApiKey}";
+        var url = $"{MapsBase}/geocode/json?latlng={lat},{lng}" +
+                  "&language=fr&region=ci" +
+                  "&result_type=street_address|premise|subpremise|route|point_of_interest|establishment" +
+                  $"&key={ApiKey}";
 
         try
         {
@@ -156,7 +159,14 @@ public class GoogleMapsService(
             if (doc is null) return null;
 
             var status = doc.RootElement.GetProperty("status").GetString();
-            if (status is not ("OK" or "ZERO_RESULTS"))
+            if (status == "ZERO_RESULTS")
+            {
+                url = $"{MapsBase}/geocode/json?latlng={lat},{lng}&language=fr&region=ci&key={ApiKey}";
+                using var fallback = await GetJsonAsync(client, url, ct);
+                if (fallback is null) return null;
+                return PickReverseResult(fallback.RootElement, lat, lng);
+            }
+            if (status != "OK")
             {
                 var detail = doc.RootElement.TryGetProperty("error_message", out var err)
                     ? err.GetString()
@@ -167,15 +177,7 @@ public class GoogleMapsService(
                 return null;
             }
 
-            var results = doc.RootElement.GetProperty("results");
-            if (results.GetArrayLength() == 0) return null;
-
-            var first   = results[0];
-            var address = first.GetProperty("formatted_address").GetString() ?? "";
-            var loc     = first.GetProperty("geometry").GetProperty("location");
-            return new GeoReverseResult(address,
-                loc.GetProperty("lat").GetDouble(),
-                loc.GetProperty("lng").GetDouble());
+            return PickReverseResult(doc.RootElement, lat, lng);
         }
         catch (Exception ex)
         {
@@ -270,15 +272,17 @@ public class GoogleMapsService(
 
             if (!resp.IsSuccessStatusCode)
             {
-                logger.LogWarning("[Maps] Routes API {Status} — falling back to Haversine",
+                logger.LogWarning("[Maps] Routes API {Status} — falling back to Directions",
                     (int)resp.StatusCode);
-                return HaversineRoute(origin, destination);
+                return await DirectionsRouteAsync(origin, destination, mode, ct)
+                       ?? HaversineRoute(origin, destination);
             }
 
             using var doc    = JsonDocument.Parse(raw);
             var routes       = doc.RootElement.GetProperty("routes");
             if (routes.GetArrayLength() == 0)
-                return HaversineRoute(origin, destination);
+                return await DirectionsRouteAsync(origin, destination, mode, ct)
+                       ?? HaversineRoute(origin, destination);
 
             var route       = routes[0];
             var polyline    = route.GetProperty("polyline").GetProperty("encodedPolyline").GetString() ?? "";
@@ -300,9 +304,82 @@ public class GoogleMapsService(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "[Maps] GetRoute failed — falling back to Haversine");
-            return HaversineRoute(origin, destination);
+            logger.LogError(ex, "[Maps] GetRoute failed — falling back to Directions");
+            return await DirectionsRouteAsync(origin, destination, mode, ct)
+                   ?? HaversineRoute(origin, destination);
         }
+    }
+
+    private async Task<GeoRouteResult?> DirectionsRouteAsync(
+        GeoPoint origin, GeoPoint destination, string mode, CancellationToken ct)
+    {
+        if (!HasKey()) return null;
+        var travelMode = mode.ToLowerInvariant() switch
+        {
+            "walking" or "walk" => "walking",
+            "bicycling" or "bicycle" or "bike" => "bicycling",
+            _ => "driving"
+        };
+        var url = $"{MapsBase}/directions/json" +
+                  $"?origin={origin.Lat},{origin.Lng}" +
+                  $"&destination={destination.Lat},{destination.Lng}" +
+                  $"&mode={travelMode}&region=ci&alternatives=false&key={ApiKey}";
+        try
+        {
+            var client = http.CreateClient("maps");
+            using var doc = await GetJsonAsync(client, url, ct);
+            if (doc is null) return null;
+            if (doc.RootElement.GetProperty("status").GetString() != "OK") return null;
+            var routes = doc.RootElement.GetProperty("routes");
+            if (routes.GetArrayLength() == 0) return null;
+            var route = routes[0];
+            var polyline = route.GetProperty("overview_polyline").GetProperty("points").GetString() ?? "";
+            if (string.IsNullOrWhiteSpace(polyline)) return null;
+            var legs = route.GetProperty("legs");
+            var distM = 0;
+            var durS = 0;
+            if (legs.GetArrayLength() > 0)
+            {
+                var leg = legs[0];
+                if (leg.TryGetProperty("distance", out var distance))
+                    distM = distance.GetProperty("value").GetInt32();
+                if (leg.TryGetProperty("duration", out var duration))
+                    durS = duration.GetProperty("value").GetInt32();
+            }
+            return new GeoRouteResult(polyline, distM, durS, null);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "[Maps] Directions fallback failed");
+            return null;
+        }
+    }
+
+    private static GeoReverseResult? PickReverseResult(JsonElement root, double lat, double lng)
+    {
+        if (!root.TryGetProperty("results", out var results) || results.GetArrayLength() == 0)
+            return null;
+
+        JsonElement? chosen = null;
+        foreach (var item in results.EnumerateArray())
+        {
+            if (!item.TryGetProperty("types", out var types)) continue;
+            var labels = types.EnumerateArray().Select(t => t.GetString() ?? "").ToArray();
+            if (labels.Any(t => t is "street_address" or "premise" or "subpremise" or "route"
+                    or "point_of_interest" or "establishment"))
+            {
+                chosen = item;
+                break;
+            }
+        }
+        chosen ??= results[0];
+
+        var address = chosen.Value.GetProperty("formatted_address").GetString() ?? "";
+        var loc = chosen.Value.GetProperty("geometry").GetProperty("location");
+        return new GeoReverseResult(
+            address,
+            loc.TryGetProperty("lat", out var snappedLat) ? snappedLat.GetDouble() : lat,
+            loc.TryGetProperty("lng", out var snappedLng) ? snappedLng.GetDouble() : lng);
     }
 
     // ── ETA / Distance Matrix ─────────────────────────────────────────────────

@@ -1,6 +1,7 @@
 using Izigo.Application.Common.Interfaces;
 using Izigo.Application.Common.Models;
 using Izigo.Application.Features.Admin.Ops.Queries;
+using Izigo.Application.Features.Admin.Trips;
 using Izigo.Domain.Entities;
 using Izigo.Domain.Enums;
 using MediatR;
@@ -109,27 +110,28 @@ public class GetAdminTripsHandler(IApplicationDbContext db) : IRequestHandler<Ge
             .ToListAsync(ct);
 
         var riderIds  = trips.Select(t => t.RiderId).Distinct().ToList();
-        var driverIds = trips.Select(t => t.DriverId).Where(d => d != null).Distinct().ToList();
+        var lastOffered = await AdminTripDrivers.LastOfferedDriverAsync(
+            db, trips.Select(t => t.Id), ct);
+        var driverIds = trips
+            .Select(t => t.DriverId ?? lastOffered.GetValueOrDefault(t.Id))
+            .Where(id => id != null)
+            .ToList();
 
         var riders = await db.Users
             .Where(u => riderIds.Contains(u.Id))
             .Select(u => new { u.Id, u.FirstName, u.LastName })
             .ToListAsync(ct);
-
-        var drivers = await db.DriverProfiles
-            .Where(d => driverIds.Contains(d.Id))
-            .Select(d => new { d.Id, d.User.FirstName, d.User.LastName })
-            .ToListAsync(ct);
+        var driverNames = await AdminTripDrivers.LoadNamesAsync(db, driverIds, ct);
 
         var riderMap  = riders.ToDictionary(u => u.Id);
-        var driverMap = drivers.ToDictionary(d => d.Id);
 
         var rows = trips.Select(t =>
         {
             riderMap.TryGetValue(t.RiderId, out var rider);
+            var driverUserId = t.DriverId ?? lastOffered.GetValueOrDefault(t.Id);
             TripListDriverDto? driver = null;
-            if (t.DriverId is not null && driverMap.TryGetValue(t.DriverId, out var dp))
-                driver = new TripListDriverDto(t.DriverId, $"{dp.FirstName} {dp.LastName}".Trim());
+            if (driverUserId is not null && driverNames.TryGetValue(driverUserId, out var driverName))
+                driver = new TripListDriverDto(driverUserId, driverName);
 
             return new TripListRowDto(
                 t.Id, t.Code,
@@ -140,7 +142,7 @@ public class GetAdminTripsHandler(IApplicationDbContext db) : IRequestHandler<Ge
                 t.DistanceM.HasValue ? Math.Round(t.DistanceM.Value / 1000m, 1) : null,
                 t.FareGross, t.Currency,
                 t.PaymentMethod.ToString().ToLower(),
-                GetLiveOpsHandler.ToDisplayState(t.JobState),
+                AdminTripDrivers.DisplayState(t.JobState, lastOffered.ContainsKey(t.Id)),
                 t.CreatedAt);
         }).ToArray();
 
@@ -169,22 +171,31 @@ public class GetAdminTripDetailHandler(IApplicationDbContext db)
             .Select(u => new { u.Id, u.FirstName, u.LastName, u.Phone, u.Rating })
             .FirstOrDefaultAsync(ct);
 
+        var lastOffered = await AdminTripDrivers.LastOfferedDriverAsync(db, [trip.Id], ct);
+        var driverUserId = trip.DriverId ?? lastOffered.GetValueOrDefault(trip.Id);
         TripDetailDriverDto? driver = null;
-        if (trip.DriverId is not null)
+        if (driverUserId is not null)
         {
             var dp = await db.DriverProfiles
-                .Where(d => d.Id == trip.DriverId)
-                .Select(d => new { d.Id, d.User.FirstName, d.User.LastName, d.User.Rating })
+                .Where(d => d.UserId == driverUserId || d.Id == driverUserId)
+                .Select(d => new { d.Id, d.UserId, d.User.FirstName, d.User.LastName, d.User.Rating })
                 .FirstOrDefaultAsync(ct);
 
+            var plateDriverId = dp?.Id ?? driverUserId;
             var plate = await db.Vehicles
-                .Where(v => v.DriverId == trip.DriverId && v.IsActive)
+                .Where(v => (v.DriverId == plateDriverId || v.DriverId == driverUserId) && v.IsActive)
                 .Select(v => v.Plate)
                 .FirstOrDefaultAsync(ct);
 
             if (dp is not null)
-                driver = new TripDetailDriverDto(dp.Id, $"{dp.FirstName} {dp.LastName}".Trim(),
+                driver = new TripDetailDriverDto(dp.UserId, $"{dp.FirstName} {dp.LastName}".Trim(),
                     plate, dp.Rating);
+            else
+            {
+                var names = await AdminTripDrivers.LoadNamesAsync(db, [driverUserId], ct);
+                if (names.TryGetValue(driverUserId, out var driverName))
+                    driver = new TripDetailDriverDto(driverUserId, driverName, plate, null);
+            }
         }
 
         Payment? payment = null;
@@ -204,7 +215,7 @@ public class GetAdminTripDetailHandler(IApplicationDbContext db)
         return new TripDetailDto(
             trip.Id, trip.Code,
             trip.Vertical.ToString().ToLower(),
-            GetLiveOpsHandler.ToDisplayState(trip.JobState),
+            AdminTripDrivers.DisplayState(trip.JobState, lastOffered.ContainsKey(trip.Id)),
             trip.Market, trip.Currency,
             rider is not null
                 ? new TripDetailRiderDto(rider.Id, $"{rider.FirstName} {rider.LastName}".Trim(),

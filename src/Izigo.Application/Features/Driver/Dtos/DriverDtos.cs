@@ -50,7 +50,7 @@ public record JobOfferDto(
     long FareGross,
     string Currency,
     string PaymentMethod,
-    int OfferExpiresInSec,  // 15s window
+    int OfferExpiresInSec,  // 60s window
     string? NoteToDriver
 );
 
