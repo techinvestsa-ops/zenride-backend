@@ -100,7 +100,7 @@ public class ChatHandlerTests
     public async Task SendMessage_ConversationNotFound_ThrowsKeyNotFound()
     {
         using var db = DbContextFactory.Create();
-        var handler = new SendMessageHandler(db, FakeServices.Realtime());
+        var handler = new SendMessageHandler(db, FakeServices.Realtime(), FakeServices.Push());
 
         var act = () => handler.Handle(
             new SendMessageCommand("sender1", "rider", "nonexistent",
@@ -121,7 +121,7 @@ public class ChatHandlerTests
         db.Conversations.Add(conv);
         await db.SaveChangesAsync();
 
-        var handler = new SendMessageHandler(db, FakeServices.Realtime());
+        var handler = new SendMessageHandler(db, FakeServices.Realtime(), FakeServices.Push());
         var act = () => handler.Handle(
             new SendMessageCommand(riderId, "rider", conv.Id,
                 new SendMessageRequest("invalid_type", "Hello", null, null, null)),
@@ -141,7 +141,7 @@ public class ChatHandlerTests
         db.Conversations.Add(conv);
         await db.SaveChangesAsync();
 
-        var handler = new SendMessageHandler(db, FakeServices.Realtime());
+        var handler = new SendMessageHandler(db, FakeServices.Realtime(), FakeServices.Push());
         var result  = await handler.Handle(
             new SendMessageCommand(riderId, "rider", conv.Id,
                 new SendMessageRequest("text", "Hi driver!", null, null, "local-id-1")),
@@ -171,7 +171,7 @@ public class ChatHandlerTests
         db.Messages.Add(existing);
         await db.SaveChangesAsync();
 
-        var handler = new SendMessageHandler(db, FakeServices.Realtime());
+        var handler = new SendMessageHandler(db, FakeServices.Realtime(), FakeServices.Push());
         var result  = await handler.Handle(
             new SendMessageCommand(riderId, "rider", conv.Id,
                 new SendMessageRequest("text", "Duplicate attempt", null, null, "dup-local-id")),
@@ -204,5 +204,33 @@ public class ChatHandlerTests
         await handler.Invoking(h => h.Handle(
             new MarkConversationReadCommand(riderId, conv.Id), CancellationToken.None))
             .Should().NotThrowAsync();
+    }
+
+    [Fact]
+    public async Task SendMessage_PushesTheRecipient_WithTheSenderAndText()
+    {
+        using var db = DbContextFactory.Create();
+        var riderId  = Guid.NewGuid().ToString();
+        var driver   = new Izigo.Domain.Entities.User { FirstName = "Moussa", Phone = "+224620000000", Role = UserRole.Driver };
+        db.Users.Add(driver);
+        var trip = BuildTrip(riderId, driver.Id);
+        db.Trips.Add(trip);
+        var conv = new ConversationEntity { Kind = ConversationKind.Trip, TripId = trip.Id };
+        db.Conversations.Add(conv);
+        db.UserDevices.Add(new Izigo.Domain.Entities.UserDevice
+        {
+            UserId = riderId, DeviceId = "rider-phone", FcmToken = "rider-token", Platform = "ios",
+        });
+        await db.SaveChangesAsync();
+        var push = new Moq.Mock<Izigo.Application.Common.Interfaces.IPushService>();
+
+        await new SendMessageHandler(db, FakeServices.Realtime(), push.Object).Handle(
+            new SendMessageCommand(driver.Id, "driver", conv.Id,
+                new SendMessageRequest("text", "I'm outside", null, null, null)),
+            CancellationToken.None);
+
+        push.Verify(p => p.SendAsync("rider-token", "Moussa", "I'm outside", "chat.message",
+            trip.Id, Moq.It.IsAny<string?>(), Moq.It.IsAny<string?>(),
+            true, Moq.It.IsAny<CancellationToken>()), Moq.Times.Once);
     }
 }
