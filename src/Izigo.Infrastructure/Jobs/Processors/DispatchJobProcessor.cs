@@ -38,6 +38,14 @@ public class DispatchJobProcessor(
     private const double MetersPerDegree = 111_000.0;
     private const int MinDriversBeforeExpanding = 3;
     private const int RoadCheckLimit = 12;
+
+    // A delivery can wait longer than a rider standing on the kerb: keep
+    // looking (wider after the first minute) before telling the sender no
+    // courier is available.
+    private static readonly TimeSpan PackageSearchWindow = TimeSpan.FromMinutes(3);
+    private static readonly TimeSpan PackageWidenAfter   = TimeSpan.FromMinutes(1);
+    private static readonly TimeSpan PackageRecheck      = TimeSpan.FromSeconds(15);
+    private static readonly TimeSpan RideRetryWindow     = TimeSpan.FromMinutes(2);
     private static readonly SemaphoreSlim Gate = new(1, 1);
 
     public async Task ProcessAsync(string jobId, CancellationToken ct)
@@ -166,6 +174,18 @@ public class DispatchJobProcessor(
                 OccurredAt = DateTime.UtcNow,
                 Actor      = "system"
             });
+
+            // Without this the package stayed "searching" forever and the
+            // sender's app never stopped waiting.
+            if (waiting.Vertical == Vertical.Package)
+            {
+                var pkg = await PackageTripSync.FindByTripAsync(db, waiting, ct);
+                if (pkg is { Status: PackageStatus.Searching })
+                {
+                    pkg.Status      = PackageStatus.Cancelled;
+                    pkg.CancelledAt = DateTime.UtcNow;
+                }
+            }
         }
 
         var handledIds = offers.Select(o => o.Trip.Id)
@@ -198,12 +218,21 @@ public class DispatchJobProcessor(
         }
 
         foreach (var waiting in retries)
-            await RequeueAsync(waiting.Id, TimeSpan.FromSeconds(timeoutSec), ct);
+            await RequeueAsync(waiting.Id,
+                waiting.Vertical == Vertical.Package ? PackageRecheck : TimeSpan.FromSeconds(timeoutSec), ct);
     }
 
     private async Task<TripPool> LoadPoolAsync(
         Trip trip, int searchRadius, DateTime freshnessCutoff, CancellationToken ct)
     {
+        // A search can be restarted (POST /packages/{id}/retry), so measure
+        // from the latest broadcast rather than when the trip was created.
+        var searchStartedAt = await db.TripStateHistories
+            .Where(h => h.TripId == trip.Id && h.State == JobState.Broadcasting)
+            .MaxAsync(h => (DateTime?)h.OccurredAt, ct) ?? trip.CreatedAt;
+        if (trip.Vertical == Vertical.Package && DateTime.UtcNow - searchStartedAt > PackageWidenAfter)
+            searchRadius *= 2;
+
         var triedIds = await db.TripStateHistories
             .Where(h => h.TripId == trip.Id &&
                         h.State == JobState.RejectedByDriver &&
@@ -264,7 +293,7 @@ public class DispatchJobProcessor(
             .OrderBy(d => d.StraightM)
             .ToList();
 
-        return new TripPool(trip, inReach);
+        return new TripPool(trip, inReach, searchStartedAt);
     }
 
     private async Task<TripPool> ScoreByRoadAsync(TripPool pool, CancellationToken ct)
@@ -325,7 +354,7 @@ public class DispatchJobProcessor(
         if (driverIds.Count == 0)
         {
             foreach (var pool in pools)
-                (pool.Drivers.Any(d => d.Busy) && pool.Trip.CreatedAt > DateTime.UtcNow.AddMinutes(-2)
+                (pool.KeepSearching(pool.Drivers.Any(d => d.Busy))
                     ? retries
                     : expires).Add(pool.Trip);
             return (offers, expires, retries);
@@ -360,8 +389,7 @@ public class DispatchJobProcessor(
             }
 
             var hadADriver = pool.Drivers.Any(d => !d.Busy && d.RoadS >= 0) || pool.Drivers.Any(d => d.Busy);
-            var stillYoung = pool.Trip.CreatedAt > DateTime.UtcNow.AddMinutes(-2);
-            if (hadADriver && stillYoung)
+            if (pool.KeepSearching(hadADriver))
                 retries.Add(pool.Trip);
             else
                 expires.Add(pool.Trip);
@@ -447,8 +475,23 @@ public class DispatchJobProcessor(
         if (trip.Vertical == Vertical.Package)
         {
             var pkg = await PackageTripSync.FindByTripAsync(db, trip, ct);
-            if (pkg != null)
-                await PackageTripSync.PublishStatusAsync(realtime, db, pkg, ct);
+            if (pkg == null) return;
+            await PackageTripSync.PublishStatusAsync(realtime, db, pkg, ct);
+
+            var fcmToken = await db.UserDevices
+                .Where(d => d.UserId == pkg.SenderId && d.FcmToken != null)
+                .OrderByDescending(d => d.UpdatedAt)
+                .Select(d => d.FcmToken!)
+                .FirstOrDefaultAsync(ct);
+            if (fcmToken != null)
+                await push.SendAsync(
+                    fcmToken,
+                    title:    "No courier available",
+                    body:     $"We couldn't find a courier for {pkg.TrackingId}. Open the app to try again.",
+                    type:     "package.no_courier",
+                    entityId: pkg.Id,
+                    deepLink: $"izigo://package/{pkg.Id}",
+                    ct:       ct);
             return;
         }
 
@@ -503,7 +546,17 @@ public class DispatchJobProcessor(
         int RoadM = 0,
         int RoadS = -1);
 
-    private sealed record TripPool(Trip Trip, List<DriverCand> Drivers);
+    private sealed record TripPool(Trip Trip, List<DriverCand> Drivers, DateTime SearchStartedAt)
+    {
+        /// <summary>Whether to keep looking when no driver could be offered this pass.</summary>
+        public bool KeepSearching(bool hadADriver)
+        {
+            var age = DateTime.UtcNow - SearchStartedAt;
+            return Trip.Vertical == Vertical.Package
+                ? age < PackageSearchWindow
+                : hadADriver && age < RideRetryWindow;
+        }
+    }
 
     private sealed record Offer(Trip Trip, string DriverUserId, int RoadM, int RoadS);
 }

@@ -22,7 +22,7 @@ public static class RideProjector
 
         JobState.PickedUp or
         JobState.EnRouteToDropoff or
-        JobState.ArrivedAtDropoff   => "in_progress",
+        JobState.ArrivedAtDropoff   => "arrived_at_dropoff",
 
         JobState.Completed          => "completed",
         JobState.Returned           => "completed",   // + returned flag surfaced separately

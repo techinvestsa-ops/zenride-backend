@@ -52,7 +52,7 @@ public class GetOrCreateTripConversationHandler(IApplicationDbContext db)
 public record SendMessageCommand(string SenderId, string SenderRole, string ConversationId, SendMessageRequest Request)
     : IRequest<MessageDto>;
 
-public class SendMessageHandler(IApplicationDbContext db, IRealtimeService realtime)
+public class SendMessageHandler(IApplicationDbContext db, IRealtimeService realtime, IPushService push)
     : IRequestHandler<SendMessageCommand, MessageDto>
 {
     public async Task<MessageDto> Handle(SendMessageCommand cmd, CancellationToken ct)
@@ -115,11 +115,42 @@ public class SendMessageHandler(IApplicationDbContext db, IRealtimeService realt
                         await realtime.PublishToUserAsync(recipientId, "chat.message", msgEvent, ct);
                     else
                         await realtime.PublishToDriverAsync(recipientId, "chat.message", msgEvent, ct);
+
+                    // A push too, so the message reaches a recipient whose app is closed
+                    // or in the background, where realtime events do not arrive.
+                    await PushChatAsync(recipientId, cmd.SenderId, conv.TripId, req.Body, ct);
                 }
             }
         }
 
         return dto;
+    }
+
+    private async Task PushChatAsync(
+        string recipientId, string senderId, string tripId, string? body, CancellationToken ct)
+    {
+        var token = await db.UserDevices
+            .Where(d => d.UserId == recipientId && d.FcmToken != null)
+            .OrderByDescending(d => d.UpdatedAt)
+            .Select(d => d.FcmToken!)
+            .FirstOrDefaultAsync(ct);
+        if (token == null) return;
+
+        var sender = await db.Users
+            .Where(u => u.Id == senderId)
+            .Select(u => u.FirstName)
+            .FirstOrDefaultAsync(ct);
+        var preview = string.IsNullOrWhiteSpace(body) ? "Sent you a message" : body.Trim();
+        if (preview.Length > 120) preview = preview[..117] + "…";
+
+        await push.SendAsync(token,
+            string.IsNullOrWhiteSpace(sender) ? "New message" : sender,
+            preview,
+            type:         "chat.message",
+            entityId:     tripId,
+            deepLink:     $"izigo://chat/{tripId}",
+            highPriority: true,
+            ct:           ct);
     }
 }
 

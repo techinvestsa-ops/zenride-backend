@@ -6230,40 +6230,32 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Chuks\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "/Users/apple/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Projects\\izigo-api\\tests\\Izigo.Api.Tests\\Izigo.Api.Tests.csproj",
+      "projectUniqueName": "/Users/apple/Documents/Projects/zenride-backend/tests/Izigo.Api.Tests/Izigo.Api.Tests.csproj",
       "projectName": "Izigo.Api.Tests",
-      "projectPath": "C:\\Projects\\izigo-api\\tests\\Izigo.Api.Tests\\Izigo.Api.Tests.csproj",
-      "packagesPath": "C:\\Users\\Chuks\\.nuget\\packages\\",
-      "outputPath": "C:\\Projects\\izigo-api\\tests\\Izigo.Api.Tests\\obj\\",
+      "projectPath": "/Users/apple/Documents/Projects/zenride-backend/tests/Izigo.Api.Tests/Izigo.Api.Tests.csproj",
+      "packagesPath": "/Users/apple/.nuget/packages/",
+      "outputPath": "/Users/apple/Documents/Projects/zenride-backend/tests/Izigo.Api.Tests/obj/",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Chuks\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/apple/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "C:\\Projects\\izigo-api\\src\\Izigo.Api\\Izigo.Api.csproj": {
-              "projectPath": "C:\\Projects\\izigo-api\\src\\Izigo.Api\\Izigo.Api.csproj"
+            "/Users/apple/Documents/Projects/zenride-backend/src/Izigo.Api/Izigo.Api.csproj": {
+              "projectPath": "/Users/apple/Documents/Projects/zenride-backend/src/Izigo.Api/Izigo.Api.csproj"
             }
           }
         }
@@ -6337,7 +6329,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/Users/apple/.dotnet/sdk/9.0.319/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

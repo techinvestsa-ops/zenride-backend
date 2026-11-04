@@ -270,7 +270,7 @@ public class StartJobHandler(IApplicationDbContext db, IRealtimeService realtime
 
 public record ArrivedDropoffCommand(string DriverId, string TripId) : IRequest<JobDetailDto>;
 
-public class ArrivedDropoffHandler(IApplicationDbContext db, IRealtimeService realtime)
+public class ArrivedDropoffHandler(IApplicationDbContext db, IRealtimeService realtime, IPushService push)
     : IRequestHandler<ArrivedDropoffCommand, JobDetailDto>
 {
     public async Task<JobDetailDto> Handle(ArrivedDropoffCommand cmd, CancellationToken ct)
@@ -293,6 +293,23 @@ public class ArrivedDropoffHandler(IApplicationDbContext db, IRealtimeService re
 
         await db.SaveChangesAsync(ct);
         await AdminRealtimeNotify.JobStateChangedAsync(realtime, trip, ct);
+
+        // Tell the rider they have arrived and what to pay; until now nothing was
+        // sent, and the status still read in_progress.
+        if (trip.RiderId != null && trip.Vertical == Vertical.Ride)
+        {
+            await realtime.PublishToUserAsync(trip.RiderId, "ride.status_changed",
+                new RideStatusChangedEvent(trip.Id, "arrived_at_dropoff", null, null, null, DateTime.UtcNow), ct);
+
+            var amount = $"{trip.FareGross:N0} {trip.Currency}";
+            await JobNotify.PushRiderAsync(db, push, trip.RiderId,
+                title: "You've arrived",
+                body:  trip.PaymentMethod == PaymentMethod.Cash
+                    ? $"Please pay {amount} in cash to your driver."
+                    : $"{amount} will be paid with {System.Text.RegularExpressions.Regex.Replace(trip.PaymentMethod.ToString(), "(\\B[A-Z])", " $1")}.",
+                tripId: trip.Id, ct);
+        }
+
         return await JobDetailMapper.BuildAsync(trip, db, ct);
     }
 }

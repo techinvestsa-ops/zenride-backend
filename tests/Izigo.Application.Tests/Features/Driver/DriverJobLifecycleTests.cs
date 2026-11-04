@@ -293,10 +293,38 @@ public class DriverJobLifecycleTests
         db.Trips.Add(trip);
         await db.SaveChangesAsync();
 
-        var handler = new ArrivedDropoffHandler(db, FakeServices.Realtime());
+        var handler = new ArrivedDropoffHandler(db, FakeServices.Realtime(), FakeServices.Push());
         await handler.Handle(new ArrivedDropoffCommand(driverId, trip.Id), CancellationToken.None);
 
         db.Trips.Find(trip.Id)!.JobState.Should().Be(JobState.ArrivedAtDropoff);
+    }
+
+    [Fact]
+    public async Task ArrivedDropoff_TellsTheRider_WithTheAmountToPay()
+    {
+        using var db = DbContextFactory.Create();
+        var driverId = Guid.NewGuid().ToString();
+        var riderId  = Guid.NewGuid().ToString();
+        var trip = BuildTrip(driverId, riderId, JobState.EnRouteToDropoff);
+        db.Trips.Add(trip);
+        db.UserDevices.Add(new Izigo.Domain.Entities.UserDevice
+        {
+            UserId = riderId, DeviceId = "rider-phone", FcmToken = "rider-token", Platform = "ios",
+        });
+        await db.SaveChangesAsync();
+        var realtime = new Moq.Mock<Izigo.Application.Common.Interfaces.IRealtimeService>();
+        var push     = new Moq.Mock<Izigo.Application.Common.Interfaces.IPushService>();
+
+        await new ArrivedDropoffHandler(db, realtime.Object, push.Object)
+            .Handle(new ArrivedDropoffCommand(driverId, trip.Id), CancellationToken.None);
+
+        realtime.Verify(r => r.PublishToUserAsync(riderId, "ride.status_changed",
+            Moq.It.Is<object>(e => ((Izigo.Application.Features.Realtime.Dtos.RideStatusChangedEvent)e).Status == "arrived_at_dropoff"),
+            Moq.It.IsAny<CancellationToken>()), Moq.Times.Once);
+        push.Verify(p => p.SendAsync("rider-token", "You've arrived",
+            Moq.It.Is<string>(body => body.Contains("1,200 XOF") && body.Contains("cash")),
+            Moq.It.IsAny<string>(), trip.Id, Moq.It.IsAny<string?>(), Moq.It.IsAny<string?>(),
+            Moq.It.IsAny<bool>(), Moq.It.IsAny<CancellationToken>()), Moq.Times.Once);
     }
 
     // ── CompleteJobHandler ────────────────────────────────────────────────────

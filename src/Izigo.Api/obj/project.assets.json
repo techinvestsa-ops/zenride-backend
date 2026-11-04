@@ -6116,19 +6116,19 @@
     ]
   },
   "packageFolders": {
-    "/var/folders/y4/79qtw8pd6dz2f67t2nqmknmc0000gn/T/cursor-sandbox-cache/bcb34382266fad9d5c27c0de3c225b24/nuget": {}
+    "/Users/apple/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Api/Izigo.Api.csproj",
+      "projectUniqueName": "/Users/apple/Documents/Projects/zenride-backend/src/Izigo.Api/Izigo.Api.csproj",
       "projectName": "Izigo.Api",
-      "projectPath": "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Api/Izigo.Api.csproj",
-      "packagesPath": "/var/folders/y4/79qtw8pd6dz2f67t2nqmknmc0000gn/T/cursor-sandbox-cache/bcb34382266fad9d5c27c0de3c225b24/nuget",
-      "outputPath": "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Api/obj/",
+      "projectPath": "/Users/apple/Documents/Projects/zenride-backend/src/Izigo.Api/Izigo.Api.csproj",
+      "packagesPath": "/Users/apple/.nuget/packages/",
+      "outputPath": "/Users/apple/Documents/Projects/zenride-backend/src/Izigo.Api/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/otitoju/.nuget/NuGet/NuGet.Config"
+        "/Users/apple/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -6140,11 +6140,11 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Application/Izigo.Application.csproj": {
-              "projectPath": "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Application/Izigo.Application.csproj"
+            "/Users/apple/Documents/Projects/zenride-backend/src/Izigo.Application/Izigo.Application.csproj": {
+              "projectPath": "/Users/apple/Documents/Projects/zenride-backend/src/Izigo.Application/Izigo.Application.csproj"
             },
-            "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Infrastructure/Izigo.Infrastructure.csproj": {
-              "projectPath": "/Users/otitoju/Documents/Otitoju/izigo/zenride-backend/src/Izigo.Infrastructure/Izigo.Infrastructure.csproj"
+            "/Users/apple/Documents/Projects/zenride-backend/src/Izigo.Infrastructure/Izigo.Infrastructure.csproj": {
+              "projectPath": "/Users/apple/Documents/Projects/zenride-backend/src/Izigo.Infrastructure/Izigo.Infrastructure.csproj"
             }
           }
         }
@@ -6203,7 +6203,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/Users/otitoju/.dotnet/sdk/9.0.318/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/Users/apple/.dotnet/sdk/9.0.319/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

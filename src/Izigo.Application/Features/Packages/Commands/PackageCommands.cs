@@ -203,6 +203,56 @@ public class CancelPackageHandler(IApplicationDbContext db, IRealtimeService rea
     }
 }
 
+// ── POST /packages/{id}/retry ─────────────────────────────────────────────────
+
+/// <summary>
+/// Searches again for a package whose search ran out without a courier.
+/// The sender keeps the same tracking ID, price and recipient details.
+/// </summary>
+public record RetryPackageCommand(string SenderId, string PackageId) : IRequest<PackageDto>;
+
+public class RetryPackageHandler(IApplicationDbContext db, IRealtimeService realtime, IJobDispatcher jobDispatcher)
+    : IRequestHandler<RetryPackageCommand, PackageDto>
+{
+    public async Task<PackageDto> Handle(RetryPackageCommand cmd, CancellationToken ct)
+    {
+        var pkg = await db.Packages
+            .FirstOrDefaultAsync(p => p.Id == cmd.PackageId && p.SenderId == cmd.SenderId, ct)
+            ?? throw new KeyNotFoundException("Package not found.");
+        var trip = await db.Trips.FirstOrDefaultAsync(t => t.QuoteId == pkg.QuoteId, ct)
+            ?? throw new KeyNotFoundException("Package not found.");
+
+        if (pkg.Status == PackageStatus.Searching && trip.JobState == JobState.Broadcasting)
+            return await PackageMapper.BuildAsync(pkg, db, ct);
+
+        // Only a search that ran out can be restarted; a package the sender
+        // cancelled, or one a courier already took, cannot.
+        if (trip.JobState != JobState.Expired || pkg.CourierId != null)
+            throw new InvalidOperationException("CONFLICT: This delivery can no longer be retried. Please book a new one.");
+
+        pkg.Status      = PackageStatus.Searching;
+        pkg.CancelledAt = null;
+        trip.JobState   = JobState.Broadcasting;
+        db.TripStateHistories.Add(new TripStateHistory
+        {
+            TripId     = trip.Id,
+            State      = JobState.Broadcasting,
+            OccurredAt = DateTime.UtcNow,
+            Actor      = "rider",
+            ActorId    = cmd.SenderId,
+        });
+        await db.SaveChangesAsync(ct);
+
+        var dispatchJob = new BackgroundJob { Type = $"dispatch:{trip.Id}", Status = "queued" };
+        db.BackgroundJobs.Add(dispatchJob);
+        await db.SaveChangesAsync(ct);
+        jobDispatcher.Enqueue(dispatchJob.Id, dispatchJob.Type);
+
+        await PackageTripSync.PublishStatusAsync(realtime, db, pkg, ct);
+        return await PackageMapper.BuildAsync(pkg, db, ct);
+    }
+}
+
 // ── POST /packages/{id}/rate ──────────────────────────────────────────────────
 
 public record RatePackageCommand(string SenderId, string PackageId, RatePackageRequest Request)

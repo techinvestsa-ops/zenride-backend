@@ -56,6 +56,12 @@ public class PackagesController : BaseController
         return NoContent();
     }
 
+    /// <summary>Searches again for a package whose search found no courier.</summary>
+    [Authorize(Policy = "RiderPolicy")]
+    [HttpPost("{id}/retry")]
+    public async Task<IActionResult> RetryPackage(string id)
+        => Ok(await Mediator.Send(new RetryPackageCommand(CurrentUserId, id)));
+
     /// <summary>Submits a rating for a completed delivery.</summary>
     [Authorize(Policy = "RiderPolicy")]
     [HttpPost("{id}/rate")]
