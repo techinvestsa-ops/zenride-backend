@@ -121,7 +121,8 @@ public interface IJobDispatcher
 {
     /// <summary>Enqueues a BackgroundJob record for immediate processing by Hangfire.</summary>
     void Enqueue(string jobId, string jobType);
-    /// <summary>Schedules a BackgroundJob record to be processed at a specific UTC time.</summary>
+    /// <summary>Schedules a BackgroundJob record to be processed at a specific UTC time.
+    /// jobType "offer_expire" takes a trip id and expires that trip's driver offer.</summary>
     void Schedule(string jobId, string jobType, DateTime utcAt);
 }
 

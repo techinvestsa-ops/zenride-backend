@@ -2,8 +2,10 @@ using Izigo.Application.Common.Interfaces;
 using Izigo.Application.Features.Driver.Dtos;
 using Izigo.Application.Features.Rides.Helpers;
 using Izigo.Domain.Enums;
+using Izigo.Application.Common.Settings;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Izigo.Application.Features.Driver.Queries;
 
@@ -142,7 +144,10 @@ public class GetDemandHandler(IApplicationDbContext db)
 
 public record GetJobOfferQuery(string DriverId) : IRequest<JobOfferDto?>;
 
-public class GetJobOfferHandler(IApplicationDbContext db)
+public class GetJobOfferHandler(
+    IApplicationDbContext db,
+    IJobDispatcher jobs,
+    IOptions<DispatchSettings> dispatchOptions)
     : IRequestHandler<GetJobOfferQuery, JobOfferDto?>
 {
     public async Task<JobOfferDto?> Handle(GetJobOfferQuery req, CancellationToken ct)
@@ -157,7 +162,19 @@ public class GetJobOfferHandler(IApplicationDbContext db)
                                       t.JobState == JobState.Offered, ct);
 
         if (trip == null)
+        {
             trip = await ClaimNearbyBroadcastAsync(db, dp, ct);
+            if (trip != null)
+            {
+                // Give a claimed offer the same window as a dispatched one, so a driver
+                // who ignores it does not hold the trip forever.
+                var timeoutSec = await db.DispatchConfigs
+                    .Where(c => c.Market == trip.Market)
+                    .Select(c => (int?)c.OfferTimeoutSeconds)
+                    .FirstOrDefaultAsync(ct) ?? dispatchOptions.Value.OfferTimeoutSeconds;
+                jobs.Schedule(trip.Id, "offer_expire", DateTime.UtcNow.AddSeconds(timeoutSec));
+            }
+        }
 
         if (trip == null) return null;
 

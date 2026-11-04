@@ -115,6 +115,18 @@ public class DispatchJobProcessor(
             var window = config.GetValue("DispatchDefaults:BatchWindowSeconds", 2);
             if (window > 0)
                 await Task.Delay(TimeSpan.FromSeconds(window), ct);
+
+            // A driver's app can claim the trip during the window (GET /driver/jobs/offer).
+            // Re-read it: dispatching the stale copy found that driver "already tried",
+            // expired the trip and overwrote the claim, so the offer vanished in seconds.
+            await db.Entry(trip).ReloadAsync(ct);
+            if (trip.JobState != JobState.Broadcasting)
+            {
+                job.Status = "completed";
+                job.CompletedAt = DateTime.UtcNow;
+                await db.SaveChangesAsync(ct);
+                return;
+            }
         }
 
         var pending = await db.Trips
