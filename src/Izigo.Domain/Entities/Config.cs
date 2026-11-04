@@ -58,7 +58,7 @@ public class PlatformConfig : BaseEntity
         "\"scheduled_rides\":{\"enabled\":false}}";
 
     // Dispatch config (also editable via PUT /admin/config/dispatch)
-    public int OfferTimeoutSeconds { get; set; } = 15;
+    public int OfferTimeoutSeconds { get; set; } = 60;
     public int SearchRadiusM { get; set; } = 5000;
     public string DispatchStrategy { get; set; } = "broadcast";   // broadcast | sequential
     public int MaxConcurrentOffers { get; set; } = 5;

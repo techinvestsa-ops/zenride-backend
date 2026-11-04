@@ -115,6 +115,18 @@ public class DispatchJobProcessor(
             var window = config.GetValue("DispatchDefaults:BatchWindowSeconds", 2);
             if (window > 0)
                 await Task.Delay(TimeSpan.FromSeconds(window), ct);
+
+            // A driver's app can claim the trip during the window (GET /driver/jobs/offer).
+            // Re-read it: dispatching the stale copy found that driver "already tried",
+            // expired the trip and overwrote the claim, so the offer vanished in seconds.
+            await db.Entry(trip).ReloadAsync(ct);
+            if (trip.JobState != JobState.Broadcasting)
+            {
+                job.Status = "completed";
+                job.CompletedAt = DateTime.UtcNow;
+                await db.SaveChangesAsync(ct);
+                return;
+            }
         }
 
         var pending = await db.Trips
@@ -126,7 +138,7 @@ public class DispatchJobProcessor(
             pending.Add(trip);
 
         var cfg = await db.DispatchConfigs.FirstOrDefaultAsync(d => d.Market == trip.Market, ct);
-        var timeoutSec   = cfg?.OfferTimeoutSeconds ?? config.GetValue("DispatchDefaults:OfferTimeoutSeconds", 15);
+        var timeoutSec   = cfg?.OfferTimeoutSeconds ?? config.GetValue("DispatchDefaults:OfferTimeoutSeconds", 60);
         var searchRadius = cfg?.SearchRadiusM       ?? config.GetValue("DispatchDefaults:SearchRadiusM", 3000);
         var freshnessCutoff = DateTime.UtcNow.AddMinutes(
             -config.GetValue("Ops:DriverLocationFreshnessMinutes", 5));
@@ -193,7 +205,9 @@ public class DispatchJobProcessor(
         Trip trip, int searchRadius, DateTime freshnessCutoff, CancellationToken ct)
     {
         var triedIds = await db.TripStateHistories
-            .Where(h => h.TripId == trip.Id && h.State == JobState.Offered && h.ActorId != null)
+            .Where(h => h.TripId == trip.Id &&
+                        h.State == JobState.RejectedByDriver &&
+                        h.ActorId != null)
             .Select(h => h.ActorId!)
             .Distinct()
             .ToListAsync(ct);
@@ -220,8 +234,6 @@ public class DispatchJobProcessor(
 
         var busyIds = busyTripIds.Concat(busyPackageIds).Distinct().ToHashSet();
         var radiusDeg = (decimal)(searchRadius / MetersPerDegree);
-        var home = HexGrid.FromLatLng((double)trip.PickupLat, (double)trip.PickupLng);
-        var maxRing = HexGrid.RingsForRadius(searchRadius);
 
         var nearby = await db.DriverProfiles
             .Where(dp =>
@@ -239,27 +251,18 @@ public class DispatchJobProcessor(
                 !triedIds.Contains(dp.UserId))
             .ToListAsync(ct);
 
-        var inReach = new List<DriverCand>();
-        for (var ring = 1; ring <= maxRing; ring++)
-        {
-            var cells = HexGrid.Disk(home, ring);
-            inReach = nearby
-                .Where(dp => dp.VerticalsAllowed.Contains(trip.Vertical))
-                .Select(dp => new DriverCand(
-                    dp.UserId,
-                    dp.AcceptanceRate,
-                    (double)dp.LastLat!.Value,
-                    (double)dp.LastLng!.Value,
-                    StraightM: MetersApart(dp.LastLat!.Value, dp.LastLng!.Value, trip.PickupLat, trip.PickupLng),
-                    Busy: busyIds.Contains(dp.UserId)))
-                .Where(d => d.StraightM <= searchRadius && cells.Contains(HexGrid.FromLatLng(d.Lat, d.Lng)))
-                .OrderBy(d => d.StraightM)
-                .ToList();
-
-            var free = inReach.Count(d => !d.Busy);
-            if (free >= MinDriversBeforeExpanding || ring == maxRing)
-                break;
-        }
+        var inReach = nearby
+            .Where(dp => dp.VerticalsAllowed.Contains(trip.Vertical))
+            .Select(dp => new DriverCand(
+                dp.UserId,
+                dp.AcceptanceRate,
+                (double)dp.LastLat!.Value,
+                (double)dp.LastLng!.Value,
+                StraightM: MetersApart(dp.LastLat!.Value, dp.LastLng!.Value, trip.PickupLat, trip.PickupLng),
+                Busy: busyIds.Contains(dp.UserId)))
+            .Where(d => d.StraightM <= searchRadius)
+            .OrderBy(d => d.StraightM)
+            .ToList();
 
         return new TripPool(trip, inReach);
     }
@@ -271,21 +274,37 @@ public class DispatchJobProcessor(
             return pool;
 
         var origin = new GeoPoint((double)pool.Trip.PickupLat, (double)pool.Trip.PickupLng);
-        using var budget = CancellationTokenSource.CreateLinkedTokenSource(ct);
-        budget.CancelAfter(TimeSpan.FromSeconds(3));
-        var etas = await geo.GetEtaAsync(
-            origin,
-            [.. free.Select(d => new GeoPoint(d.Lat, d.Lng))],
-            budget.Token);
-        ct.ThrowIfCancellationRequested();
+        GeoEtaResult[] etas = [];
+        try
+        {
+            using var budget = CancellationTokenSource.CreateLinkedTokenSource(ct);
+            budget.CancelAfter(TimeSpan.FromSeconds(3));
+            etas = await geo.GetEtaAsync(
+                origin,
+                [.. free.Select(d => new GeoPoint(d.Lat, d.Lng))],
+                budget.Token);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "[Dispatch] road ETA failed — using straight-line");
+        }
 
         var ranked = new List<DriverCand>(pool.Drivers.Count);
         for (var i = 0; i < free.Count; i++)
         {
             var eta = i < etas.Length ? etas[i] : null;
-            if (eta?.DurationS is not int seconds || eta.DistanceM is not int metres)
+            if (eta?.DurationS is int seconds && eta.DistanceM is int metres)
+            {
+                ranked.Add(free[i] with { RoadM = metres, RoadS = seconds });
                 continue;
-            ranked.Add(free[i] with { RoadM = metres, RoadS = seconds });
+            }
+
+            var straight = free[i].StraightM;
+            ranked.Add(free[i] with
+            {
+                RoadM = straight,
+                RoadS = Math.Max(1, straight / 8)
+            });
         }
 
         ranked.AddRange(pool.Drivers.Where(d => d.Busy));

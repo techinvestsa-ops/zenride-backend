@@ -2,8 +2,10 @@ using Izigo.Application.Common.Interfaces;
 using Izigo.Application.Features.Driver.Dtos;
 using Izigo.Application.Features.Rides.Helpers;
 using Izigo.Domain.Enums;
+using Izigo.Application.Common.Settings;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Izigo.Application.Features.Driver.Queries;
 
@@ -142,7 +144,10 @@ public class GetDemandHandler(IApplicationDbContext db)
 
 public record GetJobOfferQuery(string DriverId) : IRequest<JobOfferDto?>;
 
-public class GetJobOfferHandler(IApplicationDbContext db)
+public class GetJobOfferHandler(
+    IApplicationDbContext db,
+    IJobDispatcher jobs,
+    IOptions<DispatchSettings> dispatchOptions)
     : IRequestHandler<GetJobOfferQuery, JobOfferDto?>
 {
     public async Task<JobOfferDto?> Handle(GetJobOfferQuery req, CancellationToken ct)
@@ -156,10 +161,81 @@ public class GetJobOfferHandler(IApplicationDbContext db)
             .FirstOrDefaultAsync(t => t.DriverId == req.DriverId &&
                                       t.JobState == JobState.Offered, ct);
 
+        if (trip == null)
+        {
+            trip = await ClaimNearbyBroadcastAsync(db, dp, ct);
+            if (trip != null)
+            {
+                // Give a claimed offer the same window as a dispatched one, so a driver
+                // who ignores it does not hold the trip forever.
+                var timeoutSec = await db.DispatchConfigs
+                    .Where(c => c.Market == trip.Market)
+                    .Select(c => (int?)c.OfferTimeoutSeconds)
+                    .FirstOrDefaultAsync(ct) ?? dispatchOptions.Value.OfferTimeoutSeconds;
+                jobs.Schedule(trip.Id, "offer_expire", DateTime.UtcNow.AddSeconds(timeoutSec));
+            }
+        }
+
         if (trip == null) return null;
 
-        // Approximate pickup distance — real value comes from geo service in production
-        int pickupDistM = dp.LastLat.HasValue && dp.LastLng.HasValue ? 1000 : 0;
+        int pickupDistM = 0;
+        if (dp.LastLat.HasValue && dp.LastLng.HasValue)
+        {
+            var dlat = (double)(dp.LastLat.Value - trip.PickupLat);
+            var dlng = (double)(dp.LastLng.Value - trip.PickupLng);
+            pickupDistM = (int)(Math.Sqrt(dlat * dlat + dlng * dlng) * 111_320);
+        }
         return JobOfferMapper.ToOffer(trip, pickupDistM);
+    }
+
+    private static async Task<Domain.Entities.Trip?> ClaimNearbyBroadcastAsync(
+        IApplicationDbContext db, Domain.Entities.DriverProfile dp, CancellationToken ct)
+    {
+        if (!dp.IsOnline ||
+            dp.KycStatus != KycStatus.Approved ||
+            !dp.OnboardingComplete ||
+            dp.LastLat == null ||
+            dp.LastLng == null ||
+            dp.LastLocationAt < DateTime.UtcNow.AddMinutes(-8))
+        {
+            return null;
+        }
+
+        var candidates = await db.Trips
+            .Where(t => t.JobState == JobState.Broadcasting &&
+                        t.Vertical == Vertical.Ride &&
+                        t.DriverId == null)
+            .OrderBy(t => t.CreatedAt)
+            .Take(30)
+            .ToListAsync(ct);
+
+        const int radiusM = 8000;
+        Domain.Entities.Trip? match = null;
+        foreach (var candidate in candidates)
+        {
+            var dlat = (double)(dp.LastLat.Value - candidate.PickupLat);
+            var dlng = (double)(dp.LastLng.Value - candidate.PickupLng);
+            var meters = Math.Sqrt(dlat * dlat + dlng * dlng) * 111_320;
+            if (meters <= radiusM)
+            {
+                match = candidate;
+                break;
+            }
+        }
+
+        if (match == null) return null;
+
+        match.DriverId = dp.UserId;
+        match.JobState = JobState.Offered;
+        db.TripStateHistories.Add(new Domain.Entities.TripStateHistory
+        {
+            TripId = match.Id,
+            State = JobState.Offered,
+            OccurredAt = DateTime.UtcNow,
+            Actor = "system",
+            ActorId = dp.UserId
+        });
+        await db.SaveChangesAsync(ct);
+        return match;
     }
 }

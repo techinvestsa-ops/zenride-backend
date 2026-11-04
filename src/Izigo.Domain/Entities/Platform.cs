@@ -244,7 +244,7 @@ public class DispatchConfig : BaseEntity
 {
     public DispatchConfig() => Id = EntityId.ForDispatchConfig();
     public string Market { get; set; } = string.Empty;
-    public int OfferTimeoutSeconds { get; set; } = 15;
+    public int OfferTimeoutSeconds { get; set; } = 60;
     public int SearchRadiusM { get; set; } = 3000;
     public string Strategy { get; set; } = "broadcast"; // sequential | broadcast
     public int MaxConcurrentOffers { get; set; } = 3;

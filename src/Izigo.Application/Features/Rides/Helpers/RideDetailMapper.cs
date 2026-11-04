@@ -28,7 +28,9 @@ public static class RideDetailMapper
                 var v = dp.Vehicles.FirstOrDefault();
                 driverDto = new RideDriverDto(
                     Id: dp.UserId,
-                    Name: $"{dp.User.FirstName} {dp.User.LastName[..1]}.",
+                    Name: string.IsNullOrWhiteSpace(dp.User.LastName)
+                        ? dp.User.FirstName
+                        : $"{dp.User.FirstName} {dp.User.LastName[..1]}.",
                     Rating: (double)dp.User.Rating,
                     PhotoUrl: dp.User.PhotoUrl,
                     PhoneMasked: PhoneMasker.Mask(dp.User.Phone),
