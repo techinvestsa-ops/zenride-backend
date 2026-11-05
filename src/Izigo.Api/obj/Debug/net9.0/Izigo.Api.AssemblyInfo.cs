@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Izigo.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+def8f9138303899994f9eba214783fa18aca0002")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a8b37a3e82c8f0fd112acdf35c0910cadbe85f19")]
 [assembly: System.Reflection.AssemblyProductAttribute("Izigo.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Izigo.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
