@@ -5,6 +5,8 @@ public class OpsSettings
     public double EtaSpeedKmh                  { get; set; } = 30.0;
     public int    DriverLocationFreshnessMinutes { get; set; } = 5;
     public double NearbyDriverFuzzDegrees       { get; set; } = 0.003;
+    /// <summary>Key for the hourly map tokens of nearby drivers. Empty: a key made at start-up.</summary>
+    public string NearbyDriverTokenKey          { get; set; } = string.Empty;
     public int    SosTrailBeforeMinutes         { get; set; } = 5;
     public int    SosTrailAfterMinutes          { get; set; } = 30;
 }

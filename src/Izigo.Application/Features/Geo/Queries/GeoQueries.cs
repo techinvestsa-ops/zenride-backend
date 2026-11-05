@@ -176,15 +176,19 @@ public record GetNearbyDriversQuery(
 public class GetNearbyDriversHandler(IApplicationDbContext db, IOptions<OpsSettings> opsOptions)
     : IRequestHandler<GetNearbyDriversQuery, NearbyDriverDto[]>
 {
-    private static readonly Random Rng = new();
+    private static readonly byte[] FallbackKey = System.Security.Cryptography.RandomNumberGenerator.GetBytes(32);
 
     public async Task<NearbyDriverDto[]> Handle(GetNearbyDriversQuery req, CancellationToken ct)
     {
         // Convert radius to rough degree bounds for a DB pre-filter
         var degreeApprox = req.RadiusM / 111_000.0;
 
+        // Only drivers who could actually be sent a request.
         var query = db.DriverProfiles
             .Where(d => d.IsOnline &&
+                        d.KycStatus == KycStatus.Approved &&
+                        d.OnboardingComplete &&
+                        d.User.Status == UserStatus.Active &&
                         d.LastLat != null && d.LastLng != null &&
                         d.LastLocationAt >= DateTime.UtcNow.AddMinutes(-opsOptions.Value.DriverLocationFreshnessMinutes) &&
                         (double)d.LastLat!.Value >= req.Lat - degreeApprox &&
@@ -203,7 +207,7 @@ public class GetNearbyDriversHandler(IApplicationDbContext db, IOptions<OpsSetti
             .Take(20)   // cap for performance; home map doesn't need more than ~20 dots
             .Select(d => new
             {
-                d.LastLat, d.LastLng,
+                d.UserId, d.LastLat, d.LastLng, d.LastHeading,
                 VehicleType = d.Vehicles
                     .Where(v => v.IsActive)
                     .Select(v => v.Type.ToString().ToLower())
@@ -211,11 +215,40 @@ public class GetNearbyDriversHandler(IApplicationDbContext db, IOptions<OpsSetti
             })
             .ToListAsync(ct);
 
-        // Apply fuzz: add random noise so exact driver positions are never revealed
-        return drivers.Select(d => new NearbyDriverDto(
-            Lat: (double)d.LastLat!.Value + (Rng.NextDouble() - 0.5) * opsOptions.Value.NearbyDriverFuzzDegrees,
-            Lng: (double)d.LastLng!.Value + (Rng.NextDouble() - 0.5) * opsOptions.Value.NearbyDriverFuzzDegrees,
-            VehicleType: d.VehicleType
-        )).ToArray();
+        // Each driver gets an hourly token and a fixed offset for that hour,
+        // so the rider sees the car move smoothly without ever seeing the
+        // exact spot. (Fresh noise on every call made the cars jump about,
+        // and averaging many calls would have revealed the true position.)
+        var ops = opsOptions.Value;
+        var key = string.IsNullOrEmpty(ops.NearbyDriverTokenKey)
+            ? FallbackKey
+            : System.Text.Encoding.UTF8.GetBytes(ops.NearbyDriverTokenKey);
+        var hour = DateTime.UtcNow.ToString("yyyyMMddHH");
+        var cosLat = Math.Max(0.2, Math.Cos(req.Lat * Math.PI / 180));
+
+        return drivers
+            .Select(d =>
+            {
+                var hash = System.Security.Cryptography.HMACSHA256.HashData(
+                    key, System.Text.Encoding.UTF8.GetBytes($"{d.UserId}|{hour}"));
+                double Unit(int i) => BitConverter.ToUInt16(hash, i) / (double)ushort.MaxValue - 0.5;
+                var lat = (double)d.LastLat!.Value;
+                var lng = (double)d.LastLng!.Value;
+                return new
+                {
+                    Dto = new NearbyDriverDto(
+                        Id:          Convert.ToHexString(hash, 0, 8).ToLowerInvariant(),
+                        Lat:         lat + Unit(8) * ops.NearbyDriverFuzzDegrees,
+                        Lng:         lng + Unit(10) * ops.NearbyDriverFuzzDegrees,
+                        VehicleType: d.VehicleType,
+                        Heading:     d.LastHeading is { } h ? (double)h : null),
+                    Metres = Math.Sqrt(Math.Pow((lat - req.Lat) * 111_000, 2) +
+                                       Math.Pow((lng - req.Lng) * 111_000 * cosLat, 2)),
+                };
+            })
+            .Where(x => x.Metres <= req.RadiusM)
+            .OrderBy(x => x.Metres)
+            .Select(x => x.Dto)
+            .ToArray();
     }
 }
