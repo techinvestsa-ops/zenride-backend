@@ -158,7 +158,9 @@ internal static class JobDetailMapper
 
 internal static class JobOfferMapper
 {
-    public static JobOfferDto ToOffer(Domain.Entities.Trip trip, int pickupDistM) =>
+    /// <param name="offerExpiresInSec">Seconds the driver has left to answer.
+    /// Must match the server-side expiry, or the app's countdown lies.</param>
+    public static JobOfferDto ToOffer(Domain.Entities.Trip trip, int pickupDistM, int offerExpiresInSec = 0) =>
         new(
             TripId:           trip.Id,
             Code:             trip.Code,
@@ -174,6 +176,6 @@ internal static class JobOfferMapper
             FareGross:        trip.FareGross + trip.FareServiceFee - trip.FareDiscount,
             Currency:         trip.Currency,
             PaymentMethod:    trip.PaymentMethod.ToString().ToLower(),
-            OfferExpiresInSec: 60,
+            OfferExpiresInSec: offerExpiresInSec,
             NoteToDriver:     trip.NoteToDriver);
 }

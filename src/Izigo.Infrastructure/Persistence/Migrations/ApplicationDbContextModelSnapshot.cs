@@ -2246,6 +2246,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsRevoked")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("ReplacedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ReplacedByTokenId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

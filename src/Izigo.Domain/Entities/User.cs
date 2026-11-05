@@ -104,6 +104,13 @@ public class RefreshToken : BaseEntity
     public DateTime ExpiresAt { get; set; }
     public bool IsRevoked { get; set; }
     public string? DeviceId { get; set; }
+
+    /// <summary>When a refresh swapped this token for a new one. Only set by
+    /// rotation, never by logout or admin revocation.</summary>
+    public DateTime? ReplacedAt { get; set; }
+
+    /// <summary>The token issued in exchange for this one.</summary>
+    public string? ReplacedByTokenId { get; set; }
 }
 
 public class SavedPlace : BaseEntity

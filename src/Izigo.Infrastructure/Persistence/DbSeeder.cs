@@ -243,17 +243,16 @@ public static class DbSeeder
         foreach (var market in new[] { "ci", "ng" })
         {
             var existing = await db.DispatchConfigs.FirstOrDefaultAsync(d => d.Market == market);
+            // An existing market keeps whatever ops set in the dashboard.
             if (existing is not null)
-            {
-                if (existing.OfferTimeoutSeconds < 60)
-                    existing.OfferTimeoutSeconds = 60;
                 continue;
-            }
 
             db.DispatchConfigs.Add(new DispatchConfig
             {
                 Market               = market,
-                OfferTimeoutSeconds  = 60,
+                // Short enough that an unanswered offer moves on quickly
+                // (a rider waits one window per round of drivers).
+                OfferTimeoutSeconds  = 20,
                 SearchRadiusM        = 3000,
                 Strategy             = "broadcast",
                 MaxConcurrentOffers  = 3,
