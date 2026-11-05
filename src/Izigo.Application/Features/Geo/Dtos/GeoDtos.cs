@@ -53,8 +53,10 @@ public record EtaResultDto(
 // ── GET /geo/nearby-drivers ───────────────────────────────────────────────────
 // Contract: "Return fuzzed positions and no identities"
 public record NearbyDriverDto(
+    string Id,            // opaque map token: changes every hour, cannot be traced to the driver
     double Lat,
     double Lng,
-    string VehicleType    // bike | car | van
-    // Deliberately NO id, NO name, NO plate
+    string VehicleType,   // bike | car | van
+    double? Heading       // degrees clockwise from north, when known
+    // Deliberately NO name, NO plate, NO user id
 );

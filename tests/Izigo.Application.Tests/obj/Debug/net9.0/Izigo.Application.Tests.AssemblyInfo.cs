@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Izigo.Application.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a8b37a3e82c8f0fd112acdf35c0910cadbe85f19")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+722ec26d0bdb7c54726cf4d8a2ec219c862e2b7f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Izigo.Application.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Izigo.Application.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
