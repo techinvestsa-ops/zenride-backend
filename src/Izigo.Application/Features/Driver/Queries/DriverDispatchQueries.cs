@@ -161,22 +161,34 @@ public class GetJobOfferHandler(
             .FirstOrDefaultAsync(t => t.DriverId == req.DriverId &&
                                       t.JobState == JobState.Offered, ct);
 
+        var claimed = false;
         if (trip == null)
         {
             trip = await ClaimNearbyBroadcastAsync(db, dp, ct);
-            if (trip != null)
-            {
-                // Give a claimed offer the same window as a dispatched one, so a driver
-                // who ignores it does not hold the trip forever.
-                var timeoutSec = await db.DispatchConfigs
-                    .Where(c => c.Market == trip.Market)
-                    .Select(c => (int?)c.OfferTimeoutSeconds)
-                    .FirstOrDefaultAsync(ct) ?? dispatchOptions.Value.OfferTimeoutSeconds;
-                jobs.Schedule(trip.Id, "offer_expire", DateTime.UtcNow.AddSeconds(timeoutSec));
-            }
+            claimed = trip != null;
         }
 
         if (trip == null) return null;
+
+        var timeoutSec = await db.DispatchConfigs
+            .Where(c => c.Market == trip.Market)
+            .Select(c => (int?)c.OfferTimeoutSeconds)
+            .FirstOrDefaultAsync(ct) ?? dispatchOptions.Value.OfferTimeoutSeconds;
+
+        // Give a claimed offer the same window as a dispatched one, so a driver
+        // who ignores it does not hold the trip forever.
+        if (claimed)
+            jobs.Schedule(trip.Id, "offer_expire", DateTime.UtcNow.AddSeconds(timeoutSec));
+
+        // Time left on this driver's offer, so a driver who sees it on a later
+        // poll gets the real remainder, not a fresh full countdown.
+        var offeredAt = await db.TripStateHistories
+            .Where(h => h.TripId == trip.Id && h.State == JobState.Offered && h.ActorId == req.DriverId)
+            .OrderByDescending(h => h.OccurredAt)
+            .Select(h => (DateTime?)h.OccurredAt)
+            .FirstOrDefaultAsync(ct);
+        var elapsed = offeredAt is { } at ? (int)(DateTime.UtcNow - at).TotalSeconds : 0;
+        var remaining = Math.Clamp(timeoutSec - elapsed, 1, timeoutSec);
 
         int pickupDistM = 0;
         if (dp.LastLat.HasValue && dp.LastLng.HasValue)
@@ -185,7 +197,7 @@ public class GetJobOfferHandler(
             var dlng = (double)(dp.LastLng.Value - trip.PickupLng);
             pickupDistM = (int)(Math.Sqrt(dlat * dlat + dlng * dlng) * 111_320);
         }
-        return JobOfferMapper.ToOffer(trip, pickupDistM);
+        return JobOfferMapper.ToOffer(trip, pickupDistM, remaining);
     }
 
     private static async Task<Domain.Entities.Trip?> ClaimNearbyBroadcastAsync(
