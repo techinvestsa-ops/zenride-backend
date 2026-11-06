@@ -139,6 +139,10 @@ public class PayCashSettlementHandler(IApplicationDbContext db)
         var req = cmd.Request;
         var wallet = await DriverWalletHelper.GetOrCreateAsync(cmd.DriverId, db, ct);
 
+        // A negative amount would reverse the money flow.
+        if (req.Amount <= 0)
+            throw new ArgumentException("VALIDATION_ERROR: Settlement amount must be greater than zero.");
+
         if (req.Amount > wallet.PendingCashSettlement)
             throw new ArgumentException(
                 $"VALIDATION_ERROR: Amount exceeds outstanding balance of {wallet.PendingCashSettlement}.");
