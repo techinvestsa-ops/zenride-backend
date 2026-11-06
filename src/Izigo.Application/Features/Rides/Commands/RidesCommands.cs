@@ -270,17 +270,42 @@ public class ChangeDestinationHandler(IApplicationDbContext db, IGeoService geo,
             new GeoPoint(req.NewDropoff.Lat, req.NewDropoff.Lng),
             null, "driving", ct);
 
+        // Reprice for the new route the same way a quote is priced (same class,
+        // surge and promo discount), so a longer trip is not driven at the
+        // shorter trip's fare. Straight line x1.3 if routing is unavailable.
+        var distanceM = route?.DistanceM ?? (int)(LiveEtaDistance(
+            (double)trip.PickupLat, (double)trip.PickupLng, req.NewDropoff.Lat, req.NewDropoff.Lng) * 1.3);
+        var freeFlowS = route?.DurationS ?? (int)(distanceM / 8.3);
+        var trafficS  = route?.DurationInTrafficS ?? freeFlowS;
+        var rule = await db.FareRules
+                       .Where(r => r.IsActive && r.ServiceClass == trip.ServiceClass &&
+                                   (r.Market == trip.Market || r.Market == ""))
+                       .OrderByDescending(r => r.Version)
+                       .FirstOrDefaultAsync(ct)
+                   ?? FareCalculator.DefaultRule(trip.ServiceClass);
+        var surge = await db.Quotes
+            .Where(q => q.Id == trip.QuoteId)
+            .Select(q => (decimal?)q.SurgeMultiplier)
+            .FirstOrDefaultAsync(ct) ?? 1.0m;
+        var fare = FareCalculator.Calculate(rule, distanceM, freeFlowS, trafficS, surge, trip.FareDiscount);
+
+        // A wallet ride must still be payable at the new price.
+        if (trip.PaymentMethod == PaymentMethod.Wallet)
+            await RiderWalletPayments.EnsureCanPayAsync(db, trip.RiderId, fare.Total + trip.FareServiceFee, ct);
+
         trip.DropoffLat     = (decimal)req.NewDropoff.Lat;
         trip.DropoffLng     = (decimal)req.NewDropoff.Lng;
         trip.DropoffLabel   = req.NewDropoff.Label;
         trip.DropoffPlaceId = req.NewDropoff.PlaceId;
+        trip.DistanceM      = distanceM;
+        trip.DurationS      = Math.Max(freeFlowS, trafficS);
+        if (route != null) trip.EncodedPolyline = route.EncodedPolyline;
 
-        if (route != null)
-        {
-            trip.DistanceM      = route.DistanceM;
-            trip.DurationS      = route.DurationS;
-            trip.EncodedPolyline = route.EncodedPolyline;
-        }
+        trip.FareGross    = fare.Total - fare.ServiceFee + fare.Discount;
+        trip.FareBase     = fare.Base;
+        trip.FareDistance = fare.Distance;
+        trip.FareTime     = fare.Time;
+        trip.FareDiscount = fare.Discount;
 
         await db.SaveChangesAsync(ct);
 
@@ -296,11 +321,23 @@ public class ChangeDestinationHandler(IApplicationDbContext db, IGeoService geo,
                     lat      = (double)trip.DropoffLat,
                     lng      = (double)trip.DropoffLng,
                     place_id = trip.DropoffPlaceId
-                }
+                },
+                fare_total = trip.FareGross + trip.FareServiceFee - trip.FareDiscount,
+                currency   = trip.Currency,
             }, ct);
         }
 
         return await RideDetailMapper.BuildAsync(trip, db, ct, appOptions.Value.ShareBaseUrl, quoteOptions.Value.DefaultCancellationFee);
+    }
+
+    private static double LiveEtaDistance(double lat1, double lng1, double lat2, double lng2)
+    {
+        const double r = 6_371_000;
+        var dLat = (lat2 - lat1) * Math.PI / 180;
+        var dLng = (lng2 - lng1) * Math.PI / 180;
+        var h = Math.Pow(Math.Sin(dLat / 2), 2) +
+                Math.Cos(lat1 * Math.PI / 180) * Math.Cos(lat2 * Math.PI / 180) * Math.Pow(Math.Sin(dLng / 2), 2);
+        return 2 * r * Math.Asin(Math.Min(1, Math.Sqrt(h)));
     }
 }
 
