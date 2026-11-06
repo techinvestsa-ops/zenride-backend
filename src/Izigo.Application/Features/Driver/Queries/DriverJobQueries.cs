@@ -17,9 +17,13 @@ public class GetActiveJobHandler(IApplicationDbContext db)
 {
     public async Task<JobDetailDto?> Handle(GetActiveJobQuery req, CancellationToken ct)
     {
+        // With a next trip queued the driver has two; the one under way comes
+        // first (states are ordered by progress).
         var trip = await db.Trips
-            .FirstOrDefaultAsync(t => t.DriverId == req.DriverId &&
-                                      !RideProjector.TerminalStates.Contains(t.JobState), ct);
+            .Where(t => t.DriverId == req.DriverId &&
+                        !RideProjector.TerminalStates.Contains(t.JobState))
+            .OrderByDescending(t => t.JobState)
+            .FirstOrDefaultAsync(ct);
 
         return trip == null ? null : await JobDetailMapper.BuildAsync(trip, db, ct);
     }
