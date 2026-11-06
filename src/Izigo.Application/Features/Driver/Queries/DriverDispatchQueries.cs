@@ -90,6 +90,8 @@ public class GetDemandHandler(IApplicationDbContext db)
     // ~0.03 degrees ≈ 3 km — used as the radius to assign a trip request to a zone
     private const double ZoneRadiusDeg = 0.03;
 
+    private static readonly TimeSpan DemandWindow = TimeSpan.FromMinutes(30);
+
     public async Task<DemandHeatmapDto> Handle(GetDemandQuery req, CancellationToken ct)
     {
         var driver = await db.DriverProfiles
@@ -112,10 +114,16 @@ public class GetDemandHandler(IApplicationDbContext db)
         if (zones.Count == 0)
             return new DemandHeatmapDto(Zones: []);
 
-        // Pickup locations of trips currently searching for a driver
-        var dueBy = ScheduledRides.DueCutoff(DateTime.UtcNow);
+        // Where riders asked for a ride in the last half hour, whatever became
+        // of it: trips that found nobody are the demand drivers should go to.
+        // Counting only trips searching right now left the map empty at
+        // normal volumes. Held scheduled rides are not demand yet.
+        var now = DateTime.UtcNow;
+        var dueBy = ScheduledRides.DueCutoff(now);
+        var since = now - DemandWindow;
         var broadcastingPickups = await db.Trips
-            .Where(t => t.JobState == JobState.Broadcasting &&
+            .Where(t => t.CreatedAt >= since &&
+                        t.Vertical != Vertical.CoRide &&
                         (t.ScheduledAt == null || t.ScheduledAt <= dueBy))
             .Select(t => new { t.PickupLat, t.PickupLng })
             .ToListAsync(ct);
