@@ -7,6 +7,9 @@ namespace Izigo.Application.Features.Rides.Helpers;
 /// </summary>
 public static class ScheduledRides
 {
+    /// <summary>Feature flag (per market) that switches booking for later on.</summary>
+    public const string FlagKey = "scheduled_rides";
+
     /// <summary>Dispatch starts this long before the pickup time.</summary>
     public static readonly TimeSpan Lead = TimeSpan.FromMinutes(10);
 

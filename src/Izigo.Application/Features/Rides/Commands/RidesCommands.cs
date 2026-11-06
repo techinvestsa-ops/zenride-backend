@@ -30,6 +30,9 @@ public class CreateRideHandler(IApplicationDbContext db, IIdempotencyService ide
     private static readonly System.Text.Json.JsonSerializerOptions _jsonOpts = new()
         { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.SnakeCaseLower };
 
+    /// <summary>Rides are booked in Côte d'Ivoire for now; one place to change it.</summary>
+    private const string TripMarket = "ci";
+
     public async Task<RideDetailDto> Handle(CreateRideCommand cmd, CancellationToken ct)
     {
         var req = cmd.Request;
@@ -85,6 +88,9 @@ public class CreateRideHandler(IApplicationDbContext db, IIdempotencyService ide
         DateTime? scheduledAt = req.ScheduledAt is { } requested
             ? ScheduledRides.Validate(requested, DateTime.UtcNow)
             : null;
+        if (scheduledAt is not null &&
+            !await db.FeatureFlags.AnyAsync(f => f.Key == ScheduledRides.FlagKey && f.Market == TripMarket && f.Enabled, ct))
+            throw new InvalidOperationException("CONFLICT: Booking rides for later is not available yet.");
 
         // Mark quote used
         quote.IsUsed = true;
@@ -99,7 +105,7 @@ public class CreateRideHandler(IApplicationDbContext db, IIdempotencyService ide
             ServiceClass   = serviceClass,
             RiderId        = cmd.RiderId,
             QuoteId        = quote.Id,
-            Market         = "ci",   // from config in production
+            Market         = TripMarket,
 
             JobState       = JobState.Broadcasting,
 

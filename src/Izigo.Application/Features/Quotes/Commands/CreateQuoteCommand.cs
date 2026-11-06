@@ -76,8 +76,10 @@ public class CreateQuoteHandler(
         var riderHasCompletedTrip = await db.Trips.AnyAsync(
             t => t.RiderId == req.UserId && t.JobState == JobState.Completed, ct);
 
-        decimal surgeMultiplier = 1.0m;
-        string? surgeReason = null;
+        // Surge applies to rides only, and only where the market switched it on.
+        var (surgeMultiplier, surgeReason) = vertical == Vertical.Ride
+            ? await SurgePricing.ForPickupAsync(db, market, pickup.Lat, pickup.Lng, freshnessMinutes: 5, ct)
+            : (1.0m, (string?)null);
 
         // Determine which service classes to quote
         ServiceClass[] classes = vertical switch
