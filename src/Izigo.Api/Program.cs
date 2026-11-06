@@ -140,6 +140,12 @@ try
         Log.Warning(ex, "Could not register the driver location cleanup job");
     }
 
+    // The OTP code in API responses lets anyone sign in as any phone number.
+    // Fine on a developer machine, never on a server users can reach.
+    if (!app.Environment.IsDevelopment() && builder.Configuration.GetValue<bool>("Otp:ExposeDevCode"))
+        Log.Warning("Otp:ExposeDevCode is ON in {Env}: login codes are returned in API responses. Turn it off before real users sign in.",
+            app.Environment.EnvironmentName);
+
     Log.Information("Izigo API starting on {Env}", app.Environment.EnvironmentName);
     app.Run();
 }
