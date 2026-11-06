@@ -40,16 +40,26 @@ try
 
     builder.Services.AddSwaggerServices();
     builder.Services.AddSingleton<Microsoft.AspNetCore.SignalR.IUserIdProvider, IzigoUserIdProvider>();
-    builder.Services.AddSignalR(options =>
+    var signalR = builder.Services.AddSignalR(options =>
     {
         options.KeepAliveInterval = TimeSpan.FromSeconds(15);
         options.ClientTimeoutInterval = TimeSpan.FromSeconds(60);
-        options.EnableDetailedErrors = true;
+        // Exception details help in development but leak internals in production.
+        options.EnableDetailedErrors = builder.Environment.IsDevelopment();
     }).AddJsonProtocol(options =>
     {
         options.PayloadSerializerOptions.PropertyNamingPolicy =
             System.Text.Json.JsonNamingPolicy.SnakeCaseLower;
     });
+
+    // With more than one API instance, connections are spread across servers
+    // and a rider and their driver may land on different ones. Azure SignalR
+    // Service relays messages between them. Set Azure:SignalR:ConnectionString
+    // (app setting Azure__SignalR__ConnectionString) before scaling out;
+    // without it, run a single instance.
+    var azureSignalR = builder.Configuration["Azure:SignalR:ConnectionString"];
+    if (!string.IsNullOrWhiteSpace(azureSignalR))
+        signalR.AddAzureSignalR(azureSignalR);
 
     var corsOrigins = (builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? [])
         .Append("http://localhost:3000")
