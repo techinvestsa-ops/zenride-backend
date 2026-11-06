@@ -1086,6 +1086,26 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DestinationLabel")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("DestinationLat")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<decimal?>("DestinationLng")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<DateTime?>("DestinationSetAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DestinationUsesOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DestinationUsesToday")
+                        .HasColumnType("int");
+
                     b.Property<string>("DriverWalletId")
                         .HasColumnType("nvarchar(450)");
 

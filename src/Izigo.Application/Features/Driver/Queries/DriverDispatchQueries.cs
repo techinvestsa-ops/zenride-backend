@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Features.Driver.Dtos;
 using Izigo.Application.Features.Rides.Helpers;
 using Izigo.Domain.Enums;
@@ -210,6 +211,15 @@ public class GetJobOfferHandler(
         return JobOfferMapper.ToOffer(trip, pickupDistM, remaining);
     }
 
+    /// <summary>A driver with a destination set only takes trips towards it.</summary>
+    private static bool FitsDestination(Domain.Entities.DriverProfile dp, Domain.Entities.Trip trip) =>
+        dp.DestinationLat is not { } destLat || dp.DestinationLng is not { } destLng ||
+        DriverDestination.Fits(
+            (double)dp.LastLat!.Value, (double)dp.LastLng!.Value,
+            (double)destLat, (double)destLng,
+            (double)trip.PickupLat, (double)trip.PickupLng,
+            (double)trip.DropoffLat, (double)trip.DropoffLng);
+
     private static async Task<Domain.Entities.Trip?> ClaimNearbyBroadcastAsync(
         IApplicationDbContext db, Domain.Entities.DriverProfile dp, CancellationToken ct)
     {
@@ -240,7 +250,7 @@ public class GetJobOfferHandler(
             var dlat = (double)(dp.LastLat.Value - candidate.PickupLat);
             var dlng = (double)(dp.LastLng.Value - candidate.PickupLng);
             var meters = Math.Sqrt(dlat * dlat + dlng * dlng) * 111_320;
-            if (meters <= radiusM)
+            if (meters <= radiusM && FitsDestination(dp, candidate))
             {
                 match = candidate;
                 break;

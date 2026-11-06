@@ -1,5 +1,6 @@
 using Hangfire;
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Features.Admin.Realtime;
 using Izigo.Application.Features.Dispatch;
 using Izigo.Application.Features.Packages.Helpers;
@@ -300,6 +301,13 @@ public class DispatchJobProcessor(
 
         var inReach = nearby
             .Where(dp => dp.VerticalsAllowed.Contains(trip.Vertical))
+            // Destination filter: only trips that take the driver towards it.
+            .Where(dp => dp.DestinationLat is not { } destLat || dp.DestinationLng is not { } destLng ||
+                         DriverDestination.Fits(
+                             (double)dp.LastLat!.Value, (double)dp.LastLng!.Value,
+                             (double)destLat, (double)destLng,
+                             (double)trip.PickupLat, (double)trip.PickupLng,
+                             (double)trip.DropoffLat, (double)trip.DropoffLng))
             .Select(dp => new DriverCand(
                 dp.UserId,
                 dp.AcceptanceRate,

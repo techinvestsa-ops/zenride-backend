@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Features.Admin.Realtime;
 using Izigo.Application.Features.Driver.Dtos;
 using Izigo.Application.Features.Realtime.Dtos;
@@ -145,6 +146,11 @@ public class UpdateLocationHandler(IApplicationDbContext db, IRealtimeService re
         dp.LastLng        = (decimal)req.Lng;
         dp.LastHeading    = req.Heading.HasValue ? (decimal)req.Heading.Value : dp.LastHeading;
         dp.LastLocationAt = DateTime.UtcNow;
+
+        // Arrived at the destination: the filter has done its job.
+        if (dp.DestinationLat is { } destLat && dp.DestinationLng is { } destLng &&
+            DriverDestination.Metres(req.Lat, req.Lng, (double)destLat, (double)destLng) <= DriverDestination.ArrivedM)
+            DriverDestinationMapper.Clear(dp);
 
         // Write location history point
         db.DriverLocationPoints.Add(new DriverLocationPoint
