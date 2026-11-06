@@ -384,7 +384,8 @@ public class RateRideHandler(IApplicationDbContext db) : IRequestHandler<RateRid
             throw new InvalidOperationException("CONFLICT: You have already rated this trip.");
 
         trip.RatingByRider = req.Stars;
-        if (req.TipAmount.HasValue) trip.FareTip = req.TipAmount.Value;
+        if (req.TipAmount is > 0)
+            await RideTips.ApplyAsync(db, trip, req.TipAmount.Value, ct);
 
         // Update driver's running rating average
         if (trip.DriverId != null)
@@ -418,35 +419,7 @@ public class TipRideHandler(IApplicationDbContext db) : IRequestHandler<TipRideC
             .FirstOrDefaultAsync(t => t.Id == req.TripId && t.RiderId == req.RiderId, ct)
             ?? throw new KeyNotFoundException("Ride not found.");
 
-        if (trip.JobState != JobState.Completed)
-            throw new InvalidOperationException("CONFLICT: Can only tip on completed trips.");
-
-        // Gate on tipping feature flag
-        var config = await db.PlatformConfigs
-            .FirstOrDefaultAsync(c => c.Market == trip.Market, ct);
-        if (config is not null && !config.TippingEnabled)
-            throw new InvalidOperationException("CONFLICT: Tipping is not enabled in this market.");
-
-        trip.FareTip = req.Amount;
-
-        // Credit tip directly to driver wallet
-        if (trip.DriverId is not null)
-        {
-            var wallet = await db.DriverWallets
-                .FirstOrDefaultAsync(w => w.DriverId == trip.DriverId, ct);
-            if (wallet is not null)
-            {
-                wallet.AvailableBalance += req.Amount;
-                db.DriverWalletTransactions.Add(new Domain.Entities.DriverWalletTransaction
-                {
-                    DriverWalletId = wallet.Id,
-                    Type           = "tip",
-                    Amount         = req.Amount,
-                    BalanceAfter   = wallet.AvailableBalance,
-                    ReferenceId    = trip.Id
-                });
-            }
-        }
+        await RideTips.ApplyAsync(db, trip, req.Amount, ct);
 
         await db.SaveChangesAsync(ct);
     }
