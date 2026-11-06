@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Helpers;
 using Izigo.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -224,6 +225,8 @@ public class RecordCashSettlementHandler(IApplicationDbContext db, IAuditService
 
         var before = new { wallet.PendingCashSettlement };
         wallet.PendingCashSettlement -= cmd.Amount;
+        // The money is in: settle the driver's reports it covers.
+        await CashSettlementClaims.ConfirmAsync(db, wallet.Id, cmd.Amount, ct);
 
         db.DriverWalletTransactions.Add(new Domain.Entities.DriverWalletTransaction
         {

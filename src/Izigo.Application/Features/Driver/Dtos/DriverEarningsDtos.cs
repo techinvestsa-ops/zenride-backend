@@ -49,7 +49,8 @@ public record CashSettlementDto(
     long Outstanding,
     long Cap,
     bool IsBlocked,
-    string Currency
+    string Currency,
+    long PendingConfirmation = 0   // reported paid by the driver, not yet confirmed by ops
 );
 
 public record PayoutMethodDto(

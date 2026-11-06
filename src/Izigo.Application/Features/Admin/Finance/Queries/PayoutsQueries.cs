@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Common.Models;
 using Izigo.Domain.Enums;
 using MediatR;
@@ -19,7 +20,8 @@ public record PayoutDetailDto(PayoutRowDto Payout, IEnumerable<PayoutAttemptDto>
     string? NameEnquiryResult);
 
 public record CashSettlementRowDto(string DriverId, string DriverName, long CashOwed,
-    string Currency, int DaysOutstanding, bool OverCap);
+    string Currency, int DaysOutstanding, bool OverCap,
+    long ReportedPaid = 0);   // driver says they paid this much; check it, then record it
 
 // ── GET /admin/payouts ────────────────────────────────────────────────────────
 // Fields include driver_cash_owed so reviewer sees the offset without opening the row.
@@ -177,7 +179,7 @@ public class GetCashSettlementHandler(IApplicationDbContext db)
 
         var wallets = await db.DriverWallets
             .Where(w => w.PendingCashSettlement > 0)
-            .Select(w => new { w.DriverId, w.PendingCashSettlement, w.Currency })
+            .Select(w => new { w.Id, w.DriverId, w.PendingCashSettlement, w.Currency })
             .OrderByDescending(w => w.PendingCashSettlement)
             .ToListAsync(ct);
 
@@ -198,6 +200,14 @@ public class GetCashSettlementHandler(IApplicationDbContext db)
             .Select(g => new { DriverId = g.Key, OldestDate = g.Min(t => t.CreatedAt) })
             .ToDictionaryAsync(g => g.DriverId, g => g.OldestDate, ct);
 
+        var walletIds = wallets.Select(w => w.Id).ToList();
+        var reported = await db.DriverWalletTransactions
+            .Where(t => walletIds.Contains(t.DriverWalletId) &&
+                        t.Type == CashSettlementClaims.Type && t.Status == Domain.Enums.PaymentStatus.Pending)
+            .GroupBy(t => t.DriverWalletId)
+            .Select(g => new { WalletId = g.Key, Amount = g.Sum(t => t.Amount) })
+            .ToDictionaryAsync(g => g.WalletId, g => g.Amount, ct);
+
         var now = DateTime.UtcNow;
         var rows = wallets.Select(w =>
         {
@@ -208,7 +218,8 @@ public class GetCashSettlementHandler(IApplicationDbContext db)
             return new CashSettlementRowDto(w.DriverId,
                 drv is not null ? $"{drv.FirstName} {drv.LastName}".Trim() : "—",
                 w.PendingCashSettlement, w.Currency,
-                days, w.PendingCashSettlement > cap);
+                days, w.PendingCashSettlement > cap,
+                reported.GetValueOrDefault(w.Id));
         }).ToArray();
 
         return AdminApiResponse.Ok(rows, new AdminPagedMeta(1, rows.Length, rows.Length, 1));

@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Features.Driver.Dtos;
 using Izigo.Domain.Enums;
 using MediatR;
@@ -183,7 +184,8 @@ public class GetCashSettlementHandler(IApplicationDbContext db)
             Outstanding: wallet.PendingCashSettlement,
             Cap:         Cap,
             IsBlocked:   wallet.PendingCashSettlement >= Cap,
-            Currency:    wallet.Currency);
+            Currency:    wallet.Currency,
+            PendingConfirmation: await CashSettlementClaims.PendingAsync(db, wallet.Id, ct));
     }
 }
 

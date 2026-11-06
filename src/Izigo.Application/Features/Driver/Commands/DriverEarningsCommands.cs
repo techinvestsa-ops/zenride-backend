@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Features.Driver.Dtos;
 using Izigo.Application.Features.Driver.Queries;
 using Izigo.Domain.Entities;
@@ -143,21 +144,22 @@ public class PayCashSettlementHandler(IApplicationDbContext db)
         if (req.Amount <= 0)
             throw new ArgumentException("VALIDATION_ERROR: Settlement amount must be greater than zero.");
 
-        if (req.Amount > wallet.PendingCashSettlement)
+        // The driver's word is a claim, not a payment: the debt only goes down
+        // when ops record the money (RecordCashSettlement), which confirms it.
+        var claimed = await CashSettlementClaims.PendingAsync(db, wallet.Id, ct);
+        if (req.Amount > wallet.PendingCashSettlement - claimed)
             throw new ArgumentException(
-                $"VALIDATION_ERROR: Amount exceeds outstanding balance of {wallet.PendingCashSettlement}.");
-
-        wallet.PendingCashSettlement -= req.Amount;
+                $"VALIDATION_ERROR: Amount exceeds what you owe ({wallet.PendingCashSettlement - claimed} not yet reported).");
 
         db.DriverWalletTransactions.Add(new DriverWalletTransaction
         {
             DriverWalletId = wallet.Id,
-            Type           = "cash_settlement",
-            Amount         = -req.Amount,
-            BalanceAfter   = wallet.AvailableBalance,
-            Status         = PaymentStatus.Succeeded,
+            Type           = CashSettlementClaims.Type,
+            Amount         = req.Amount,
+            BalanceAfter   = wallet.PendingCashSettlement,
+            Status         = PaymentStatus.Pending,
             ReferenceId    = req.Reference,
-            Reason         = "Cash settlement payment",
+            Reason         = "Driver reported a cash settlement payment; awaiting confirmation",
         });
 
         await db.SaveChangesAsync(ct);
@@ -167,7 +169,8 @@ public class PayCashSettlementHandler(IApplicationDbContext db)
             Outstanding: wallet.PendingCashSettlement,
             Cap:         Cap,
             IsBlocked:   wallet.PendingCashSettlement >= Cap,
-            Currency:    wallet.Currency);
+            Currency:    wallet.Currency,
+            PendingConfirmation: claimed + req.Amount);
     }
 }
 
