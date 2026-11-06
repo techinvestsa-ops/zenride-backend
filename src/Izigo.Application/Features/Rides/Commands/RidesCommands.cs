@@ -82,6 +82,10 @@ public class CreateRideHandler(IApplicationDbContext db, IIdempotencyService ide
         if (paymentMethod == PaymentMethod.Wallet)
             await RiderWalletPayments.EnsureCanPayAsync(db, cmd.RiderId, option.Fare.Total, ct);
 
+        DateTime? scheduledAt = req.ScheduledAt is { } requested
+            ? ScheduledRides.Validate(requested, DateTime.UtcNow)
+            : null;
+
         // Mark quote used
         quote.IsUsed = true;
 
@@ -120,7 +124,7 @@ public class CreateRideHandler(IApplicationDbContext db, IIdempotencyService ide
 
             PaymentMethod  = paymentMethod,
             StartOtp       = startOtp,
-            ScheduledAt    = req.ScheduledAt,
+            ScheduledAt    = scheduledAt,
             NoteToDriver   = req.Note,
 
             ForSomeoneElseName  = req.ForSomeoneElse?.Name,
@@ -138,11 +142,15 @@ public class CreateRideHandler(IApplicationDbContext db, IIdempotencyService ide
 
         await db.SaveChangesAsync(ct);
 
-        // Trigger dispatch engine — find and notify nearest available driver
+        // Trigger dispatch engine — find and notify nearest available driver.
+        // A scheduled ride is held until shortly before its pickup time.
         var dispatchJob = new BackgroundJob { Type = $"dispatch:{trip.Id}", Status = "queued" };
         db.BackgroundJobs.Add(dispatchJob);
         await db.SaveChangesAsync(ct);
-        jobDispatcher.Enqueue(dispatchJob.Id, dispatchJob.Type);
+        if (scheduledAt is { } at)
+            jobDispatcher.Schedule(dispatchJob.Id, dispatchJob.Type, at - ScheduledRides.Lead);
+        else
+            jobDispatcher.Enqueue(dispatchJob.Id, dispatchJob.Type);
         await AdminRealtimeNotify.JobStateChangedAsync(realtime, trip, ct);
 
         var result = await RideDetailMapper.BuildAsync(trip, db, ct, appOptions.Value.ShareBaseUrl, quoteOptions.Value.DefaultCancellationFee);

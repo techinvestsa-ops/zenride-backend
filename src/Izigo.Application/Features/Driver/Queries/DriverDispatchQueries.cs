@@ -113,8 +113,10 @@ public class GetDemandHandler(IApplicationDbContext db)
             return new DemandHeatmapDto(Zones: []);
 
         // Pickup locations of trips currently searching for a driver
+        var dueBy = ScheduledRides.DueCutoff(DateTime.UtcNow);
         var broadcastingPickups = await db.Trips
-            .Where(t => t.JobState == JobState.Broadcasting)
+            .Where(t => t.JobState == JobState.Broadcasting &&
+                        (t.ScheduledAt == null || t.ScheduledAt <= dueBy))
             .Select(t => new { t.PickupLat, t.PickupLng })
             .ToListAsync(ct);
 
@@ -213,10 +215,12 @@ public class GetJobOfferHandler(
             return null;
         }
 
+        var dueBy = ScheduledRides.DueCutoff(DateTime.UtcNow);
         var candidates = await db.Trips
             .Where(t => t.JobState == JobState.Broadcasting &&
                         t.Vertical == Vertical.Ride &&
-                        t.DriverId == null)
+                        t.DriverId == null &&
+                        (t.ScheduledAt == null || t.ScheduledAt <= dueBy))
             .OrderBy(t => t.CreatedAt)
             .Take(30)
             .ToListAsync(ct);

@@ -42,6 +42,10 @@ public static class RideDetailMapper
 
         var isFinal = RideProjector.IsTerminal(trip.JobState);
         var status   = RideProjector.ToRiderStatus(trip.JobState);
+        // Booked for later and not yet dispatching: not a live search.
+        if (trip.JobState == JobState.Broadcasting && trip.ScheduledAt is { } at &&
+            at > ScheduledRides.DueCutoff(DateTime.UtcNow))
+            status = "scheduled";
         var fareRule = await db.FareRules
             .Where(r => r.IsActive && r.ServiceClass == trip.ServiceClass && r.Market == trip.Market)
             .OrderByDescending(r => r.Version)

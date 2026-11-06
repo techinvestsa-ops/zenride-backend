@@ -3,6 +3,7 @@ using Izigo.Application.Common.Interfaces;
 using Izigo.Application.Features.Admin.Realtime;
 using Izigo.Application.Features.Dispatch;
 using Izigo.Application.Features.Packages.Helpers;
+using Izigo.Application.Features.Rides.Helpers;
 using Izigo.Application.Features.Realtime.Dtos;
 using Izigo.Domain.Entities;
 using Izigo.Domain.Enums;
@@ -108,12 +109,28 @@ public class DispatchJobProcessor(
     private async Task DispatchTripAsync(string tripId, DomainBackgroundJob job, CancellationToken ct)
     {
         var trip = await db.Trips.FirstOrDefaultAsync(t => t.Id == tripId, ct);
-        if (trip is null || trip.JobState != JobState.Broadcasting)
+        var dueBy = ScheduledRides.DueCutoff(DateTime.UtcNow);
+        // Not yet due (its own scheduled job will start it), cancelled, or taken.
+        if (trip is null || trip.JobState != JobState.Broadcasting ||
+            (trip.ScheduledAt is { } at && at > dueBy))
         {
             job.Status = "completed";
             job.CompletedAt = DateTime.UtcNow;
             await db.SaveChangesAsync(ct);
             return;
+        }
+
+        // A scheduled ride starts searching now, not when it was booked: mark
+        // it so the no-drivers window is measured from here.
+        if (trip.ScheduledAt is not null &&
+            !await db.TripStateHistories.AnyAsync(h => h.TripId == tripId && h.State == JobState.Broadcasting &&
+                                                       h.OccurredAt >= trip.ScheduledAt.Value - ScheduledRides.Lead - TimeSpan.FromMinutes(1), ct))
+        {
+            db.TripStateHistories.Add(new TripStateHistory
+            {
+                TripId = tripId, State = JobState.Broadcasting, OccurredAt = DateTime.UtcNow, Actor = "system",
+            });
+            await db.SaveChangesAsync(ct);
         }
 
         var alreadyOffered = await db.TripStateHistories
@@ -138,7 +155,8 @@ public class DispatchJobProcessor(
         }
 
         var pending = await db.Trips
-            .Where(t => t.Market == trip.Market && t.JobState == JobState.Broadcasting)
+            .Where(t => t.Market == trip.Market && t.JobState == JobState.Broadcasting &&
+                        (t.ScheduledAt == null || t.ScheduledAt <= dueBy))
             .OrderBy(t => t.CreatedAt)
             .Take(12)
             .ToListAsync(ct);
