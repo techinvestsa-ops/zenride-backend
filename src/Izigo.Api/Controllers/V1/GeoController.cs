@@ -115,6 +115,12 @@ public class GeoController : BaseController
     // Rider only. Query: lat, lng, radius_m, vertical
     // Returns fuzzed positions — NO driver identity exposed (contract requirement)
 
+    /// <summary>Up to 3 places near the rider where past rides were picked up.</summary>
+    [Authorize(Policy = "RiderPolicy")]
+    [HttpGet("pickup-spots")]
+    public async Task<IActionResult> GetPickupSpots([FromQuery] double lat, [FromQuery] double lng, CancellationToken ct = default)
+        => Ok(await Mediator.Send(new GetPickupSpotsQuery(lat, lng), ct));
+
     [Authorize(Policy = "RiderPolicy")]
     [HttpGet("nearby-drivers")]
     public async Task<IActionResult> GetNearbyDrivers(
