@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Common.Models;
 using Izigo.Application.Features.Admin.Ops.Queries;
 using Izigo.Application.Features.Admin.Trips.Queries;
@@ -14,7 +15,8 @@ public record DriverRowDto(
     string Id, string Name, string PhoneMasked, string KycStatus,
     bool IsOnline, int TotalTrips, long LifetimeEarnings, long CashOwed,
     long WalletBalance, string Currency, decimal Rating,
-    int? DocsExpiringDays, string Status);
+    int? DocsExpiringDays, string Status,
+    long ReportedPaid = 0);   // cash the driver says they remitted; confirm before settling
 
 public record DriverVehicleDto(string? Make, string? Model, int? Year, string? Color,
     string? Plate, string? Type, int Seats);
@@ -104,9 +106,16 @@ public class GetAdminDriversHandler(IApplicationDbContext db)
         // Driver wallets for cash owed
         var wallets = await db.DriverWallets
             .Where(w => driverIds.Contains(w.DriverId))
-            .Select(w => new { w.DriverId, w.AvailableBalance, w.PendingCashSettlement })
+            .Select(w => new { w.Id, w.DriverId, w.AvailableBalance, w.PendingCashSettlement })
             .ToListAsync(ct);
         var walletMap = wallets.ToDictionary(w => w.DriverId);
+        var walletIds = wallets.Select(w => w.Id).ToList();
+        var reportedPaid = await db.DriverWalletTransactions
+            .Where(t => walletIds.Contains(t.DriverWalletId) &&
+                        t.Type == CashSettlementClaims.Type && t.Status == PaymentStatus.Pending)
+            .GroupBy(t => t.DriverWalletId)
+            .Select(g => new { WalletId = g.Key, Amount = g.Sum(t => t.Amount) })
+            .ToDictionaryAsync(g => g.WalletId, g => g.Amount, ct);
 
         if (req.HasCashOwed == true)
         {
@@ -174,7 +183,8 @@ public class GetAdminDriversHandler(IApplicationDbContext db)
                 "XOF",
                 0m, // rating is on User.Rating via DriverProfile — can join if needed
                 docsExpiringMap?.GetValueOrDefault(d.Id),
-                d.Status.ToString().ToLower());
+                d.Status.ToString().ToLower(),
+                wallet is null ? 0 : reportedPaid.GetValueOrDefault(wallet.Id));
         }).ToArray();
 
         return AdminApiResponse.Ok(result, new AdminPagedMeta(req.Page, perPage, total, lastPage, facets));
