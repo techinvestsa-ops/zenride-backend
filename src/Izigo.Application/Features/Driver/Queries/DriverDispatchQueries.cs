@@ -24,7 +24,7 @@ public class GetDriverStatusHandler(IApplicationDbContext db)
             .FirstOrDefaultAsync(d => d.UserId == req.DriverId, ct)
             ?? throw new KeyNotFoundException("Driver not found.");
 
-        var cashSettlement = dp.DriverWallet?.PendingCashSettlement ?? 0;
+        var cashSettlement = (await DriverWallets.FindAsync(db, dp, ct))?.PendingCashSettlement ?? 0;
         const long CashCap = 10_000;   // configurable per market
 
         return new DriverStatusDto(
@@ -48,7 +48,6 @@ public class GetDriverHomeHandler(IApplicationDbContext db)
     {
         var dp = await db.DriverProfiles
             .Include(d => d.DriverWallet)
-                .ThenInclude(w => w!.Transactions)
             .FirstOrDefaultAsync(d => d.UserId == req.DriverId, ct)
             ?? throw new KeyNotFoundException("Driver not found.");
 
@@ -58,9 +57,10 @@ public class GetDriverHomeHandler(IApplicationDbContext db)
                              t.JobState == JobState.Completed &&
                              t.CompletedAt >= today, ct);
 
-        var earningsToday = dp.DriverWallet?.Transactions
-            .Where(t => t.CreatedAt >= today)
-            .Sum(t => t.Amount) ?? 0;
+        var wallet = await DriverWallets.FindAsync(db, dp, ct);
+        var earningsToday = wallet is null ? 0 : await db.DriverWalletTransactions
+            .Where(t => t.DriverWalletId == wallet.Id && t.CreatedAt >= today)
+            .SumAsync(t => t.Amount, ct);
 
         // Active job for cold-start resume
         var activeTrip = await db.Trips

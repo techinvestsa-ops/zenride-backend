@@ -435,6 +435,7 @@ public class CompleteJobHandler(
             dp.TotalTripsCompleted++;
             dp.CompletionRate = Math.Min(1m, dp.CompletionRate + 0.001m);
 
+            await DriverWallets.ForAsync(db, dp, ct);
             if (dp.DriverWallet != null)
             {
                 if (trip.PaymentMethod != PaymentMethod.Cash)

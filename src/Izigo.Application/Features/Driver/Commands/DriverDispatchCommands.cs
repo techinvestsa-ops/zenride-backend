@@ -25,6 +25,7 @@ public class SetDriverStatusHandler(IApplicationDbContext db, IRealtimeService r
             .Include(d => d.DriverWallet)
             .FirstOrDefaultAsync(d => d.UserId == cmd.DriverId, ct)
             ?? throw new KeyNotFoundException("Driver profile not found.");
+        var driverWallet = await DriverWallets.ForAsync(db, dp, ct);
 
         if (cmd.Request.Online)
         {
@@ -35,7 +36,7 @@ public class SetDriverStatusHandler(IApplicationDbContext db, IRealtimeService r
                 throw new InvalidOperationException("FORBIDDEN: Onboarding is not complete.");
 
             const long CashCap = 10_000;
-            var cashOwed = dp.DriverWallet?.PendingCashSettlement ?? 0;
+            var cashOwed = driverWallet.PendingCashSettlement;
             if (cashOwed >= CashCap)
                 throw new InvalidOperationException(
                     $"FORBIDDEN: Cash settlement balance ({cashOwed}) exceeds the cap. Please settle before going online.");
@@ -78,7 +79,7 @@ public class SetDriverStatusHandler(IApplicationDbContext db, IRealtimeService r
         await AdminRealtimeNotify.DriverPresenceChangedAsync(realtime, market, cmd.DriverId, dp.IsOnline, ct);
         await AdminRealtimeNotify.ConsoleInvalidateAsync(realtime, market, "ops", ct);
 
-        var cashSettlement = dp.DriverWallet?.PendingCashSettlement ?? 0;
+        var cashSettlement = driverWallet.PendingCashSettlement;
         const long Cap = 10_000;
         return new DriverStatusDto(
             IsOnline: dp.IsOnline,
