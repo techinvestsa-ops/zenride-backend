@@ -920,13 +920,13 @@ namespace Izigo.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("DriverId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal?>("Heading")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("JobId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<decimal>("Lat")
                         .HasPrecision(9, 6)
@@ -946,6 +946,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("JobId");
+
+                    b.HasIndex("RecordedAt");
+
+                    b.HasIndex("DriverId", "RecordedAt");
 
                     b.ToTable("DriverLocationPoints");
                 });
@@ -1129,6 +1135,10 @@ namespace Izigo.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId")
                         .IsUnique();
+
+                    b.HasIndex("IsOnline", "LastLocationAt");
+
+                    SqlServerIndexBuilderExtensions.IncludeProperties(b.HasIndex("IsOnline", "LastLocationAt"), new[] { "LastLat", "LastLng" });
 
                     b.ToTable("DriverProfiles");
                 });
@@ -2802,7 +2812,7 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("DriverId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DropoffLabel")
                         .IsRequired()
@@ -2863,7 +2873,7 @@ namespace Izigo.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Market")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("NoteAudioUrl")
                         .HasColumnType("nvarchar(max)");
@@ -2903,7 +2913,7 @@ namespace Izigo.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("RiderId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("ScheduledAt")
                         .HasColumnType("datetime2");
@@ -2936,6 +2946,12 @@ namespace Izigo.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DriverId", "JobState");
+
+                    b.HasIndex("RiderId", "CreatedAt");
+
+                    b.HasIndex("Market", "JobState", "CreatedAt");
 
                     b.ToTable("Trips");
                 });

@@ -202,8 +202,17 @@ public class GetNearbyDriversHandler(IApplicationDbContext db, IOptions<OpsSetti
             query = query.Where(d => d.VerticalsAllowed.Contains(vertical));
         }
 
+        // Nearest first, so a busy area returns the closest 20 rather than any
+        // 20 inside the square. Flat-earth distance is plenty at this scale.
+        var originLat = (decimal)req.Lat;
+        var originLng = (decimal)req.Lng;
+        var lngScale  = (decimal)Math.Max(0.2, Math.Cos(req.Lat * Math.PI / 180));
+
         var drivers = await query
             .Include(d => d.Vehicles.Where(v => v.IsActive))
+            .OrderBy(d =>
+                (d.LastLat!.Value - originLat) * (d.LastLat!.Value - originLat) +
+                (d.LastLng!.Value - originLng) * lngScale * (d.LastLng!.Value - originLng) * lngScale)
             .Take(20)   // cap for performance; home map doesn't need more than ~20 dots
             .Select(d => new
             {

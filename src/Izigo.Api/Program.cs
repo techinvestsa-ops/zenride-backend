@@ -117,6 +117,19 @@ try
     // Seed PlatformConfig + initial super-admin on every startup (idempotent)
     await DbSeeder.SeedAsync(app.Services);
 
+    // Nightly at 03:00 UTC, a quiet hour in West Africa. A Hangfire problem
+    // must not stop the API from starting.
+    try
+    {
+        app.Services.GetRequiredService<Hangfire.IRecurringJobManager>()
+            .AddOrUpdate<Izigo.Infrastructure.Jobs.Processors.LocationPointCleanupJob>(
+                "driver-location-cleanup", j => j.RunAsync(CancellationToken.None), Hangfire.Cron.Daily(3));
+    }
+    catch (Exception ex)
+    {
+        Log.Warning(ex, "Could not register the driver location cleanup job");
+    }
+
     Log.Information("Izigo API starting on {Env}", app.Environment.EnvironmentName);
     app.Run();
 }

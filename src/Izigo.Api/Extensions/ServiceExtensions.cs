@@ -184,9 +184,11 @@ public static class ServiceExtensions
                 }));
 
         // Always start the Hangfire server — required for jobs to actually run.
+        // Dispatch rounds, offer expiries, broadcasts and reports share these
+        // workers; with too few, offers queue behind each other at peak.
         services.AddHangfireServer(opts =>
         {
-            opts.WorkerCount = 2;           // keep it light in dev
+            opts.WorkerCount = config.GetValue("Hangfire:WorkerCount", 10);
             opts.Queues      = ["default"];
         });
 
@@ -236,6 +238,7 @@ public static class ServiceExtensions
         services.AddScoped<BroadcastJobProcessor>();
         services.AddScoped<GenericJobProcessor>();
         services.AddScoped<DispatchJobProcessor>();
+        services.AddScoped<LocationPointCleanupJob>();
         services.AddHttpClient("fcm");
         services.AddHttpClient("payment");
         services.AddHttpClient("maps");
