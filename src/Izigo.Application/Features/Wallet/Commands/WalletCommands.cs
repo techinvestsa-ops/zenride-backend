@@ -68,8 +68,23 @@ public class TransferHandler(IApplicationDbContext db, IRealtimeService realtime
                     existing.ReferenceId, existing.CreatedAt);
         }
 
+        // A negative amount would pull money out of the recipient's wallet.
+        if (req.Amount <= 0)
+            throw new ArgumentException("VALIDATION_ERROR: Transfer amount must be greater than zero.");
+        if (req.RecipientUserId == cmd.SenderId)
+            throw new ArgumentException("VALIDATION_ERROR: You cannot transfer to yourself.");
+
+        // Only to a real, active account: GetOrCreate would otherwise open a
+        // wallet for any id and the money would be stranded there.
+        var recipientActive = await db.Users.AnyAsync(
+            u => u.Id == req.RecipientUserId && u.Status == Domain.Enums.UserStatus.Active, ct);
+        if (!recipientActive)
+            throw new KeyNotFoundException("Recipient not found.");
+
         var senderWallet = await WalletHelper.GetOrCreateAsync(cmd.SenderId, db, ct);
         var recipientWallet = await WalletHelper.GetOrCreateAsync(req.RecipientUserId, db, ct);
+        if (recipientWallet.IsLocked)
+            throw new InvalidOperationException("CONFLICT: The recipient's wallet cannot receive transfers right now.");
 
         if (senderWallet.IsLocked)
             throw new InvalidOperationException("CONFLICT: Your wallet is locked.");
@@ -136,6 +151,10 @@ public class WithdrawHandler(IApplicationDbContext db, IRealtimeService realtime
     {
         var req = cmd.Request;
         var wallet = await WalletHelper.GetOrCreateAsync(cmd.UserId, db, ct);
+
+        // A negative amount would reverse the money flow.
+        if (req.Amount <= 0)
+            throw new ArgumentException("VALIDATION_ERROR: Withdrawal amount must be greater than zero.");
 
         if (wallet.IsLocked)
             throw new InvalidOperationException("CONFLICT: Wallet is locked.");

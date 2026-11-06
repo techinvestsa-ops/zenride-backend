@@ -12,7 +12,8 @@ public record QuoteDto(
     string? EncodedPolyline,
     SurgeDto Surge,
     QuoteOptionDto[] Options,
-    string[] PaymentMethods
+    string[] PaymentMethods,
+    QuoteLocationDto[]? Stops = null
 );
 
 public record QuoteLocationDto(
@@ -67,7 +68,8 @@ public record CreateQuoteRequest(
     int? Seats,
     PackageInput? Package,
     DateTime? ScheduledAt,
-    string? PromoCode
+    string? PromoCode,
+    QuoteLocationInput[]? Stops = null    // up to 2, in visit order (rides only)
 );
 
 public record QuoteLocationInput(

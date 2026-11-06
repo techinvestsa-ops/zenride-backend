@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Features.Rides.Dtos;
 using Izigo.Domain.Entities;
 using Izigo.Domain.Enums;
@@ -42,6 +43,10 @@ public static class RideDetailMapper
 
         var isFinal = RideProjector.IsTerminal(trip.JobState);
         var status   = RideProjector.ToRiderStatus(trip.JobState);
+        // Booked for later and not yet dispatching: not a live search.
+        if (trip.JobState == JobState.Broadcasting && trip.ScheduledAt is { } at &&
+            at > ScheduledRides.DueCutoff(DateTime.UtcNow))
+            status = "scheduled";
         var fareRule = await db.FareRules
             .Where(r => r.IsActive && r.ServiceClass == trip.ServiceClass && r.Market == trip.Market)
             .OrderByDescending(r => r.Version)
@@ -85,6 +90,8 @@ public static class RideDetailMapper
             ShareUrl: trip.ShareToken != null
                 ? $"{shareBaseUrl.TrimEnd('/')}/{trip.ShareToken}"
                 : null,
-            Waiting: waiting);
+            Waiting: waiting,
+            Stops: TripStops.Read(trip.StopsJson)
+                .Select(st => new RideStopDto(st.Label, st.Lat, st.Lng, st.ArrivedAt is not null)).ToArray());
     }
 }

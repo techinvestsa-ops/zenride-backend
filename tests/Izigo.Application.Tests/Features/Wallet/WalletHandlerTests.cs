@@ -21,14 +21,74 @@ public class WalletHandlerTests
         MaxBalance = 500_000
     };
 
+    // Transfers only go to real, active accounts.
+    private static string AddActiveUser(Izigo.Infrastructure.Persistence.ApplicationDbContext db)
+    {
+        var user = new User { Phone = $"+22507{Random.Shared.Next(10_000_000, 99_999_999)}", Role = UserRole.Rider, Status = UserStatus.Active };
+        db.Users.Add(user);
+        return user.Id;
+    }
+
     // ── TransferHandler ───────────────────────────────────────────────────────
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-50_000)]
+    public async Task Transfer_NonPositiveAmount_Throws_AndMovesNothing(long amount)
+    {
+        using var db = DbContextFactory.Create();
+        var senderId    = Guid.NewGuid().ToString();
+        var recipientId = AddActiveUser(db);
+        db.Wallets.Add(BuildWallet(senderId, balance: 1000));
+        db.Wallets.Add(BuildWallet(recipientId, balance: 50_000));
+        await db.SaveChangesAsync();
+
+        var act = () => new TransferHandler(db, FakeServices.Realtime()).Handle(
+            new TransferCommand(senderId, new TransferRequest(recipientId, amount, null, null)),
+            CancellationToken.None);
+
+        await act.Should().ThrowAsync<ArgumentException>();
+        db.Wallets.Single(w => w.UserId == recipientId).Balance.Should().Be(50_000);
+    }
+
+    [Fact]
+    public async Task Transfer_ToSelf_Throws()
+    {
+        using var db = DbContextFactory.Create();
+        var userId = AddActiveUser(db);
+        db.Wallets.Add(BuildWallet(userId, balance: 1000));
+        await db.SaveChangesAsync();
+
+        var act = () => new TransferHandler(db, FakeServices.Realtime()).Handle(
+            new TransferCommand(userId, new TransferRequest(userId, 100, null, null)),
+            CancellationToken.None);
+
+        await act.Should().ThrowAsync<ArgumentException>();
+    }
+
+    [Fact]
+    public async Task Withdraw_NegativeAmount_Throws_AndBalanceUnchanged()
+    {
+        using var db = DbContextFactory.Create();
+        var userId = Guid.NewGuid().ToString();
+        db.Wallets.Add(BuildWallet(userId, balance: 1000));
+        await db.SaveChangesAsync();
+
+        var act = () => new WithdrawHandler(db, FakeServices.Realtime()).Handle(
+            new WithdrawCommand(userId, new WithdrawRequest(-50_000, "pm_x", null)),
+            CancellationToken.None);
+
+        await act.Should().ThrowAsync<ArgumentException>();
+        db.Wallets.Single().Balance.Should().Be(1000);
+    }
+
 
     [Fact]
     public async Task Transfer_InsufficientBalance_ThrowsConflict()
     {
         using var db = DbContextFactory.Create();
         var senderId    = Guid.NewGuid().ToString();
-        var recipientId = Guid.NewGuid().ToString();
+        var recipientId = AddActiveUser(db);
         db.Wallets.Add(BuildWallet(senderId, balance: 100));
         db.Wallets.Add(BuildWallet(recipientId, balance: 0));
         await db.SaveChangesAsync();
@@ -46,7 +106,7 @@ public class WalletHandlerTests
     {
         using var db = DbContextFactory.Create();
         var senderId    = Guid.NewGuid().ToString();
-        var recipientId = Guid.NewGuid().ToString();
+        var recipientId = AddActiveUser(db);
         db.Wallets.Add(BuildWallet(senderId, balance: 10000, locked: true));
         db.Wallets.Add(BuildWallet(recipientId));
         await db.SaveChangesAsync();
@@ -64,7 +124,7 @@ public class WalletHandlerTests
     {
         using var db = DbContextFactory.Create();
         var senderId    = Guid.NewGuid().ToString();
-        var recipientId = Guid.NewGuid().ToString();
+        var recipientId = AddActiveUser(db);
         db.Wallets.Add(BuildWallet(senderId, balance: 500_000));
         db.Wallets.Add(BuildWallet(recipientId));
         await db.SaveChangesAsync();
@@ -82,7 +142,7 @@ public class WalletHandlerTests
     {
         using var db = DbContextFactory.Create();
         var senderId    = Guid.NewGuid().ToString();
-        var recipientId = Guid.NewGuid().ToString();
+        var recipientId = AddActiveUser(db);
         db.Wallets.Add(BuildWallet(senderId, balance: 5000));
         db.Wallets.Add(BuildWallet(recipientId, balance: 1000));
         await db.SaveChangesAsync();
@@ -103,7 +163,7 @@ public class WalletHandlerTests
     {
         using var db = DbContextFactory.Create();
         var senderId    = Guid.NewGuid().ToString();
-        var recipientId = Guid.NewGuid().ToString();
+        var recipientId = AddActiveUser(db);
         var senderWallet = BuildWallet(senderId, balance: 10000);
         db.Wallets.Add(senderWallet);
         db.Wallets.Add(BuildWallet(recipientId));

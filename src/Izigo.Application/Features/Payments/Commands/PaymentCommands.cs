@@ -112,6 +112,10 @@ public class CreatePaymentIntentHandler(IApplicationDbContext db, IPaymentGatewa
     {
         var req = cmd.Request;
 
+        // A negative amount would reverse the money flow.
+        if (req.Amount <= 0)
+            throw new ArgumentException("VALIDATION_ERROR: Payment amount must be greater than zero.");
+
         if (!Enum.TryParse<PaymentMethod>(req.Method.Replace("_", ""), true, out var method))
             throw new ArgumentException("VALIDATION_ERROR: Invalid payment method.");
 

@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Features.Driver.Dtos;
 using Izigo.Application.Features.Rides.Helpers;
 using Izigo.Domain.Enums;
@@ -23,7 +24,7 @@ public class GetDriverStatusHandler(IApplicationDbContext db)
             .FirstOrDefaultAsync(d => d.UserId == req.DriverId, ct)
             ?? throw new KeyNotFoundException("Driver not found.");
 
-        var cashSettlement = dp.DriverWallet?.PendingCashSettlement ?? 0;
+        var cashSettlement = (await DriverWallets.FindAsync(db, dp, ct))?.PendingCashSettlement ?? 0;
         const long CashCap = 10_000;   // configurable per market
 
         return new DriverStatusDto(
@@ -47,7 +48,6 @@ public class GetDriverHomeHandler(IApplicationDbContext db)
     {
         var dp = await db.DriverProfiles
             .Include(d => d.DriverWallet)
-                .ThenInclude(w => w!.Transactions)
             .FirstOrDefaultAsync(d => d.UserId == req.DriverId, ct)
             ?? throw new KeyNotFoundException("Driver not found.");
 
@@ -57,14 +57,17 @@ public class GetDriverHomeHandler(IApplicationDbContext db)
                              t.JobState == JobState.Completed &&
                              t.CompletedAt >= today, ct);
 
-        var earningsToday = dp.DriverWallet?.Transactions
-            .Where(t => t.CreatedAt >= today)
-            .Sum(t => t.Amount) ?? 0;
+        var wallet = await DriverWallets.FindAsync(db, dp, ct);
+        var earningsToday = wallet is null ? 0 : await db.DriverWalletTransactions
+            .Where(t => t.DriverWalletId == wallet.Id && t.CreatedAt >= today)
+            .SumAsync(t => t.Amount, ct);
 
         // Active job for cold-start resume
         var activeTrip = await db.Trips
-            .FirstOrDefaultAsync(t => t.DriverId == req.DriverId &&
-                                      !RideProjector.TerminalStates.Contains(t.JobState), ct);
+            .Where(t => t.DriverId == req.DriverId &&
+                        !RideProjector.TerminalStates.Contains(t.JobState))
+            .OrderByDescending(t => t.JobState)
+            .FirstOrDefaultAsync(ct);
 
         JobOfferDto? activeJob = null;
         if (activeTrip != null)
@@ -90,6 +93,8 @@ public class GetDemandHandler(IApplicationDbContext db)
     // ~0.03 degrees ≈ 3 km — used as the radius to assign a trip request to a zone
     private const double ZoneRadiusDeg = 0.03;
 
+    private static readonly TimeSpan DemandWindow = TimeSpan.FromMinutes(30);
+
     public async Task<DemandHeatmapDto> Handle(GetDemandQuery req, CancellationToken ct)
     {
         var driver = await db.DriverProfiles
@@ -112,9 +117,17 @@ public class GetDemandHandler(IApplicationDbContext db)
         if (zones.Count == 0)
             return new DemandHeatmapDto(Zones: []);
 
-        // Pickup locations of trips currently searching for a driver
+        // Where riders asked for a ride in the last half hour, whatever became
+        // of it: trips that found nobody are the demand drivers should go to.
+        // Counting only trips searching right now left the map empty at
+        // normal volumes. Held scheduled rides are not demand yet.
+        var now = DateTime.UtcNow;
+        var dueBy = ScheduledRides.DueCutoff(now);
+        var since = now - DemandWindow;
         var broadcastingPickups = await db.Trips
-            .Where(t => t.JobState == JobState.Broadcasting)
+            .Where(t => t.CreatedAt >= since &&
+                        t.Vertical != Vertical.CoRide &&
+                        (t.ScheduledAt == null || t.ScheduledAt <= dueBy))
             .Select(t => new { t.PickupLat, t.PickupLng })
             .ToListAsync(ct);
 
@@ -200,6 +213,15 @@ public class GetJobOfferHandler(
         return JobOfferMapper.ToOffer(trip, pickupDistM, remaining);
     }
 
+    /// <summary>A driver with a destination set only takes trips towards it.</summary>
+    private static bool FitsDestination(Domain.Entities.DriverProfile dp, Domain.Entities.Trip trip) =>
+        dp.DestinationLat is not { } destLat || dp.DestinationLng is not { } destLng ||
+        DriverDestination.Fits(
+            (double)dp.LastLat!.Value, (double)dp.LastLng!.Value,
+            (double)destLat, (double)destLng,
+            (double)trip.PickupLat, (double)trip.PickupLng,
+            (double)trip.DropoffLat, (double)trip.DropoffLng);
+
     private static async Task<Domain.Entities.Trip?> ClaimNearbyBroadcastAsync(
         IApplicationDbContext db, Domain.Entities.DriverProfile dp, CancellationToken ct)
     {
@@ -213,10 +235,12 @@ public class GetJobOfferHandler(
             return null;
         }
 
+        var dueBy = ScheduledRides.DueCutoff(DateTime.UtcNow);
         var candidates = await db.Trips
             .Where(t => t.JobState == JobState.Broadcasting &&
                         t.Vertical == Vertical.Ride &&
-                        t.DriverId == null)
+                        t.DriverId == null &&
+                        (t.ScheduledAt == null || t.ScheduledAt <= dueBy))
             .OrderBy(t => t.CreatedAt)
             .Take(30)
             .ToListAsync(ct);
@@ -228,7 +252,7 @@ public class GetJobOfferHandler(
             var dlat = (double)(dp.LastLat.Value - candidate.PickupLat);
             var dlng = (double)(dp.LastLng.Value - candidate.PickupLng);
             var meters = Math.Sqrt(dlat * dlat + dlng * dlng) * 111_320;
-            if (meters <= radiusM)
+            if (meters <= radiusM && FitsDestination(dp, candidate))
             {
                 match = candidate;
                 break;

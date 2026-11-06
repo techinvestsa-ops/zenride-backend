@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Features.Admin.Realtime;
 using Izigo.Application.Features.Driver.Dtos;
 using Izigo.Application.Features.Realtime.Dtos;
@@ -24,6 +25,7 @@ public class SetDriverStatusHandler(IApplicationDbContext db, IRealtimeService r
             .Include(d => d.DriverWallet)
             .FirstOrDefaultAsync(d => d.UserId == cmd.DriverId, ct)
             ?? throw new KeyNotFoundException("Driver profile not found.");
+        var driverWallet = await DriverWallets.ForAsync(db, dp, ct);
 
         if (cmd.Request.Online)
         {
@@ -34,7 +36,7 @@ public class SetDriverStatusHandler(IApplicationDbContext db, IRealtimeService r
                 throw new InvalidOperationException("FORBIDDEN: Onboarding is not complete.");
 
             const long CashCap = 10_000;
-            var cashOwed = dp.DriverWallet?.PendingCashSettlement ?? 0;
+            var cashOwed = driverWallet.PendingCashSettlement;
             if (cashOwed >= CashCap)
                 throw new InvalidOperationException(
                     $"FORBIDDEN: Cash settlement balance ({cashOwed}) exceeds the cap. Please settle before going online.");
@@ -77,7 +79,7 @@ public class SetDriverStatusHandler(IApplicationDbContext db, IRealtimeService r
         await AdminRealtimeNotify.DriverPresenceChangedAsync(realtime, market, cmd.DriverId, dp.IsOnline, ct);
         await AdminRealtimeNotify.ConsoleInvalidateAsync(realtime, market, "ops", ct);
 
-        var cashSettlement = dp.DriverWallet?.PendingCashSettlement ?? 0;
+        var cashSettlement = driverWallet.PendingCashSettlement;
         const long Cap = 10_000;
         return new DriverStatusDto(
             IsOnline: dp.IsOnline,
@@ -146,6 +148,11 @@ public class UpdateLocationHandler(IApplicationDbContext db, IRealtimeService re
         dp.LastHeading    = req.Heading.HasValue ? (decimal)req.Heading.Value : dp.LastHeading;
         dp.LastLocationAt = DateTime.UtcNow;
 
+        // Arrived at the destination: the filter has done its job.
+        if (dp.DestinationLat is { } destLat && dp.DestinationLng is { } destLng &&
+            DriverDestination.Metres(req.Lat, req.Lng, (double)destLat, (double)destLng) <= DriverDestination.ArrivedM)
+            DriverDestinationMapper.Clear(dp);
+
         // Write location history point
         db.DriverLocationPoints.Add(new DriverLocationPoint
         {
@@ -167,7 +174,7 @@ public class UpdateLocationHandler(IApplicationDbContext db, IRealtimeService re
 
         var trip = await db.Trips
             .Where(t => t.Id == req.JobId && t.DriverId == cmd.DriverId)
-            .Select(t => new { t.Market, t.JobState, t.PickupLat, t.PickupLng, t.DropoffLat, t.DropoffLng })
+            .Select(t => new { t.Market, t.JobState, t.PickupLat, t.PickupLng, t.DropoffLat, t.DropoffLng, t.StopsJson })
             .FirstOrDefaultAsync(ct);
 
         int? etaMin = null, distanceM = null;
@@ -179,6 +186,12 @@ public class UpdateLocationHandler(IApplicationDbContext db, IRealtimeService re
             var (lat, lng) = toDropoff
                 ? ((double)trip.DropoffLat, (double)trip.DropoffLng)
                 : ((double)trip.PickupLat, (double)trip.PickupLng);
+            // On board with a stop still ahead: the next leg ends at that stop.
+            if (toDropoff && TripStops.Next(TripStops.Read(trip.StopsJson)) is { } next)
+            {
+                (lat, lng) = (next.Stop.Lat, next.Stop.Lng);
+                leg = "stop";
+            }
             distanceM = (int)LiveEta.RoadDistanceM(req.Lat, req.Lng, lat, lng);
             etaMin = LiveEta.Minutes(distanceM.Value, req.Speed);
         }

@@ -17,7 +17,8 @@ public record ConfigDto(
     object CancellationPolicy,
     bool ReferralEnabled,
     bool WalletEnabled,
-    bool TippingEnabled
+    bool TippingEnabled,
+    bool ScheduledRidesEnabled = false
 );
 
 public record MinAppVersionDto(string Android, string Ios);

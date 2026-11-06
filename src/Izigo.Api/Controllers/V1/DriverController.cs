@@ -136,6 +136,21 @@ public class DriverController : BaseController
     public async Task<IActionResult> GetHome()
         => Ok(await Mediator.Send(new GetDriverHomeQuery(CurrentUserId)));
 
+    /// <summary>The driver's destination filter, and how many uses are left today.</summary>
+    [HttpGet("destination")]
+    public async Task<IActionResult> GetDestination()
+        => Ok(await Mediator.Send(new GetDriverDestinationQuery(CurrentUserId)));
+
+    /// <summary>Only offer trips that take the driver towards this point (twice a day).</summary>
+    [HttpPut("destination")]
+    public async Task<IActionResult> SetDestination([FromBody] SetDestinationRequest body)
+        => Ok(await Mediator.Send(new SetDriverDestinationCommand(CurrentUserId, body)));
+
+    /// <summary>Turns the destination filter off.</summary>
+    [HttpDelete("destination")]
+    public async Task<IActionResult> ClearDestination()
+        => Ok(await Mediator.Send(new ClearDriverDestinationCommand(CurrentUserId)));
+
     /// <summary>Returns demand heatmap data for the driver's area.</summary>
     [HttpGet("demand")]
     public async Task<IActionResult> GetDemand()
@@ -196,6 +211,11 @@ public class DriverController : BaseController
         => Ok(await Mediator.Send(new ArrivedDropoffCommand(CurrentUserId, id)));
 
     /// <summary>Completes the trip and triggers billing.</summary>
+    /// <summary>The driver reached stop number <paramref name="index"/> (0-based) on the way.</summary>
+    [HttpPost("jobs/{id}/stops/{index:int}/arrived")]
+    public async Task<IActionResult> ArrivedAtStop(string id, int index)
+        => Ok(await Mediator.Send(new ArrivedAtStopCommand(CurrentUserId, id, index)));
+
     [HttpPost("jobs/{id}/complete")]
     public async Task<IActionResult> CompleteJob(string id)
         => Ok(await Mediator.Send(new CompleteJobCommand(CurrentUserId, id)));

@@ -40,16 +40,26 @@ try
 
     builder.Services.AddSwaggerServices();
     builder.Services.AddSingleton<Microsoft.AspNetCore.SignalR.IUserIdProvider, IzigoUserIdProvider>();
-    builder.Services.AddSignalR(options =>
+    var signalR = builder.Services.AddSignalR(options =>
     {
         options.KeepAliveInterval = TimeSpan.FromSeconds(15);
         options.ClientTimeoutInterval = TimeSpan.FromSeconds(60);
-        options.EnableDetailedErrors = true;
+        // Exception details help in development but leak internals in production.
+        options.EnableDetailedErrors = builder.Environment.IsDevelopment();
     }).AddJsonProtocol(options =>
     {
         options.PayloadSerializerOptions.PropertyNamingPolicy =
             System.Text.Json.JsonNamingPolicy.SnakeCaseLower;
     });
+
+    // With more than one API instance, connections are spread across servers
+    // and a rider and their driver may land on different ones. Azure SignalR
+    // Service relays messages between them. Set Azure:SignalR:ConnectionString
+    // (app setting Azure__SignalR__ConnectionString) before scaling out;
+    // without it, run a single instance.
+    var azureSignalR = builder.Configuration["Azure:SignalR:ConnectionString"];
+    if (!string.IsNullOrWhiteSpace(azureSignalR))
+        signalR.AddAzureSignalR(azureSignalR);
 
     var corsOrigins = (builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? [])
         .Append("http://localhost:3000")
@@ -116,6 +126,25 @@ try
 
     // Seed PlatformConfig + initial super-admin on every startup (idempotent)
     await DbSeeder.SeedAsync(app.Services);
+
+    // Nightly at 03:00 UTC, a quiet hour in West Africa. A Hangfire problem
+    // must not stop the API from starting.
+    try
+    {
+        app.Services.GetRequiredService<Hangfire.IRecurringJobManager>()
+            .AddOrUpdate<Izigo.Infrastructure.Jobs.Processors.LocationPointCleanupJob>(
+                "driver-location-cleanup", j => j.RunAsync(CancellationToken.None), Hangfire.Cron.Daily(3));
+    }
+    catch (Exception ex)
+    {
+        Log.Warning(ex, "Could not register the driver location cleanup job");
+    }
+
+    // The OTP code in API responses lets anyone sign in as any phone number.
+    // Fine on a developer machine, never on a server users can reach.
+    if (!app.Environment.IsDevelopment() && builder.Configuration.GetValue<bool>("Otp:ExposeDevCode"))
+        Log.Warning("Otp:ExposeDevCode is ON in {Env}: login codes are returned in API responses. Turn it off before real users sign in.",
+            app.Environment.EnvironmentName);
 
     Log.Information("Izigo API starting on {Env}", app.Environment.EnvironmentName);
     app.Run();

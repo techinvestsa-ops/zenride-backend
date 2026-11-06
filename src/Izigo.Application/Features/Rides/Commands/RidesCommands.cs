@@ -30,6 +30,9 @@ public class CreateRideHandler(IApplicationDbContext db, IIdempotencyService ide
     private static readonly System.Text.Json.JsonSerializerOptions _jsonOpts = new()
         { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.SnakeCaseLower };
 
+    /// <summary>Rides are booked in Côte d'Ivoire for now; one place to change it.</summary>
+    private const string TripMarket = "ci";
+
     public async Task<RideDetailDto> Handle(CreateRideCommand cmd, CancellationToken ct)
     {
         var req = cmd.Request;
@@ -82,6 +85,13 @@ public class CreateRideHandler(IApplicationDbContext db, IIdempotencyService ide
         if (paymentMethod == PaymentMethod.Wallet)
             await RiderWalletPayments.EnsureCanPayAsync(db, cmd.RiderId, option.Fare.Total, ct);
 
+        DateTime? scheduledAt = req.ScheduledAt is { } requested
+            ? ScheduledRides.Validate(requested, DateTime.UtcNow)
+            : null;
+        if (scheduledAt is not null &&
+            !await db.FeatureFlags.AnyAsync(f => f.Key == ScheduledRides.FlagKey && f.Market == TripMarket && f.Enabled, ct))
+            throw new InvalidOperationException("CONFLICT: Booking rides for later is not available yet.");
+
         // Mark quote used
         quote.IsUsed = true;
 
@@ -95,7 +105,7 @@ public class CreateRideHandler(IApplicationDbContext db, IIdempotencyService ide
             ServiceClass   = serviceClass,
             RiderId        = cmd.RiderId,
             QuoteId        = quote.Id,
-            Market         = "ci",   // from config in production
+            Market         = TripMarket,
 
             JobState       = JobState.Broadcasting,
 
@@ -106,6 +116,7 @@ public class CreateRideHandler(IApplicationDbContext db, IIdempotencyService ide
             DropoffLng     = quote.DropoffLng,
             DropoffLabel   = quote.DropoffLabel,
             EncodedPolyline = quote.EncodedPolyline,
+            StopsJson      = quote.StopsJson,
             DistanceM      = quote.DistanceM,
             DurationS      = quote.DurationS,
 
@@ -120,7 +131,7 @@ public class CreateRideHandler(IApplicationDbContext db, IIdempotencyService ide
 
             PaymentMethod  = paymentMethod,
             StartOtp       = startOtp,
-            ScheduledAt    = req.ScheduledAt,
+            ScheduledAt    = scheduledAt,
             NoteToDriver   = req.Note,
 
             ForSomeoneElseName  = req.ForSomeoneElse?.Name,
@@ -138,11 +149,15 @@ public class CreateRideHandler(IApplicationDbContext db, IIdempotencyService ide
 
         await db.SaveChangesAsync(ct);
 
-        // Trigger dispatch engine — find and notify nearest available driver
+        // Trigger dispatch engine — find and notify nearest available driver.
+        // A scheduled ride is held until shortly before its pickup time.
         var dispatchJob = new BackgroundJob { Type = $"dispatch:{trip.Id}", Status = "queued" };
         db.BackgroundJobs.Add(dispatchJob);
         await db.SaveChangesAsync(ct);
-        jobDispatcher.Enqueue(dispatchJob.Id, dispatchJob.Type);
+        if (scheduledAt is { } at)
+            jobDispatcher.Schedule(dispatchJob.Id, dispatchJob.Type, at - ScheduledRides.Lead);
+        else
+            jobDispatcher.Enqueue(dispatchJob.Id, dispatchJob.Type);
         await AdminRealtimeNotify.JobStateChangedAsync(realtime, trip, ct);
 
         var result = await RideDetailMapper.BuildAsync(trip, db, ct, appOptions.Value.ShareBaseUrl, quoteOptions.Value.DefaultCancellationFee);
@@ -264,23 +279,50 @@ public class ChangeDestinationHandler(IApplicationDbContext db, IGeoService geo,
             throw new InvalidOperationException(
                 "CONFLICT: Destination can only be changed once the trip is in progress.");
 
-        // Recalculate route from pickup to new dropoff
+        // Recalculate route from pickup to new dropoff, through the stops.
+        var stops = TripStops.Read(trip.StopsJson);
         var route = await geo.GetRouteAsync(
             new GeoPoint((double)trip.PickupLat, (double)trip.PickupLng),
             new GeoPoint(req.NewDropoff.Lat, req.NewDropoff.Lng),
-            null, "driving", ct);
+            stops.Count == 0 ? null : stops.Select(s => new GeoPoint(s.Lat, s.Lng)).ToArray(),
+            "driving", ct);
+
+        // Reprice for the new route the same way a quote is priced (same class,
+        // surge and promo discount), so a longer trip is not driven at the
+        // shorter trip's fare. Straight line x1.3 if routing is unavailable.
+        var distanceM = route?.DistanceM ?? (int)(LiveEtaDistance(
+            (double)trip.PickupLat, (double)trip.PickupLng, req.NewDropoff.Lat, req.NewDropoff.Lng) * 1.3);
+        var freeFlowS = route?.DurationS ?? (int)(distanceM / 8.3);
+        var trafficS  = route?.DurationInTrafficS ?? freeFlowS;
+        var rule = await db.FareRules
+                       .Where(r => r.IsActive && r.ServiceClass == trip.ServiceClass &&
+                                   (r.Market == trip.Market || r.Market == ""))
+                       .OrderByDescending(r => r.Version)
+                       .FirstOrDefaultAsync(ct)
+                   ?? FareCalculator.DefaultRule(trip.ServiceClass);
+        var surge = await db.Quotes
+            .Where(q => q.Id == trip.QuoteId)
+            .Select(q => (decimal?)q.SurgeMultiplier)
+            .FirstOrDefaultAsync(ct) ?? 1.0m;
+        var fare = FareCalculator.Calculate(rule, distanceM, freeFlowS, trafficS, surge, trip.FareDiscount);
+
+        // A wallet ride must still be payable at the new price.
+        if (trip.PaymentMethod == PaymentMethod.Wallet)
+            await RiderWalletPayments.EnsureCanPayAsync(db, trip.RiderId, fare.Total + trip.FareServiceFee, ct);
 
         trip.DropoffLat     = (decimal)req.NewDropoff.Lat;
         trip.DropoffLng     = (decimal)req.NewDropoff.Lng;
         trip.DropoffLabel   = req.NewDropoff.Label;
         trip.DropoffPlaceId = req.NewDropoff.PlaceId;
+        trip.DistanceM      = distanceM;
+        trip.DurationS      = Math.Max(freeFlowS, trafficS);
+        if (route != null) trip.EncodedPolyline = route.EncodedPolyline;
 
-        if (route != null)
-        {
-            trip.DistanceM      = route.DistanceM;
-            trip.DurationS      = route.DurationS;
-            trip.EncodedPolyline = route.EncodedPolyline;
-        }
+        trip.FareGross    = fare.Total - fare.ServiceFee + fare.Discount;
+        trip.FareBase     = fare.Base;
+        trip.FareDistance = fare.Distance;
+        trip.FareTime     = fare.Time;
+        trip.FareDiscount = fare.Discount;
 
         await db.SaveChangesAsync(ct);
 
@@ -296,11 +338,23 @@ public class ChangeDestinationHandler(IApplicationDbContext db, IGeoService geo,
                     lat      = (double)trip.DropoffLat,
                     lng      = (double)trip.DropoffLng,
                     place_id = trip.DropoffPlaceId
-                }
+                },
+                fare_total = trip.FareGross + trip.FareServiceFee - trip.FareDiscount,
+                currency   = trip.Currency,
             }, ct);
         }
 
         return await RideDetailMapper.BuildAsync(trip, db, ct, appOptions.Value.ShareBaseUrl, quoteOptions.Value.DefaultCancellationFee);
+    }
+
+    private static double LiveEtaDistance(double lat1, double lng1, double lat2, double lng2)
+    {
+        const double r = 6_371_000;
+        var dLat = (lat2 - lat1) * Math.PI / 180;
+        var dLng = (lng2 - lng1) * Math.PI / 180;
+        var h = Math.Pow(Math.Sin(dLat / 2), 2) +
+                Math.Cos(lat1 * Math.PI / 180) * Math.Cos(lat2 * Math.PI / 180) * Math.Pow(Math.Sin(dLng / 2), 2);
+        return 2 * r * Math.Asin(Math.Min(1, Math.Sqrt(h)));
     }
 }
 
@@ -384,7 +438,8 @@ public class RateRideHandler(IApplicationDbContext db) : IRequestHandler<RateRid
             throw new InvalidOperationException("CONFLICT: You have already rated this trip.");
 
         trip.RatingByRider = req.Stars;
-        if (req.TipAmount.HasValue) trip.FareTip = req.TipAmount.Value;
+        if (req.TipAmount is > 0)
+            await RideTips.ApplyAsync(db, trip, req.TipAmount.Value, ct);
 
         // Update driver's running rating average
         if (trip.DriverId != null)
@@ -418,35 +473,7 @@ public class TipRideHandler(IApplicationDbContext db) : IRequestHandler<TipRideC
             .FirstOrDefaultAsync(t => t.Id == req.TripId && t.RiderId == req.RiderId, ct)
             ?? throw new KeyNotFoundException("Ride not found.");
 
-        if (trip.JobState != JobState.Completed)
-            throw new InvalidOperationException("CONFLICT: Can only tip on completed trips.");
-
-        // Gate on tipping feature flag
-        var config = await db.PlatformConfigs
-            .FirstOrDefaultAsync(c => c.Market == trip.Market, ct);
-        if (config is not null && !config.TippingEnabled)
-            throw new InvalidOperationException("CONFLICT: Tipping is not enabled in this market.");
-
-        trip.FareTip = req.Amount;
-
-        // Credit tip directly to driver wallet
-        if (trip.DriverId is not null)
-        {
-            var wallet = await db.DriverWallets
-                .FirstOrDefaultAsync(w => w.DriverId == trip.DriverId, ct);
-            if (wallet is not null)
-            {
-                wallet.AvailableBalance += req.Amount;
-                db.DriverWalletTransactions.Add(new Domain.Entities.DriverWalletTransaction
-                {
-                    DriverWalletId = wallet.Id,
-                    Type           = "tip",
-                    Amount         = req.Amount,
-                    BalanceAfter   = wallet.AvailableBalance,
-                    ReferenceId    = trip.Id
-                });
-            }
-        }
+        await RideTips.ApplyAsync(db, trip, req.Amount, ct);
 
         await db.SaveChangesAsync(ct);
     }

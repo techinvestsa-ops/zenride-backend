@@ -18,11 +18,15 @@ public class GetActiveRideHandler(IApplicationDbContext db, IOptions<AppSettings
 {
     public async Task<RideDetailDto?> Handle(GetActiveRideQuery req, CancellationToken ct)
     {
+        // A ride booked for later is listed under /rides/scheduled until its
+        // dispatch starts; it is not a live search yet.
+        var dueBy = ScheduledRides.DueCutoff(DateTime.UtcNow);
         var trip = await db.Trips
             .FirstOrDefaultAsync(t =>
                 t.RiderId == req.UserId &&
                 t.Vertical == Vertical.Ride &&
-                !RideProjector.TerminalStates.Contains(t.JobState), ct);
+                !RideProjector.TerminalStates.Contains(t.JobState) &&
+                (t.ScheduledAt == null || t.ScheduledAt <= dueBy), ct);
 
         return trip == null ? null : await RideDetailMapper.BuildAsync(trip, db, ct,
             appOptions.Value.ShareBaseUrl, quoteOptions.Value.DefaultCancellationFee);

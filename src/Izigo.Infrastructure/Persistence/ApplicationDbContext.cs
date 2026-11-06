@@ -75,6 +75,23 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
+        // ── Hot-path indexes ────────────────────────────────────────────────
+        // Nearby drivers (every rider on the home map, every few seconds) and
+        // dispatch filter online drivers by location freshness and position.
+        modelBuilder.Entity<DriverProfile>()
+            .HasIndex(d => new { d.IsOnline, d.LastLocationAt })
+            .IncludeProperties(d => new { d.LastLat, d.LastLng });
+
+        // Every online driver adds a point every few seconds.
+        modelBuilder.Entity<DriverLocationPoint>().HasIndex(p => new { p.DriverId, p.RecordedAt });
+        modelBuilder.Entity<DriverLocationPoint>().HasIndex(p => p.JobId);
+        modelBuilder.Entity<DriverLocationPoint>().HasIndex(p => p.RecordedAt);
+
+        // Offer polls (driver + state), rider history, and dispatch rounds.
+        modelBuilder.Entity<Trip>().HasIndex(t => new { t.DriverId, t.JobState });
+        modelBuilder.Entity<Trip>().HasIndex(t => new { t.RiderId, t.CreatedAt });
+        modelBuilder.Entity<Trip>().HasIndex(t => new { t.Market, t.JobState, t.CreatedAt });
+
         // The decimal(18,2) default rounds coordinates to ~1.1 km.
         foreach (var property in modelBuilder.Model.GetEntityTypes().SelectMany(t => t.GetProperties()))
         {

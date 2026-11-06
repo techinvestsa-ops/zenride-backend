@@ -35,6 +35,9 @@ public class HangfireJobDispatcher(IBackgroundJobClient client) : IJobDispatcher
         if (jobType == "broadcast")
             client.Schedule<BroadcastJobProcessor>(
                 p => p.ProcessAsync(jobId, CancellationToken.None), delay);
+        else if (jobType.StartsWith("dispatch:")) // a scheduled ride, held until shortly before pickup
+            client.Schedule<DispatchJobProcessor>(
+                p => p.ProcessAsync(jobId, CancellationToken.None), delay);
         else if (jobType == "offer_expire") // jobId is the trip id
             client.Schedule<DispatchJobProcessor>(
                 p => p.ExpireOfferAsync(jobId, CancellationToken.None), delay);

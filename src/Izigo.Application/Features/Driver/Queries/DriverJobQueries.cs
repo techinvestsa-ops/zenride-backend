@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Features.Driver.Dtos;
 using Izigo.Application.Features.Rides.Helpers;
 using Izigo.Domain.Enums;
@@ -16,9 +17,13 @@ public class GetActiveJobHandler(IApplicationDbContext db)
 {
     public async Task<JobDetailDto?> Handle(GetActiveJobQuery req, CancellationToken ct)
     {
+        // With a next trip queued the driver has two; the one under way comes
+        // first (states are ordered by progress).
         var trip = await db.Trips
-            .FirstOrDefaultAsync(t => t.DriverId == req.DriverId &&
-                                      !RideProjector.TerminalStates.Contains(t.JobState), ct);
+            .Where(t => t.DriverId == req.DriverId &&
+                        !RideProjector.TerminalStates.Contains(t.JobState))
+            .OrderByDescending(t => t.JobState)
+            .FirstOrDefaultAsync(ct);
 
         return trip == null ? null : await JobDetailMapper.BuildAsync(trip, db, ct);
     }
@@ -150,7 +155,8 @@ internal static class JobDetailMapper
                 CanStart:    state == JobState.ArrivedAtPickup,
                 CanComplete: state == JobState.ArrivedAtDropoff,
                 CanCancel:   !isFinal && state != JobState.PickedUp),
-            Delivery: delivery);
+            Delivery: delivery,
+            Stops: JobOfferMapper.Stops(trip));
     }
 }
 
@@ -177,5 +183,11 @@ internal static class JobOfferMapper
             Currency:         trip.Currency,
             PaymentMethod:    trip.PaymentMethod.ToString().ToLower(),
             OfferExpiresInSec: offerExpiresInSec,
-            NoteToDriver:     trip.NoteToDriver);
+            NoteToDriver:     trip.NoteToDriver,
+            Stops:            Stops(trip));
+
+    public static JobStopDto[] Stops(Domain.Entities.Trip trip) =>
+        TripStops.Read(trip.StopsJson)
+            .Select((st, i) => new JobStopDto(i, st.Label, st.Lat, st.Lng, st.ArrivedAt is not null))
+            .ToArray();
 }

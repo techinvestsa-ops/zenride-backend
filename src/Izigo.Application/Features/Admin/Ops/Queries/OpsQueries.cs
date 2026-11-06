@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Features.Rides.Helpers;
 using Izigo.Application.Common.Models;
 using Izigo.Application.Common.Settings;
 using Izigo.Domain.Enums;
@@ -108,7 +109,9 @@ public class GetLiveOpsHandler(IApplicationDbContext db, IOptions<OpsSettings> o
 
         // Unmatched: still Broadcasting after 5 min
         var cutoff = DateTime.UtcNow.AddMinutes(-5);
-        var unmatched = trips.Count(t => t.JobState == JobState.Broadcasting && t.CreatedAt <= cutoff);
+        var dueBy = ScheduledRides.DueCutoff(DateTime.UtcNow);
+        var unmatched = trips.Count(t => t.JobState == JobState.Broadcasting && t.CreatedAt <= cutoff &&
+                                         (t.ScheduledAt == null || t.ScheduledAt <= dueBy));
 
         // Avg pickup ETA: for EnRouteToPickup trips, estimate from last driver location
         decimal? avgEta = null;

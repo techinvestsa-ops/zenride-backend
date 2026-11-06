@@ -50,9 +50,13 @@ public record JobOfferDto(
     long FareGross,
     string Currency,
     string PaymentMethod,
-    int OfferExpiresInSec,  // 60s window
-    string? NoteToDriver
+    int OfferExpiresInSec,  // seconds left to answer
+    string? NoteToDriver,
+    JobStopDto[]? Stops = null
 );
+
+/// <summary>A stop on the way, in visit order; Reached once the driver tapped Arrived.</summary>
+public record JobStopDto(int Index, string Label, double Lat, double Lng, bool Reached);
 
 public record JobLocationDto(string Label, double Lat, double Lng);
 
@@ -73,7 +77,8 @@ public record JobDetailDto(
     string? NoteToDriver,
     JobTimestampsDto Timestamps,
     JobActionsDto Actions,
-    JobDeliveryDto? Delivery = null
+    JobDeliveryDto? Delivery = null,
+    JobStopDto[]? Stops = null
 );
 
 /// Recipient and proof for a package job. Package contents are intentionally omitted.

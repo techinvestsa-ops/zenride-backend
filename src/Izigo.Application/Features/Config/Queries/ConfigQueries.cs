@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Features.Rides.Helpers;
 using Izigo.Application.Features.Config.Dtos;
 using Izigo.Domain.Enums;
 using MediatR;
@@ -46,7 +47,9 @@ public class GetConfigHandler(IApplicationDbContext db) : IRequestHandler<GetCon
             CancellationPolicy: cancellationPolicy,
             ReferralEnabled: cfg.ReferralEnabled,
             WalletEnabled: cfg.WalletEnabled,
-            TippingEnabled: cfg.TippingEnabled
+            TippingEnabled: cfg.TippingEnabled,
+            ScheduledRidesEnabled: await db.FeatureFlags.AnyAsync(
+                f => f.Key == ScheduledRides.FlagKey && f.Market == req.Market && f.Enabled, ct)
         );
     }
 

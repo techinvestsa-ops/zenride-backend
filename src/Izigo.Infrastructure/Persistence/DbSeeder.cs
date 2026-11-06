@@ -305,7 +305,8 @@ public static class DbSeeder
             ("instant_payout",    "Enable instant driver payout (higher fee)",         false),
             ("referrals",         "Enable referral programme",                         true),
             ("masked_calls",      "Mask phone numbers via proxy when calling driver",  true),
-            ("biometric_login",   "Allow biometric (fingerprint/face) login",          true)
+            ("biometric_login",   "Allow biometric (fingerprint/face) login",          true),
+            ("surge_pricing",     "Raise ride fares (max 1.5x) when riders outnumber free drivers nearby", false)
         };
 
         int seeded = 0;

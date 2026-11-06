@@ -1,8 +1,10 @@
 using Hangfire;
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Features.Admin.Realtime;
 using Izigo.Application.Features.Dispatch;
 using Izigo.Application.Features.Packages.Helpers;
+using Izigo.Application.Features.Rides.Helpers;
 using Izigo.Application.Features.Realtime.Dtos;
 using Izigo.Domain.Entities;
 using Izigo.Domain.Enums;
@@ -46,6 +48,9 @@ public class DispatchJobProcessor(
     private static readonly TimeSpan PackageWidenAfter   = TimeSpan.FromMinutes(1);
     private static readonly TimeSpan PackageRecheck      = TimeSpan.FromSeconds(15);
     private static readonly TimeSpan RideRetryWindow     = TimeSpan.FromMinutes(2);
+
+    /// <summary>A driver this close to their drop-off can be offered the next trip.</summary>
+    private const int FinishingWithinM = 1_500;
     private static readonly SemaphoreSlim Gate = new(1, 1);
 
     public async Task ProcessAsync(string jobId, CancellationToken ct)
@@ -108,12 +113,28 @@ public class DispatchJobProcessor(
     private async Task DispatchTripAsync(string tripId, DomainBackgroundJob job, CancellationToken ct)
     {
         var trip = await db.Trips.FirstOrDefaultAsync(t => t.Id == tripId, ct);
-        if (trip is null || trip.JobState != JobState.Broadcasting)
+        var dueBy = ScheduledRides.DueCutoff(DateTime.UtcNow);
+        // Not yet due (its own scheduled job will start it), cancelled, or taken.
+        if (trip is null || trip.JobState != JobState.Broadcasting ||
+            (trip.ScheduledAt is { } at && at > dueBy))
         {
             job.Status = "completed";
             job.CompletedAt = DateTime.UtcNow;
             await db.SaveChangesAsync(ct);
             return;
+        }
+
+        // A scheduled ride starts searching now, not when it was booked: mark
+        // it so the no-drivers window is measured from here.
+        if (trip.ScheduledAt is not null &&
+            !await db.TripStateHistories.AnyAsync(h => h.TripId == tripId && h.State == JobState.Broadcasting &&
+                                                       h.OccurredAt >= trip.ScheduledAt.Value - ScheduledRides.Lead - TimeSpan.FromMinutes(1), ct))
+        {
+            db.TripStateHistories.Add(new TripStateHistory
+            {
+                TripId = tripId, State = JobState.Broadcasting, OccurredAt = DateTime.UtcNow, Actor = "system",
+            });
+            await db.SaveChangesAsync(ct);
         }
 
         var alreadyOffered = await db.TripStateHistories
@@ -138,7 +159,8 @@ public class DispatchJobProcessor(
         }
 
         var pending = await db.Trips
-            .Where(t => t.Market == trip.Market && t.JobState == JobState.Broadcasting)
+            .Where(t => t.Market == trip.Market && t.JobState == JobState.Broadcasting &&
+                        (t.ScheduledAt == null || t.ScheduledAt <= dueBy))
             .OrderBy(t => t.CreatedAt)
             .Take(12)
             .ToListAsync(ct);
@@ -241,7 +263,7 @@ public class DispatchJobProcessor(
             .Distinct()
             .ToListAsync(ct);
 
-        var busyTripIds = await db.Trips
+        var activeTrips = await db.Trips
             .Where(t => t.DriverId != null && t.Id != trip.Id &&
                        (t.JobState == JobState.Offered         ||
                         t.JobState == JobState.Accepted        ||
@@ -250,8 +272,20 @@ public class DispatchJobProcessor(
                         t.JobState == JobState.PickedUp        ||
                         t.JobState == JobState.EnRouteToDropoff||
                         t.JobState == JobState.ArrivedAtDropoff))
-            .Select(t => t.DriverId!)
+            .Select(t => new { DriverId = t.DriverId!, t.JobState, t.DropoffLat, t.DropoffLng, t.StopsJson })
             .ToListAsync(ct);
+        var busyTripIds = activeTrips.Select(t => t.DriverId).ToList();
+
+        // Next-trip queueing: a ride driver on the last leg of their only trip
+        // can be offered the next one, as if already at that drop-off.
+        var finishing = trip.Vertical == Vertical.Ride
+            ? activeTrips
+                .GroupBy(t => t.DriverId)
+                .Where(g => g.Count() == 1 &&
+                            g.First().JobState == JobState.EnRouteToDropoff &&
+                            TripStops.Next(TripStops.Read(g.First().StopsJson)) is null)
+                .ToDictionary(g => g.Key, g => g.First())
+            : [];
 
         var busyPackageIds = await db.Packages
             .Where(p => p.CourierId != null &&
@@ -280,15 +314,39 @@ public class DispatchJobProcessor(
                 !triedIds.Contains(dp.UserId))
             .ToListAsync(ct);
 
+        // Finishing drivers count from where they will drop off, plus what is
+        // left of their current trip; only when that trip is nearly over.
+        (double Lat, double Lng, int ExtraM, bool Free) Origin(Domain.Entities.DriverProfile dp)
+        {
+            var lat = dp.LastLat!.Value;
+            var lng = dp.LastLng!.Value;
+            if (!busyIds.Contains(dp.UserId)) return ((double)lat, (double)lng, 0, true);
+            if (finishing.TryGetValue(dp.UserId, out var current))
+            {
+                var left = MetersApart(lat, lng, current.DropoffLat, current.DropoffLng);
+                if (left <= FinishingWithinM)
+                    return ((double)current.DropoffLat, (double)current.DropoffLng, left, true);
+            }
+            return ((double)lat, (double)lng, 0, false);
+        }
+
         var inReach = nearby
             .Where(dp => dp.VerticalsAllowed.Contains(trip.Vertical))
-            .Select(dp => new DriverCand(
-                dp.UserId,
-                dp.AcceptanceRate,
-                (double)dp.LastLat!.Value,
-                (double)dp.LastLng!.Value,
-                StraightM: MetersApart(dp.LastLat!.Value, dp.LastLng!.Value, trip.PickupLat, trip.PickupLng),
-                Busy: busyIds.Contains(dp.UserId)))
+            // Destination filter: only trips that take the driver towards it.
+            .Where(dp => dp.DestinationLat is not { } destLat || dp.DestinationLng is not { } destLng ||
+                         DriverDestination.Fits(
+                             (double)dp.LastLat!.Value, (double)dp.LastLng!.Value,
+                             (double)destLat, (double)destLng,
+                             (double)trip.PickupLat, (double)trip.PickupLng,
+                             (double)trip.DropoffLat, (double)trip.DropoffLng))
+            .Select(dp => (dp, o: Origin(dp)))
+            .Select(x => new DriverCand(
+                x.dp.UserId,
+                x.dp.AcceptanceRate,
+                x.o.Lat,
+                x.o.Lng,
+                StraightM: x.o.ExtraM + MetersApart((decimal)x.o.Lat, (decimal)x.o.Lng, trip.PickupLat, trip.PickupLng),
+                Busy: !x.o.Free))
             .Where(d => d.StraightM <= searchRadius)
             .OrderBy(d => d.StraightM)
             .ToList();

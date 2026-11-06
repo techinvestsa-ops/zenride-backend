@@ -69,6 +69,17 @@ public class DriverProfile : BaseEntity
     public int TotalTripsCompleted { get; set; }
     public string? BlockReason { get; set; }
 
+    /// <summary>Destination filter: while set, the driver only gets trips that
+    /// take them towards this point. Cleared on arrival.</summary>
+    public decimal? DestinationLat { get; set; }
+    public decimal? DestinationLng { get; set; }
+    public string? DestinationLabel { get; set; }
+    public DateTime? DestinationSetAt { get; set; }
+
+    /// <summary>How many times the filter was switched on, on <see cref="DestinationUsesOn"/> (UTC day).</summary>
+    public int DestinationUsesToday { get; set; }
+    public DateTime? DestinationUsesOn { get; set; }
+
     public ICollection<Vehicle> Vehicles { get; set; } = [];
     public ICollection<DriverDocument> Documents { get; set; } = [];
     public DriverOnboarding? Onboarding { get; set; }
