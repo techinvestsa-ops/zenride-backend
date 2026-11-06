@@ -55,6 +55,8 @@ public class Trip : AuditableEntity
     public DateTime? ShareTokenExpiresAt { get; set; }
 
     public string? NoteToDriver { get; set; }
+    /// <summary>Intermediate stops in visit order (JSON list), see TripStops.</summary>
+    public string StopsJson { get; set; } = "[]";
     public string? NoteAudioUrl { get; set; }
 
     public int? RatingByRider { get; set; }
@@ -105,6 +107,7 @@ public class Quote : BaseEntity
     public int DurationS { get; set; }
     public string? EncodedPolyline { get; set; }
     public string OptionsJson { get; set; } = "[]";
+    public string StopsJson { get; set; } = "[]";
     public bool SurgeActive { get; set; }
     public decimal SurgeMultiplier { get; set; } = 1.0m;
     public string? SurgeReason { get; set; }

@@ -1,3 +1,4 @@
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Common.Interfaces;
 using Izigo.Application.Common.Settings;
 using Izigo.Application.Features.Quotes.Dtos;
@@ -30,16 +31,30 @@ public class CreateQuoteHandler(
         var pickup = req.Request.Pickup;
         var dropoff = req.Request.Dropoff;
 
+        // Stops between pickup and drop-off (rides only), priced through the
+        // whole route: distance and time include every leg.
+        var stops = (req.Request.Stops ?? [])
+            .Where(s => s is not null)
+            .Select(s => new TripStop(s.Label, s.Lat, s.Lng, s.PlaceId))
+            .ToList();
+        if (stops.Count > TripStops.Max)
+            throw new ArgumentException($"VALIDATION_ERROR: A ride can have at most {TripStops.Max} stops.");
+        if (stops.Count > 0 && !req.Request.Vertical.Equals("ride", StringComparison.OrdinalIgnoreCase))
+            throw new ArgumentException("VALIDATION_ERROR: Stops are only available on rides.");
+        if (stops.Any(s => s.Lat is < -90 or > 90 || s.Lng is < -180 or > 180))
+            throw new ArgumentException("VALIDATION_ERROR: Each stop needs a place on the map.");
+
         // Get route from geo service (distance, duration, polyline)
         var route = await geo.GetRouteAsync(
             new GeoPoint(pickup.Lat, pickup.Lng),
             new GeoPoint(dropoff.Lat, dropoff.Lng),
-            null, "driving", ct);
+            stops.Count == 0 ? null : stops.Select(s => new GeoPoint(s.Lat, s.Lng)).ToArray(),
+            "driving", ct);
 
         // Fall back to straight-line if geo stub returns null.
         // DurationS on the route is the free-flow drive. DurationInTrafficS is set
         // only when live traffic makes it longer.
-        var distanceM = route?.DistanceM ?? EstimateStraightLine(pickup.Lat, pickup.Lng, dropoff.Lat, dropoff.Lng);
+        var distanceM = route?.DistanceM ?? EstimateThroughStops(pickup.Lat, pickup.Lng, stops, dropoff.Lat, dropoff.Lng);
         var freeFlowS = route?.DurationS ?? (int)(distanceM / cfg.FallbackSpeedMs);
         var trafficS  = route?.DurationInTrafficS ?? freeFlowS;
         var durationS = Math.Max(freeFlowS, trafficS);
@@ -122,6 +137,7 @@ public class CreateQuoteHandler(
             DurationS = durationS,
             EncodedPolyline = polyline,
             OptionsJson = optionsJson,
+            StopsJson   = TripStops.Write(stops),
             SurgeActive = surgeMultiplier > 1.0m,
             SurgeMultiplier = surgeMultiplier,
             SurgeReason = surgeReason,
@@ -143,7 +159,19 @@ public class CreateQuoteHandler(
             EncodedPolyline: polyline,
             Surge: new SurgeDto(quote.SurgeActive, (double)surgeMultiplier, surgeReason),
             Options: options,
-            PaymentMethods: paymentMethods);
+            PaymentMethods: paymentMethods,
+            Stops: stops.Select(s => new QuoteLocationDto(s.Label, s.Lat, s.Lng, s.PlaceId)).ToArray());
+    }
+
+    private static int EstimateThroughStops(double lat, double lng, List<TripStop> stops, double toLat, double toLng)
+    {
+        var total = 0;
+        foreach (var s in stops)
+        {
+            total += EstimateStraightLine(lat, lng, s.Lat, s.Lng);
+            (lat, lng) = (s.Lat, s.Lng);
+        }
+        return total + EstimateStraightLine(lat, lng, toLat, toLng);
     }
 
     // Rough straight-line estimate as fallback when geo service is not yet wired

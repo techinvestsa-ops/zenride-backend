@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Features.Rides.Dtos;
 using Izigo.Domain.Entities;
 using Izigo.Domain.Enums;
@@ -89,6 +90,8 @@ public static class RideDetailMapper
             ShareUrl: trip.ShareToken != null
                 ? $"{shareBaseUrl.TrimEnd('/')}/{trip.ShareToken}"
                 : null,
-            Waiting: waiting);
+            Waiting: waiting,
+            Stops: TripStops.Read(trip.StopsJson)
+                .Select(st => new RideStopDto(st.Label, st.Lat, st.Lng, st.ArrivedAt is not null)).ToArray());
     }
 }

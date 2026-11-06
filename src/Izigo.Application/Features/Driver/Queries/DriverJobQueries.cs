@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Features.Driver.Dtos;
 using Izigo.Application.Features.Rides.Helpers;
 using Izigo.Domain.Enums;
@@ -150,7 +151,8 @@ internal static class JobDetailMapper
                 CanStart:    state == JobState.ArrivedAtPickup,
                 CanComplete: state == JobState.ArrivedAtDropoff,
                 CanCancel:   !isFinal && state != JobState.PickedUp),
-            Delivery: delivery);
+            Delivery: delivery,
+            Stops: JobOfferMapper.Stops(trip));
     }
 }
 
@@ -177,5 +179,11 @@ internal static class JobOfferMapper
             Currency:         trip.Currency,
             PaymentMethod:    trip.PaymentMethod.ToString().ToLower(),
             OfferExpiresInSec: offerExpiresInSec,
-            NoteToDriver:     trip.NoteToDriver);
+            NoteToDriver:     trip.NoteToDriver,
+            Stops:            Stops(trip));
+
+    public static JobStopDto[] Stops(Domain.Entities.Trip trip) =>
+        TripStops.Read(trip.StopsJson)
+            .Select((st, i) => new JobStopDto(i, st.Label, st.Lat, st.Lng, st.ArrivedAt is not null))
+            .ToArray();
 }

@@ -173,7 +173,7 @@ public class UpdateLocationHandler(IApplicationDbContext db, IRealtimeService re
 
         var trip = await db.Trips
             .Where(t => t.Id == req.JobId && t.DriverId == cmd.DriverId)
-            .Select(t => new { t.Market, t.JobState, t.PickupLat, t.PickupLng, t.DropoffLat, t.DropoffLng })
+            .Select(t => new { t.Market, t.JobState, t.PickupLat, t.PickupLng, t.DropoffLat, t.DropoffLng, t.StopsJson })
             .FirstOrDefaultAsync(ct);
 
         int? etaMin = null, distanceM = null;
@@ -185,6 +185,12 @@ public class UpdateLocationHandler(IApplicationDbContext db, IRealtimeService re
             var (lat, lng) = toDropoff
                 ? ((double)trip.DropoffLat, (double)trip.DropoffLng)
                 : ((double)trip.PickupLat, (double)trip.PickupLng);
+            // On board with a stop still ahead: the next leg ends at that stop.
+            if (toDropoff && TripStops.Next(TripStops.Read(trip.StopsJson)) is { } next)
+            {
+                (lat, lng) = (next.Stop.Lat, next.Stop.Lng);
+                leg = "stop";
+            }
             distanceM = (int)LiveEta.RoadDistanceM(req.Lat, req.Lng, lat, lng);
             etaMin = LiveEta.Minutes(distanceM.Value, req.Speed);
         }

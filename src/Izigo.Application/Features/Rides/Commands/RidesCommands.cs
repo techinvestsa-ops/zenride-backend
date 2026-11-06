@@ -110,6 +110,7 @@ public class CreateRideHandler(IApplicationDbContext db, IIdempotencyService ide
             DropoffLng     = quote.DropoffLng,
             DropoffLabel   = quote.DropoffLabel,
             EncodedPolyline = quote.EncodedPolyline,
+            StopsJson      = quote.StopsJson,
             DistanceM      = quote.DistanceM,
             DurationS      = quote.DurationS,
 
@@ -272,11 +273,13 @@ public class ChangeDestinationHandler(IApplicationDbContext db, IGeoService geo,
             throw new InvalidOperationException(
                 "CONFLICT: Destination can only be changed once the trip is in progress.");
 
-        // Recalculate route from pickup to new dropoff
+        // Recalculate route from pickup to new dropoff, through the stops.
+        var stops = TripStops.Read(trip.StopsJson);
         var route = await geo.GetRouteAsync(
             new GeoPoint((double)trip.PickupLat, (double)trip.PickupLng),
             new GeoPoint(req.NewDropoff.Lat, req.NewDropoff.Lng),
-            null, "driving", ct);
+            stops.Count == 0 ? null : stops.Select(s => new GeoPoint(s.Lat, s.Lng)).ToArray(),
+            "driving", ct);
 
         // Reprice for the new route the same way a quote is priced (same class,
         // surge and promo discount), so a longer trip is not driven at the

@@ -20,8 +20,12 @@ public record RideDetailDto(
     RideTimestampsDto Timestamps,
     RideActionsDto Actions,
     string? ShareUrl,
-    RideWaitingDto? Waiting = null
+    RideWaitingDto? Waiting = null,
+    RideStopDto[]? Stops = null
 );
+
+/// <summary>A stop on the way, in visit order; Reached once the driver got there.</summary>
+public record RideStopDto(string Label, double Lat, double Lng, bool Reached);
 
 public record RideWaitingDto(int GraceMin, long PerMin);
 

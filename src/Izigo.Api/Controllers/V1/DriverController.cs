@@ -211,6 +211,11 @@ public class DriverController : BaseController
         => Ok(await Mediator.Send(new ArrivedDropoffCommand(CurrentUserId, id)));
 
     /// <summary>Completes the trip and triggers billing.</summary>
+    /// <summary>The driver reached stop number <paramref name="index"/> (0-based) on the way.</summary>
+    [HttpPost("jobs/{id}/stops/{index:int}/arrived")]
+    public async Task<IActionResult> ArrivedAtStop(string id, int index)
+        => Ok(await Mediator.Send(new ArrivedAtStopCommand(CurrentUserId, id, index)));
+
     [HttpPost("jobs/{id}/complete")]
     public async Task<IActionResult> CompleteJob(string id)
         => Ok(await Mediator.Send(new CompleteJobCommand(CurrentUserId, id)));

@@ -1,4 +1,5 @@
 using Izigo.Application.Common.Interfaces;
+using Izigo.Application.Common.Helpers;
 using Izigo.Application.Features.Admin.Realtime;
 using Izigo.Application.Features.Driver.Dtos;
 using Izigo.Application.Features.Driver.Queries;
@@ -308,6 +309,45 @@ public class ArrivedDropoffHandler(IApplicationDbContext db, IRealtimeService re
                     ? $"Please pay {amount} in cash to your driver."
                     : $"{amount} will be paid with {System.Text.RegularExpressions.Regex.Replace(trip.PaymentMethod.ToString(), "(\\B[A-Z])", " $1")}.",
                 tripId: trip.Id, ct);
+        }
+
+        return await JobDetailMapper.BuildAsync(trip, db, ct);
+    }
+}
+
+// ── POST /driver/jobs/{id}/stops/{index}/arrived ─────────────────────────────
+
+public record ArrivedAtStopCommand(string DriverId, string TripId, int Index) : IRequest<JobDetailDto>;
+
+public class ArrivedAtStopHandler(IApplicationDbContext db, IRealtimeService realtime)
+    : IRequestHandler<ArrivedAtStopCommand, JobDetailDto>
+{
+    public async Task<JobDetailDto> Handle(ArrivedAtStopCommand cmd, CancellationToken ct)
+    {
+        var trip = await db.Trips
+            .FirstOrDefaultAsync(t => t.Id == cmd.TripId && t.DriverId == cmd.DriverId, ct)
+            ?? throw new KeyNotFoundException("Job not found.");
+
+        if (trip.JobState is not (JobState.PickedUp or JobState.EnRouteToDropoff))
+            throw new InvalidOperationException("CONFLICT: Stops are reached after the passenger is on board.");
+
+        var stops = TripStops.Read(trip.StopsJson);
+        if (cmd.Index < 0 || cmd.Index >= stops.Count)
+            throw new KeyNotFoundException("Stop not found.");
+
+        // Idempotent: a second tap (or a retry on a bad connection) changes nothing.
+        if (stops[cmd.Index].ArrivedAt is null)
+        {
+            stops[cmd.Index] = stops[cmd.Index] with { ArrivedAt = DateTime.UtcNow };
+            trip.StopsJson = TripStops.Write(stops);
+            await db.SaveChangesAsync(ct);
+
+            await realtime.PublishToTripAsync(trip.Id, "ride.stop_reached", new
+            {
+                trip_id = trip.Id,
+                index   = cmd.Index,
+                label   = stops[cmd.Index].Label,
+            }, ct);
         }
 
         return await JobDetailMapper.BuildAsync(trip, db, ct);
